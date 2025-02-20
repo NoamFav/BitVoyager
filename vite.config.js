@@ -14,11 +14,11 @@ export default defineConfig({
           key: fs.readFileSync(path.resolve(__dirname, "localhost-key.pem")),
           cert: fs.readFileSync(path.resolve(__dirname, "localhost.pem")),
         },
-        headers: {
-          "Cross-Origin-Opener-Policy": "same-origin",
-          "Cross-Origin-Embedder-Policy": "require-corp",
-        },
       }
-    : undefined, // No server settings for production
-  base: "/bitjourney", // Ensure correct base path for GitHub Pages
+    : undefined,
+  headers: {
+    "Cross-Origin-Opener-Policy": "same-origin",
+    "Cross-Origin-Embedder-Policy": "require-corp",
+  },
+  base: "/bitjourney",
 });
