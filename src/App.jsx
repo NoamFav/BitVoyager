@@ -1,14 +1,19 @@
-import TerminalComponent from "./terminal";
-import React from "react";
-import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Home from "./Home";
+import "./index.css";
 
 function App() {
-    return (
-        <div>
-            <h1>Learn Bash - Web Terminal</h1>
-            <TerminalComponent />
-        </div>
-    );
+  return (
+    <Router>
+      <div>
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
+  );
 }
 
 export default App;

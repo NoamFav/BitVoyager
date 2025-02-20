@@ -1,0 +1,151 @@
+import React from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import Terminal from "./terminal";
+
+function Home() {
+  return (
+    <main className="min-h-screen w-full bg-gradient-to-br from-white via-blue-50 to-blue-100 flex flex-col items-center">
+      {/* Hero Section */}
+      <header className="relative w-full flex flex-col items-center justify-center text-center py-12 md:py-16">
+        <div className="flex flex-col items-center">
+          <img
+            src="src/assets/image.png"
+            alt="BitJourney logo"
+            className="w-32 h-32 md:w-40 md:h-40 mb-4 drop-shadow-lg rounded-full"
+          />
+          <h2 className="text-3xl md:text-5xl font-extrabold text-gray-800 tracking-tight mb-2">
+            BitJourney
+          </h2>
+          <h3 className="text-xl md:text-2xl text-gray-600 font-medium">
+            The top <span className="text-blue-500">1</span> coding learning app
+          </h3>
+        </div>
+
+        {/* Floating decorative elements (optional) */}
+        <div className="absolute top-0 left-0 w-24 h-24 bg-blue-100 rounded-full blur-xl opacity-50 animate-pulse" />
+        <div className="absolute bottom-0 right-0 w-24 h-24 bg-blue-200 rounded-full blur-xl opacity-50 animate-pulse" />
+      </header>
+
+      {/* Navigation */}
+      <nav className="mb-8">
+        <ul className="flex gap-8 text-lg font-medium">
+          {["Home", "About", "Courses"].map((item) => (
+            <li key={item}>
+              <Link
+                to={`/${item.toLowerCase() === "home" ? "" : item.toLowerCase()}`}
+                className="text-gray-700 hover:text-blue-600 transition-colors duration-300"
+              >
+                {item}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      {/* Call to Action */}
+      <section className="w-full max-w-3xl px-4 mb-12 text-center">
+        <div className="bg-white shadow-lg rounded-xl p-8 md:p-12">
+          <h4 className="text-2xl md:text-3xl font-semibold text-gray-800">
+            Start your journey today
+          </h4>
+          <p className="text-gray-600 mt-3 leading-relaxed">
+            Learn to code and become a master in programming. Start your journey
+            today with{" "}
+            <span className="font-bold text-blue-500">BitJourney</span>.
+          </p>
+          <Link
+            to="/courses"
+            className="inline-block bg-blue-500 text-white px-8 py-3 mt-6 rounded-full text-lg font-semibold hover:bg-blue-600 hover:shadow-lg transition-all duration-300"
+          >
+            Start now
+          </Link>
+        </div>
+      </section>
+
+      {/* Programming Languages */}
+      <section className="w-full max-w-5xl px-4 mb-12">
+        <h4 className="text-2xl md:text-3xl font-semibold text-gray-800 text-center mb-6">
+          Learn any language you want
+        </h4>
+        <p className="text-center text-gray-600 max-w-xl mx-auto mb-8">
+          Choose from a variety of languages and start learning today.
+        </p>
+
+        <ul className="flex flex-wrap justify-center gap-6">
+          {["Bash", "Python", "JavaScript", "Java", "C++", "Rust"].map(
+            (lang) => (
+              <motion.li
+                key={lang}
+                whileHover={{ scale: 1.05 }}
+                className="flex flex-col items-center bg-white shadow rounded-xl p-4 transition-transform"
+              >
+                <li
+                  key={lang}
+                  className="group relative flex flex-col items-center bg-white shadow-md rounded-xl p-4 transition-transform transform hover:-translate-y-1 hover:shadow-lg"
+                >
+                  <img
+                    src={`/src/assets/${lang.toLowerCase()}.png`}
+                    alt={`${lang} logo`}
+                    className="w-12 h-12 mb-2"
+                  />
+                  <h2 className="text-lg font-medium text-gray-800">{lang}</h2>
+                  {/* Decorative circle */}
+                  <div className="absolute -top-4 -right-4 w-8 h-8 bg-blue-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity blur-xl" />
+                </li>
+              </motion.li>
+            ),
+          )}
+        </ul>
+      </section>
+
+      {/* Teachers Section */}
+      <section className="w-full max-w-5xl px-4 mb-16">
+        <h4 className="text-2xl md:text-3xl font-semibold text-gray-800 text-center mb-6">
+          Learn from the best
+        </h4>
+        <p className="text-center text-gray-600 max-w-xl mx-auto mb-8">
+          Our courses are taught by the best instructors who will guide you
+          through your journey.
+        </p>
+
+        <ul className="flex flex-wrap justify-center gap-8">
+          {[
+            { name: "Noam Favier", image: "/teachers/noam.png" },
+            { name: "Mathieu Kircher", image: "/teachers/mathieu.png" },
+          ].map((teacher) => (
+            <motion.li
+              key={teacher.name}
+              whileHover={{ scale: 1.05 }}
+              className="flex flex-col items-center"
+            >
+              <li
+                key={teacher.name}
+                className="flex flex-col items-center bg-white shadow-md rounded-xl p-6 transition-transform transform hover:-translate-y-1 hover:shadow-lg"
+              >
+                <img
+                  src={teacher.image}
+                  alt={teacher.name}
+                  className="w-20 h-20 rounded-full mb-4"
+                />
+                <h2 className="text-lg font-medium text-gray-800">
+                  {teacher.name}
+                </h2>
+                {/* Additional info or social links could go here */}
+              </li>
+            </motion.li>
+          ))}
+        </ul>
+      </section>
+      <Terminal />
+      {/* Footer */}
+      <footer className="w-full py-6 text-center bg-white shadow-inner">
+        <p className="text-gray-500">
+          &copy; {new Date().getFullYear()} BitJourney. All rights reserved.
+        </p>
+      </footer>
+    </main>
+  );
+}
+
+export default Home;
