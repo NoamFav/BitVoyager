@@ -3,8 +3,7 @@ import react from "@vitejs/plugin-react";
 import fs from "fs";
 import path from "path";
 
-// Check if running in development mode
-const isDev = process.env.NODE_ENV === "development";
+const isDev = process.env.NODE_ENV !== "production"; // Works properly
 
 export default defineConfig({
   plugins: [react()],
@@ -14,11 +13,12 @@ export default defineConfig({
           key: fs.readFileSync(path.resolve(__dirname, "localhost-key.pem")),
           cert: fs.readFileSync(path.resolve(__dirname, "localhost.pem")),
         },
+        headers: {
+          "Cross-Origin-Opener-Policy": "same-origin",
+          "Cross-Origin-Embedder-Policy": "require-corp",
+        },
       }
-    : undefined,
-  headers: {
-    "Cross-Origin-Opener-Policy": "same-origin",
-    "Cross-Origin-Embedder-Policy": "require-corp",
-  },
-  base: "/bitjourney",
+    : undefined, // No server settings in production
+
+  base: "/bitjourney", // Correct base path for GitHub Pages
 });
