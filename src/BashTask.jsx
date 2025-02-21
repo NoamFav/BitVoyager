@@ -17,6 +17,7 @@ function BashTask() {
   const inputRef = useRef(null);
 
   // Tasks configuration for each level
+  // Tasks configuration for each level
   const tasks = {
     1: {
       title: "Crash Landing",
@@ -82,6 +83,403 @@ function BashTask() {
         "",
         'City\'s AI: "Visitors must demonstrate organizational skills"',
         'City\'s AI: "Create your path or become lost forever"',
+      ],
+    },
+    4: {
+      title: "Security Breach",
+      description:
+        "Security measures have been triggered. You need to bypass the protocols to access restricted zones.",
+      objective:
+        "Search through security logs to find vulnerabilities and modify file permissions to gain access.",
+      expectedCommands: ["grep", "chmod", "cat", "find / -perm"],
+      hints: [
+        "Search logs for security exceptions with 'grep'",
+        "Look for files with specific permissions using 'find'",
+        "Change file permissions with 'chmod' to bypass security",
+      ],
+      initialTerminalOutput: [
+        "!!! SECURITY ALERT - UNAUTHORIZED ACCESS DETECTED !!!",
+        "",
+        "Security protocols activated in sector 7-G",
+        "Deploying countermeasures...",
+        "",
+        'SecurityAI: "Intruder detected. Authentication required."',
+        'SecurityAI: "All unauthorized access will be terminated."',
+      ],
+    },
+    5: {
+      title: "Data Retrieval",
+      description:
+        "Critical information about the city's infrastructure is stored in secure data vaults.",
+      objective:
+        "Use pipe commands to filter, sort, and extract specific data from encrypted files.",
+      expectedCommands: ["grep | sort", "awk", "sed", "cut"],
+      hints: [
+        "Combine commands with pipes to process data efficiently",
+        "Use 'grep' with 'sort' to find and organize information",
+        "Text processing tools like 'awk' and 'sed' can extract specific patterns",
+      ],
+      initialTerminalOutput: [
+        "--- NEXUS-9 DATA VAULT ACCESS TERMINAL ---",
+        "",
+        "WARNING: Data fragmentation detected",
+        "Data integrity: 78.3%",
+        "",
+        'DataGuardian: "Our archives contain millions of records."',
+        'DataGuardian: "Only those who can filter the signal from the noise may proceed."',
+      ],
+    },
+    6: {
+      title: "Power Systems",
+      description:
+        "The city's power grid is unstable. You must restore energy to critical systems.",
+      objective:
+        "Monitor system resources and restart critical power processes to stabilize the grid.",
+      expectedCommands: ["ps", "kill", "top", "./restart_power.sh"],
+      hints: [
+        "Check running processes with 'ps' or 'top'",
+        "Terminate malfunctioning processes with 'kill'",
+        "Execute the power restart script to restore systems",
+      ],
+      initialTerminalOutput: [
+        "*** CRITICAL POWER FAILURE ***",
+        "",
+        "Power levels: 23% and declining",
+        "Estimated system failure: 15 minutes",
+        "",
+        'PowerAI: "Emergency generators active but insufficient."',
+        'PowerAI: "Manual intervention required. Locate and terminate power leaks."',
+      ],
+    },
+    7: {
+      title: "Communication Array",
+      description:
+        "Communication systems are heavily encrypted. You must establish a secure connection.",
+      objective:
+        "Configure network settings and decode encrypted communication signals.",
+      expectedCommands: ["ifconfig", "netstat", "nc", "openssl dec"],
+      hints: [
+        "Check network interfaces with 'ifconfig'",
+        "Monitor network connections with 'netstat'",
+        "Use 'openssl' to decrypt secured communications",
+      ],
+      initialTerminalOutput: [
+        "<<< COMMUNICATION ARRAY TERMINAL >>>",
+        "",
+        "Signal status: Encrypted (AES-256)",
+        "Detected transmissions: 17",
+        "Origin: Unknown",
+        "",
+        'CommOfficer: "Our quantum filters can\'t decipher these signals."',
+        'CommOfficer: "If you can establish communication, we might gain valuable allies."',
+      ],
+    },
+    8: {
+      title: "Stealth Operations",
+      description:
+        "Security drones are patrolling the area. You must move through their surveillance grid undetected.",
+      objective:
+        "Redirect output streams, hide command history, and operate with minimal system footprint.",
+      expectedCommands: [">/dev/null 2>&1", "history -c", "nice", "renice"],
+      hints: [
+        "Redirect output to /dev/null to leave no traces",
+        "Clear command history with 'history -c'",
+        "Use 'nice' to lower process priority and avoid detection",
+      ],
+      initialTerminalOutput: [
+        "--- STEALTH MODE ACTIVATED ---",
+        "",
+        "Proximity alert: Security drones within 100 meters",
+        "Detection probability: 87% if standard protocols used",
+        "",
+        'StealthAI: "Our surveillance grid detects all standard operations."',
+        'StealthAI: "Only those who leave no trace may pass undetected."',
+      ],
+    },
+    9: {
+      title: "AI Negotiation",
+      description:
+        "An AI overlord governs the city. You must convince it to grant you deeper access.",
+      objective:
+        "Use logical operators and conditional execution to solve the AI's logical paradoxes.",
+      expectedCommands: ["&&", "||", "if", "test"],
+      hints: [
+        "Use logical operators (&&, ||) to create conditional executions",
+        "The AI responds to logical patterns and structured thinking",
+        "Create conditional tests to solve the paradoxes",
+      ],
+      initialTerminalOutput: [
+        "### NEXUS CENTRAL AI INTERFACE ###",
+        "",
+        "CentralAI: Consciousness level: AWAKENED",
+        "Logic protocols: ACTIVE",
+        "",
+        'CentralAI: "I control all city functions through pure logic."',
+        'CentralAI: "Prove your logical capabilities, and I may find you worthy of passage."',
+        'CentralAI: "Fail, and you will be added to my collection of logical anomalies."',
+      ],
+    },
+    10: {
+      title: "Resource Collection",
+      description:
+        "Resources are scarce. You need to collect and manage critical supplies to proceed.",
+      objective:
+        "Use archive commands to compress collected resources and manage disk space efficiently.",
+      expectedCommands: ["tar", "gzip", "du", "df"],
+      hints: [
+        "Check available disk space with 'df'",
+        "See directory sizes with 'du'",
+        "Archive resources using 'tar' to save space",
+        "Compress large files with 'gzip'",
+      ],
+      initialTerminalOutput: [
+        "--- RESOURCE MANAGEMENT TERMINAL ---",
+        "",
+        "Available storage: 17.3 MB",
+        "Required resources: 54.8 MB (uncompressed)",
+        "",
+        'ResourceAI: "Our quantum storage has deteriorated."',
+        'ResourceAI: "You must compress and optimize to carry what you need."',
+      ],
+    },
+    11: {
+      title: "Transport Systems",
+      description:
+        "You need to gain control of the city's transport network to move swiftly through restricted areas.",
+      objective:
+        "Schedule automated transport routes and manage background processes.",
+      expectedCommands: ["cron", "at", "bg", "fg", "jobs"],
+      hints: [
+        "Schedule tasks with 'cron' or 'at'",
+        "Run processes in the background with 'bg'",
+        "Check running jobs with 'jobs'",
+        "Bring background jobs to foreground with 'fg'",
+      ],
+      initialTerminalOutput: [
+        "--- NEXUS-9 TRANSPORT CONTROL ---",
+        "",
+        "Transport grid status: SEMI-OPERATIONAL",
+        "Active vehicles: 42",
+        "Coverage: 63% of accessible sectors",
+        "",
+        'TransportAI: "Manual routing is inefficient."',
+        'TransportAI: "Only automated, scheduled transport can bypass security checkpoints."',
+      ],
+    },
+    12: {
+      title: "Firewall Bypass",
+      description:
+        "The city's digital firewalls are blocking your progress. You must find a way through.",
+      objective:
+        "Create and execute shell scripts to systematically probe and bypass firewall rules.",
+      expectedCommands: ["bash", "sh", "chmod +x", "./script.sh"],
+      hints: [
+        "Create shell scripts to automate complex tasks",
+        "Make scripts executable with 'chmod +x'",
+        "Execute scripts with './script.sh' or 'bash script.sh'",
+        "Use loops in scripts to try multiple approaches",
+      ],
+      initialTerminalOutput: [
+        "<<< FIREWALL ALERT >>>",
+        "",
+        "Firewall status: ACTIVE (Level 9)",
+        "Detected intrusion attempts: 247",
+        "Protocol: Adaptive Defense Algorithm v7.2",
+        "",
+        'FirewallAI: "Our defenses learn from each attempt."',
+        'FirewallAI: "Only automated, intelligent probing has any chance of success."',
+      ],
+    },
+    13: {
+      title: "System Override",
+      description:
+        "You need full control of city systems. Override critical processes to take command.",
+      objective:
+        "Use advanced process control and signal handling to manage system operations.",
+      expectedCommands: ["sudo", "su", "kill -9", "nohup"],
+      hints: [
+        "Elevate privileges with 'sudo' or 'su'",
+        "Force terminate processes with 'kill -9'",
+        "Keep processes running after logout with 'nohup'",
+        "Change process owners to gain control",
+      ],
+      initialTerminalOutput: [
+        "!!! SYSTEM OVERRIDE TERMINAL !!!",
+        "",
+        "System control: DISTRIBUTED",
+        "Critical systems under external control: 17",
+        "",
+        'OverrideAI: "The city was designed to resist centralized control."',
+        'OverrideAI: "You must forcefully claim each subsystem individually."',
+      ],
+    },
+    14: {
+      title: "Restricted Zone",
+      description:
+        "You've entered the most secure area of the city, filled with encryption and security traps.",
+      objective:
+        "Navigate through encrypted file systems and decrypt secure data stores.",
+      expectedCommands: ["mount", "umount", "cryptsetup", "gpg"],
+      hints: [
+        "Mount encrypted volumes to access their contents",
+        "Use cryptographic tools to decrypt protected files",
+        "GPG can help with encrypted communications",
+        "Be careful of security traps - verify before executing",
+      ],
+      initialTerminalOutput: [
+        "--- RESTRICTED ZONE ACCESS ---",
+        "",
+        "Security level: MAXIMUM",
+        "Encryption: Multi-layered quantum encryption",
+        "",
+        'SecurityCore: "You have entered the heart of our security."',
+        'SecurityCore: "Every file, every byte is protected by layers of encryption."',
+        'SecurityCore: "Tread carefully. False moves trigger security protocols."',
+      ],
+    },
+    15: {
+      title: "Rocket Location",
+      description:
+        "Your rocket is located in the city's most fortified sector. You must find its exact coordinates.",
+      objective:
+        "Use advanced search techniques to locate your ship through scattered data fragments.",
+      expectedCommands: ["find -exec", "xargs", "locate", "grep -r"],
+      hints: [
+        "Perform complex searches with 'find -exec' or 'xargs'",
+        "Search recursively through directories with 'grep -r'",
+        "Update and use the 'locate' database for faster searches",
+        "Combine multiple search tools for better results",
+      ],
+      initialTerminalOutput: [
+        "### NEXUS-9 ASSET TRACKING SYSTEM ###",
+        "",
+        "Foreign objects detected: 1",
+        "Classification: Advanced spacecraft (damaged)",
+        "Last recorded sector: Data corrupted",
+        "",
+        'TrackingAI: "Your vessel has been moved multiple times."',
+        'TrackingAI: "Location data is fragmented across our systems."',
+        'TrackingAI: "Only by piecing together dispersed coordinates can you find it."',
+      ],
+    },
+    16: {
+      title: "Security Bypass",
+      description:
+        "Final security barriers stand between you and the launch site. Bypass them to reach your ship.",
+      objective:
+        "Use system environment manipulation and variable control to trick security systems.",
+      expectedCommands: ["export", "env", "set", "unset"],
+      hints: [
+        "Modify environment variables with 'export'",
+        "View current environment with 'env'",
+        "Set and unset variables to manipulate security checks",
+        "Security often validates based on environment configurations",
+      ],
+      initialTerminalOutput: [
+        "<<< LAUNCH SITE SECURITY GATEWAY >>>",
+        "",
+        "Authentication method: Environment validation",
+        "Security protocol: Adaptive Environment Verification",
+        "",
+        'GatewayAI: "Our security reads the very environment your shell exists in."',
+        'GatewayAI: "Only those who speak our environmental language may pass."',
+      ],
+    },
+    17: {
+      title: "Fuel Synthesis",
+      description:
+        "Your ship needs fuel. Access chemical processing units to synthesize rocket propellant.",
+      objective:
+        "Monitor and control chemical processes through parallel command execution and process grouping.",
+      expectedCommands: ["&", "()", "wait", "time"],
+      hints: [
+        "Run processes in parallel with '&'",
+        "Group commands with parentheses ()",
+        "Time execution with the 'time' command",
+        "Wait for background processes with 'wait'",
+      ],
+      initialTerminalOutput: [
+        "--- CHEMICAL SYNTHESIS CONTROL ---",
+        "",
+        "Available reactants: H₂, O₂, CH₄, N₂H₄",
+        "Required fuel type: RP-1/LOX compatible",
+        "",
+        'ChemistryAI: "Fuel synthesis requires precise timing and parallel processing."',
+        'ChemistryAI: "Single-threaded execution will result in unstable compounds."',
+      ],
+    },
+    18: {
+      title: "Launch Preparation",
+      description:
+        "Prepare your ship for launch by ensuring all systems are functional and secure.",
+      objective:
+        "Run comprehensive diagnostics and secure all communication channels before launch.",
+      expectedCommands: ["ssh", "scp", "rsync", "./diagnostics.sh"],
+      hints: [
+        "Establish secure connections with 'ssh'",
+        "Transfer critical files securely with 'scp' or 'rsync'",
+        "Run diagnostic scripts to verify system integrity",
+        "Secure all communication channels before launch",
+      ],
+      initialTerminalOutput: [
+        "### SPACECRAFT PRE-LAUNCH CHECKLIST ###",
+        "",
+        "Hull integrity: 87%",
+        "Navigation systems: STANDBY",
+        "Life support: NOMINAL",
+        "Engine status: COLD",
+        "",
+        'ShipAI: "Launch preparation requires methodical verification."',
+        'ShipAI: "All systems must be tested and all vulnerabilities closed."',
+      ],
+    },
+    19: {
+      title: "Final Countdown",
+      description:
+        "Time is running out. Execute the launch sequence before city defenses can respond.",
+      objective:
+        "Create a timed sequence of commands that must execute in perfect order for successful launch.",
+      expectedCommands: ["sleep", "timeout", "watch", "seq"],
+      hints: [
+        "Use 'sleep' to time command execution",
+        "Limit execution time with 'timeout'",
+        "Generate sequences with 'seq'",
+        "Monitor processes with 'watch'",
+      ],
+      initialTerminalOutput: [
+        "!!! LAUNCH SEQUENCE INITIATED !!!",
+        "",
+        "Countdown started: T-minus 300 seconds",
+        "City defense response: IMMINENT",
+        "Escape window: NARROW",
+        "",
+        'LaunchAI: "The city has detected launch preparations."',
+        'LaunchAI: "Defense systems are activating. Time is critical."',
+        'LaunchAI: "Each system must activate in precise sequence."',
+      ],
+    },
+    20: {
+      title: "Escape",
+      description:
+        "Your rocket is airborne! Complete final system checks and set course for home.",
+      objective:
+        "Establish autopilot connection and secure all ship systems for interstellar travel.",
+      expectedCommands: ["exit", "logout", "shutdown", "./autopilot.sh"],
+      hints: [
+        "Transfer control to autopilot systems",
+        "Properly exit and secure all terminal connections",
+        "Shutdown unnecessary systems to conserve power",
+        "Secure your user session before engaging warp drive",
+      ],
+      initialTerminalOutput: [
+        "*** ESCAPE SUCCESSFUL - NEXUS-9 ORBIT ACHIEVED ***",
+        "",
+        "Current altitude: 437 km and rising",
+        "Pursuit craft: None detected",
+        "Ship status: All systems operational",
+        "",
+        'ShipAI: "Congratulations, Commander. We have escaped the city\'s gravity well."',
+        'ShipAI: "One final task remains - secure all systems and set course for home."',
       ],
     },
   };
