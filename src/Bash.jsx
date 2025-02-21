@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useBash } from "./useBash";
 
 function Bash() {
   const [hoveredLevel, setHoveredLevel] = useState(null);
-  const [currentLevel, setCurrentLevel] = useState(1); // Starting at level 1
+  const { currentLevel, setCurrentLevel } = useBash();
+  const navigate = useNavigate();
 
   // Story progression stages
   const storyStages = [
@@ -29,6 +31,28 @@ function Bash() {
     "Escape",
   ];
 
+  const stageDescription = [
+    "Your spacecraft has crash-landed on NEXUS-9, a highly advanced technological planet. To return to your rocket and escape, you must navigate through the city's systems using BASH commands. Each challenge you overcome brings you closer to freedom. Good luck, Commander.",
+    "You have made first contact with the city's inhabitants. They are willing to help you, but only if you can prove your worth. Navigate through the city's urban edge to reach the city entrance.",
+    "The city's systems are complex and interconnected. Use your BASH skills to navigate through the first district and reach the central plaza.",
+    "Security measures have been triggered. You must bypass security protocols and gain deeper access to the city's restricted zones.",
+    "Critical information about the city's infrastructure is stored in secure data vaults. Extract this data to advance.",
+    "The city's power grid is unstable. Restore the energy systems using advanced shell commands.",
+    "Communication systems are heavily encrypted. Decipher and establish a secure link to communicate with potential allies.",
+    "Security drones are patrolling the area. Use stealth and redirection techniques to avoid detection.",
+    "An AI overlord governs the city. Engage in negotiations, convincing the AI to grant you access to deeper levels.",
+    "Resources are scarce, and you need vital supplies to proceed. Collect and manage resources strategically.",
+    "You must gain control of transport systems to move swiftly through the city and avoid obstacles.",
+    "The city's firewalls are blocking further progress. Use advanced scripting techniques to bypass digital barriers.",
+    "You need full system control. Override critical processes and take command of city operations.",
+    "You've entered a restricted zone filled with high-level encryption and security traps. Navigate safely and find a way out.",
+    "Your rocket’s last known location is deep within the city's most fortified sector. Locate and secure it before it’s too late.",
+    "Final security barriers stand between you and the launch site. Use all your skills to bypass them.",
+    "Fuel synthesis is needed for liftoff. Access chemical processing units and optimize fuel production.",
+    "Prepare your ship for launch by ensuring all systems are functional and secure.",
+    "The final countdown begins. Time is running out—execute the last set of commands to initiate the launch sequence.",
+    "Mission complete! Your rocket is airborne, and you have successfully escaped NEXUS-9. Congratulations, Commander!",
+  ];
   // Generate 20 levels with game progression context
   const levels = Array.from({ length: 20 }, (_, i) => ({
     number: i + 1,
@@ -158,7 +182,6 @@ function Bash() {
           }}
         ></div>
       </div>
-
       {/* Futuristic header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-gray-900 bg-opacity-80 backdrop-filter backdrop-blur-md border-b border-cyan-500/30">
         <div className="w-full max-w-6xl mx-auto px-6 py-4">
@@ -228,26 +251,18 @@ function Bash() {
           </div>
         </div>
       </header>
+      <div className="sticky top-24 left-1/2 transform -translate-x-1/2 max-w-2xl w-full mx-auto px-6 py-4 mb-16 bg-gray-800/80 backdrop-filter backdrop-blur-md rounded-lg border border-cyan-500/30 shadow-xl shadow-cyan-900/20 z-40">
+        <h2 className="text-lg font-bold text-cyan-400 mb-2">
+          MISSION BRIEFING
+        </h2>
+        <p className="text-gray-200 leading-relaxed">
+          {stageDescription[currentLevel - 1]}
+        </p>
+      </div>
 
-      {/* MODIFIED: Making the story intro always visible with fixed position and higher z-index */}
-      {currentLevel === 1 && (
-        <div className="fixed top-24 left-1/2 transform -translate-x-1/2 max-w-2xl w-full mx-auto px-6 py-4 bg-gray-800/80 backdrop-filter backdrop-blur-md rounded-lg border border-cyan-500/30 shadow-xl shadow-cyan-900/20 z-40">
-          <h2 className="text-lg font-bold text-cyan-400 mb-2">
-            MISSION BRIEFING
-          </h2>
-          <p className="text-gray-200 leading-relaxed">
-            Your spacecraft has crash-landed on NEXUS-9, a highly advanced
-            technological planet. To return to your rocket and escape, you must
-            navigate through the city&apos;s systems using BASH commands. Each
-            challenge you overcome brings you closer to freedom. Good luck,
-            Commander.
-          </p>
-        </div>
-      )}
-
-      {/* Levels map container */}
+      {/* Levels map container - increased top padding to accommodate the briefing */}
       <div
-        className="relative pt-24 pb-16 min-h-screen"
+        className="relative pt-40 pb-16 min-h-screen"
         style={{ width: svgWidth, minHeight: svgHeight }}
       >
         {/* SVG for paths connecting the levels */}
@@ -390,9 +405,6 @@ function Bash() {
           </defs>
         </svg>
 
-        {/* ADDED: Empty spacer div to create padding for fixed header and mission briefing */}
-        <div className="h-44"></div>
-
         {/* Render each level as a futuristic tech node */}
         {positions.map((pos, i) => {
           const level = levels[i];
@@ -436,9 +448,8 @@ function Bash() {
               onMouseEnter={() => setHoveredLevel(i)}
               onMouseLeave={() => setHoveredLevel(null)}
               onClick={() => {
-                if (!level.locked) {
-                  // Handle level selection logic
-                  alert(`Starting BASH Challenge: ${level.name}`);
+                if (level.current) {
+                  navigate(`/bash/${level.number}`);
                 }
               }}
             >
@@ -464,6 +475,33 @@ function Bash() {
                     opacity: isHovered ? 0.9 : 0.6,
                   }}
                 ></div>
+
+                {isHovered && (
+                  <div
+                    className="absolute -top-20 whitespace-nowrap bg-gray-800/90 backdrop-filter backdrop-blur-md px-4 py-3 rounded-lg shadow-xl border border-gray-700 z-999 text-center"
+                    style={{
+                      width: "220px",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                    }}
+                  >
+                    <div className="flex flex-col">
+                      <span
+                        className={`font-bold text-sm mb-1 ${level.locked ? "text-gray-400" : level.current ? "text-cyan-400" : "text-emerald-400"}`}
+                      >
+                        {level.name}
+                      </span>
+                      <span className="text-xs text-gray-300">
+                        {level.locked
+                          ? "Access restricted. Complete previous challenges."
+                          : level.completed
+                            ? "Challenge completed! Revisit this node for practice."
+                            : `Bash Skill: ${level.bashSkill}`}
+                      </span>
+                    </div>
+                    <div className="absolute w-3 h-3 bg-gray-800 border-t border-l border-gray-700 transform rotate-45 bottom-0 translate-y-1.5 left-1/2 -ml-1.5"></div>
+                  </div>
+                )}
 
                 {/* Tech node shape */}
                 <div
@@ -562,34 +600,6 @@ function Bash() {
                     {level.number}
                   </div>
                 )}
-
-                {/* Level tooltip on hover */}
-                {isHovered && (
-                  <div
-                    className="absolute -bottom-24 whitespace-nowrap bg-gray-800/90 backdrop-filter backdrop-blur-md px-4 py-3 rounded-lg shadow-xl border border-gray-700 z-30 text-center"
-                    style={{
-                      width: "220px",
-                      left: "50%",
-                      transform: "translateX(-50%)",
-                    }}
-                  >
-                    <div className="flex flex-col">
-                      <span
-                        className={`font-bold text-sm mb-1 ${level.locked ? "text-gray-400" : level.current ? "text-cyan-400" : "text-emerald-400"}`}
-                      >
-                        {level.name}
-                      </span>
-                      <span className="text-xs text-gray-300">
-                        {level.locked
-                          ? "Access restricted. Complete previous challenges."
-                          : level.completed
-                            ? "Challenge completed! Revisit this node for practice."
-                            : `Bash Skill: ${level.bashSkill}`}
-                      </span>
-                    </div>
-                    <div className="absolute w-3 h-3 bg-gray-800 border-t border-l border-gray-700 transform rotate-45 -top-1.5 left-1/2 -ml-1.5"></div>
-                  </div>
-                )}
               </div>
 
               {/* Level name below the tech node */}
@@ -603,18 +613,6 @@ function Bash() {
             </div>
           );
         })}
-      </div>
-
-      {/* ADDED: Alternative Mission Briefing for mobile/smaller viewports */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-gray-800/95 backdrop-filter backdrop-blur-md border-t border-cyan-500/30 p-4 shadow-xl shadow-cyan-900/20 z-40">
-        <h2 className="text-base font-bold text-cyan-400 mb-1">
-          MISSION BRIEFING
-        </h2>
-        <p className="text-sm text-gray-200 leading-relaxed">
-          Your spacecraft has crash-landed on NEXUS-9, a highly advanced
-          technological planet. To return to your rocket and escape, you must
-          navigate through the city&apos;s systems using BASH commands.
-        </p>
       </div>
     </div>
   );
