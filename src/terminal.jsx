@@ -3,16 +3,21 @@ import { WebContainer } from "@webcontainer/api";
 import { Terminal } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
 
+import { VimWasm } from "vim-wasm";
 export default function TerminalComponent() {
   const webContainerRef = useRef(null);
   const terminalRef = useRef(null);
   const terminalContainerRef = useRef(null);
-  const inputWriterRef = useRef(null); // ✅ Store input writer reference
+  const inputWriterRef = useRef(null);
+
+  const vimRef = useRef(null); // Will store the Vim instance
+  const vimContainerRef = useRef(null); // The DOM container for Vim’s UI
 
   useEffect(() => {
     async function startWebContainer() {
-      if (webContainerRef.current) return; // ✅ Prevent multiple instances
+      if (webContainerRef.current) return; // Prevent multiple instances
 
+      // Initialize Xterm if needed
       if (!terminalRef.current) {
         terminalRef.current = new Terminal({
           cursorBlink: true,
@@ -22,12 +27,12 @@ export default function TerminalComponent() {
             foreground: "#ffffff",
           },
         });
-
         if (terminalContainerRef.current) {
           terminalRef.current.open(terminalContainerRef.current);
         }
       }
 
+      // Boot WebContainer
       webContainerRef.current = await WebContainer.boot();
 
       // Spawn a bash shell
@@ -44,10 +49,10 @@ export default function TerminalComponent() {
         }),
       );
 
-      // ✅ Get writer once and store in ref
+      // Store shell input writer
       inputWriterRef.current = shell.input.getWriter();
 
-      // ✅ Pipe xterm input → shell (using persistent writer)
+      // Pipe xterm input → shell
       terminalRef.current.onData((input) => {
         if (inputWriterRef.current) {
           inputWriterRef.current.write(input);
@@ -58,6 +63,7 @@ export default function TerminalComponent() {
     startWebContainer();
   }, []);
 
+  /** Create a sample file in WebContainer */
   async function createFile() {
     if (!webContainerRef.current) return;
     await webContainerRef.current.fs.writeFile(
@@ -69,6 +75,7 @@ export default function TerminalComponent() {
     );
   }
 
+  /** Run the script in WebContainer */
   async function runScript() {
     if (!webContainerRef.current) return;
     await webContainerRef.current.spawn("chmod", [
@@ -85,6 +92,28 @@ export default function TerminalComponent() {
         },
       }),
     );
+  }
+  /**
+   * Load and start vim-wasm in a separate <div>.
+   */
+  async function startVimWasm() {
+    // Avoid re-initializing if it's already running
+    if (vimRef.current) {
+      return;
+    }
+
+    // 1) Create the Vim instance
+    const vim = new VimWasm({
+      workerScriptPath: "/vim.js", // must match where vim.js is served
+      wasmPath: "/vim.wasm", // must match where vim.wasm is served
+    });
+    vimRef.current = vim;
+
+    vim.onVimInit = () => {
+      vim.open(vimContainerRef.current);
+    };
+
+    vim.start();
   }
 
   return (
@@ -110,14 +139,37 @@ export default function TerminalComponent() {
             >
               Run Script
             </button>
+
+            {/* New button to launch WASM-based Vim */}
+            <button
+              onClick={startVimWasm}
+              className="px-4 py-2 rounded-md bg-red-500 hover:bg-red-600 text-white font-semibold transition-colors duration-300"
+            >
+              Start Vim-WASM
+            </button>
           </div>
         </div>
 
-        {/* Terminal */}
-        <div
-          ref={terminalContainerRef}
-          className="w-fullborder border-gray-700 bg-black rounded-md shadow-inner"
-        />
+        {/* Row with the Terminal and Vim side-by-side (optional layout) */}
+        <div className="grid grid-cols-2 gap-4">
+          {/* Terminal */}
+          <div
+            ref={terminalContainerRef}
+            className="w-full h-96 border border-gray-700 bg-black rounded-md shadow-inner"
+          />
+
+          {/* Vim WASM container */}
+          <div
+            ref={vimContainerRef}
+            className="w-full h-96 border border-gray-700 bg-black rounded-md relative"
+          >
+            {/* vim-wasm will render inside this <div> */}
+            <p className="text-white p-2">
+              Vim WASM will appear here when you click &quot;Start
+              Vim-WASM&quot;
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );
