@@ -207,7 +207,12 @@ function Bash() {
                   />
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
+              <h1
+                className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500 cursor-pointer"
+                onClick={() => {
+                  navigate(`/`);
+                }}
+              >
                 <span className="font-extrabold">BASH</span>
                 <span className="text-xl ml-1 font-light">ESCAPE</span>
               </h1>

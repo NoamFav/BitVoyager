@@ -10,9 +10,6 @@ export default function TerminalComponent() {
   const terminalContainerRef = useRef(null);
   const inputWriterRef = useRef(null);
 
-  const vimRef = useRef(null); // Will store the Vim instance
-  const vimContainerRef = useRef(null); // The DOM container for Vim’s UI
-
   useEffect(() => {
     async function startWebContainer() {
       if (webContainerRef.current) return; // Prevent multiple instances
@@ -93,28 +90,6 @@ export default function TerminalComponent() {
       }),
     );
   }
-  /**
-   * Load and start vim-wasm in a separate <div>.
-   */
-  async function startVimWasm() {
-    // Avoid re-initializing if it's already running
-    if (vimRef.current) {
-      return;
-    }
-
-    // 1) Create the Vim instance
-    const vim = new VimWasm({
-      workerScriptPath: "/vim.js", // must match where vim.js is served
-      wasmPath: "/vim.wasm", // must match where vim.wasm is served
-    });
-    vimRef.current = vim;
-
-    vim.onVimInit = () => {
-      vim.open(vimContainerRef.current);
-    };
-
-    vim.start();
-  }
 
   return (
     <section>
@@ -139,14 +114,6 @@ export default function TerminalComponent() {
             >
               Run Script
             </button>
-
-            {/* New button to launch WASM-based Vim */}
-            <button
-              onClick={startVimWasm}
-              className="px-4 py-2 rounded-md bg-red-500 hover:bg-red-600 text-white font-semibold transition-colors duration-300"
-            >
-              Start Vim-WASM
-            </button>
           </div>
         </div>
 
@@ -157,18 +124,6 @@ export default function TerminalComponent() {
             ref={terminalContainerRef}
             className="w-full h-96 border border-gray-700 bg-black rounded-md shadow-inner"
           />
-
-          {/* Vim WASM container */}
-          <div
-            ref={vimContainerRef}
-            className="w-full h-96 border border-gray-700 bg-black rounded-md relative"
-          >
-            {/* vim-wasm will render inside this <div> */}
-            <p className="text-white p-2">
-              Vim WASM will appear here when you click &quot;Start
-              Vim-WASM&quot;
-            </p>
-          </div>
         </div>
       </div>
     </section>
