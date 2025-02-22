@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBash } from "./useBash";
+import bash from "./assets/bash.png";
 
 function Bash() {
   const [hoveredLevel, setHoveredLevel] = useState(null);
@@ -189,25 +190,9 @@ function Bash() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="bg-gradient-to-r from-cyan-500 to-blue-500 p-2 rounded-md shadow-lg shadow-cyan-500/30">
-                <svg
-                  className="w-8 h-8 text-white"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    d="M19 9l-7 7-7-7"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M5 15V5h14v10"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <img src={bash} alt="bash" className="w-8 h-8" />
               </div>
+
               <h1
                 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500 cursor-pointer"
                 onClick={() => {
