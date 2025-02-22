@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Terminal } from "@xterm/xterm";
 import { WebContainer } from "@webcontainer/api";
@@ -101,16 +101,55 @@ export default function BashPlayground() {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
       {/* Cyber city background */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-indigo-900/20 to-gray-900" />
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-gray-900 via-indigo-900 to-gray-900 overflow-hidden">
+        {/* Distant skyline silhouette */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-64 bg-gray-900 opacity-60"
+          style={{
+            maskImage: "linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))",
+            WebkitMaskImage:
+              "linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))",
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='1200' height='300' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,250 L50,240 L80,190 L110,230 L140,210 L180,180 L220,240 L270,220 L300,200 L320,230 L350,210 L380,190 L420,240 L460,200 L490,230 L520,210 L550,190 L590,220 L630,230 L660,210 L690,200 L720,240 L750,220 L790,180 L830,240 L870,210 L910,230 L940,200 L980,220 L1020,240 L1050,190 L1080,210 L1110,230 L1140,200 L1170,240 L1200,250 L1200,300 L0,300 Z' fill='%23111827'/%3E%3C/svg%3E")`,
+          }}
+        ></div>
+
+        {/* Glowing city elements */}
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={`citylight-${i}`}
+            className="city-glow absolute rounded-full transition-all duration-2000"
+            style={{
+              width: 20 + Math.random() * 100,
+              height: 20 + Math.random() * 100,
+              // Use full viewport height/width for positioning
+              top: Math.random() * window.innerHeight,
+              left: Math.random() * window.innerWidth,
+              background: `radial-gradient(circle, ${
+                [
+                  "rgba(59,130,246,0.5)",
+                  "rgba(139,92,246,0.5)",
+                  "rgba(6,182,212,0.5)",
+                  "rgba(16,185,129,0.5)",
+                ][Math.floor(Math.random() * 4)]
+              } 0%, transparent 70%)`,
+              opacity: 0.3 + Math.random() * 0.3,
+              filter: `blur(${20 + Math.random() * 15}px)`,
+            }}
+          />
+        ))}
+
+        {/* Grid lines to represent the tech city structure */}
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: `linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
-                             linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px)`,
-            backgroundSize: "40px 40px",
+            backgroundImage: `
+               linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+               linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px)
+             `,
+            backgroundSize: "80px 80px",
+            opacity: 0.5,
           }}
-        />
+        ></div>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto">
@@ -121,9 +160,9 @@ export default function BashPlayground() {
           </div>
           <button
             onClick={() => navigate("/bash")}
-            className="bg-cyan-500 text-gray-900 py-1 px-3 rounded hover:bg-cyan-400 ml-auto min-h-[32px]"
+            className="ml-auto px-3 flex items-center justify-center gap-2 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded border border-cyan-500/30 font-medium hover:from-blue-500 hover:to-cyan-500 transition-colors"
           >
-            Return
+            Return to map
           </button>
         </div>
 

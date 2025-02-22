@@ -1378,6 +1378,58 @@ function BashTask() {
   return (
     <div className="min-h-screen bg-gray-900 text-gray-200 flex flex-col">
       {/* Header with mission info */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-gray-900 via-indigo-900 to-gray-900 overflow-hidden">
+        {/* Distant skyline silhouette */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-64 bg-gray-900 opacity-60"
+          style={{
+            maskImage: "linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))",
+            WebkitMaskImage:
+              "linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))",
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='1200' height='300' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,250 L50,240 L80,190 L110,230 L140,210 L180,180 L220,240 L270,220 L300,200 L320,230 L350,210 L380,190 L420,240 L460,200 L490,230 L520,210 L550,190 L590,220 L630,230 L660,210 L690,200 L720,240 L750,220 L790,180 L830,240 L870,210 L910,230 L940,200 L980,220 L1020,240 L1050,190 L1080,210 L1110,230 L1140,200 L1170,240 L1200,250 L1200,300 L0,300 Z' fill='%23111827'/%3E%3C/svg%3E")`,
+          }}
+        ></div>
+
+        {/* Glowing city elements */}
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={`citylight-${i}`}
+            className="city-glow absolute rounded-full transition-all duration-2000"
+            style={{
+              width: 20 + Math.random() * 100,
+              height: 20 + Math.random() * 100,
+              // Use full viewport height/width for positioning
+              top: Math.random() * window.innerHeight,
+              left: Math.random() * window.innerWidth,
+              background: `radial-gradient(circle, ${
+                [
+                  "rgba(59,130,246,0.5)",
+                  "rgba(139,92,246,0.5)",
+                  "rgba(6,182,212,0.5)",
+                  "rgba(16,185,129,0.5)",
+                ][Math.floor(Math.random() * 4)]
+              } 0%, transparent 70%)`,
+              opacity: 0.3 + Math.random() * 0.3,
+              filter: `blur(${20 + Math.random() * 15}px)`,
+            }}
+          />
+        ))}
+
+        {/* Grid lines to represent the tech city structure */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `
+               linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+               linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px)
+             `,
+            backgroundSize: "80px 80px",
+            opacity: 0.5,
+          }}
+        ></div>
+      </div>
+
+      {/* Top header  */}
       <header className="bg-gray-800/80 backdrop-filter backdrop-blur-md border-b border-cyan-500/30 py-4">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
@@ -1506,7 +1558,7 @@ function BashTask() {
 
         {/* Terminal panel */}
         <div className="lg:w-2/3 flex flex-col">
-          <div className="bg-gray-900 border border-gray-700 rounded-lg shadow-xl flex-1 flex flex-col overflow-hidden">
+          <div className="bg-gray-900 border border-gray-700 rounded-lg shadow-xl flex-1 flex flex-col overflow-hidden z-10">
             {/* Terminal header */}
             <div className="bg-gray-800 px-4 py-2 border-b border-gray-700 flex items-center">
               <div className="flex space-x-2 mr-4">

@@ -65,8 +65,9 @@ function Home() {
             style={{
               width: 20 + Math.random() * 100,
               height: 20 + Math.random() * 100,
-              top: Math.random() * 100 + "%",
-              left: Math.random() * 100 + "%",
+              // Use full viewport height/width for positioning
+              top: Math.random() * window.innerHeight,
+              left: Math.random() * window.innerWidth,
               background: `radial-gradient(circle, ${
                 [
                   "rgba(59,130,246,0.5)",
