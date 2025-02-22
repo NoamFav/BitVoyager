@@ -1,6 +1,7 @@
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./Home";
 import Bash from "./Bash";
+import Python from "./Python";
 import BashTask from "./BashTask"; // The new task component
 import { BashProvider } from "./BashProvider";
 import "./index.css";
@@ -15,6 +16,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/bash" element={<Bash />} />
               <Route path="/bash/:level" element={<BashTask />} />
+              <Route path="/python" element={<Python />} />
             </Routes>
           </main>
         </div>
