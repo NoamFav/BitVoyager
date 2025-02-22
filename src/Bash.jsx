@@ -68,26 +68,26 @@ function Bash() {
     // Create a more interesting, winding path through the tech city
     // Working with a grid system for better organization
     const basePositions = [
-      { x: 150, y: 220 }, // Starting point (crash site)
-      { x: 320, y: 180 }, // Urban edge
-      { x: 480, y: 260 }, // City entrance
-      { x: 620, y: 180 }, // First district
-      { x: 780, y: 240 }, // Central plaza
-      { x: 880, y: 340 }, // Underground passage
-      { x: 780, y: 420 }, // Industrial zone
-      { x: 620, y: 480 }, // Power plant
-      { x: 460, y: 410 }, // Data center
-      { x: 340, y: 500 }, // Transport hub
-      { x: 220, y: 580 }, // Restricted sector
-      { x: 350, y: 660 }, // Security checkpoint
-      { x: 520, y: 620 }, // Research facility
-      { x: 680, y: 680 }, // Government district
-      { x: 820, y: 600 }, // Orbital control
-      { x: 950, y: 540 }, // Space port entrance
-      { x: 1050, y: 460 }, // Fuel depot
-      { x: 1150, y: 380 }, // Launch pad vicinity
-      { x: 1220, y: 280 }, // Final security zone
-      { x: 1350, y: 220 }, // Rocket location
+      { x: 150, y: 220 },
+      { x: 320, y: 180 },
+      { x: 480, y: 260 },
+      { x: 620, y: 180 },
+      { x: 780, y: 240 },
+      { x: 880, y: 340 },
+      { x: 780, y: 420 },
+      { x: 620, y: 480 },
+      { x: 460, y: 410 },
+      { x: 340, y: 500 },
+      { x: 220, y: 580 },
+      { x: 350, y: 660 },
+      { x: 520, y: 620 },
+      { x: 680, y: 680 },
+      { x: 820, y: 600 },
+      { x: 950, y: 540 },
+      { x: 1050, y: 460 },
+      { x: 1150, y: 380 },
+      { x: 1220, y: 280 },
+      { x: 1350, y: 220 },
     ];
 
     return basePositions;
@@ -131,7 +131,7 @@ function Bash() {
   }, []);
 
   return (
-    <div className="relative w-full h-screen bg-gray-900 overflow-auto">
+    <div className="relative w-full h-screen bg-gray-900 overflow-auto no-scrollbar">
       {/* Futuristic tech sky with distant cities and glowing elements */}
       <div className="absolute inset-0 z-0 bg-gradient-to-b from-gray-900 via-indigo-900 to-gray-900 overflow-hidden">
         {/* Distant skyline silhouette */}
@@ -153,8 +153,9 @@ function Bash() {
             style={{
               width: 20 + Math.random() * 100,
               height: 20 + Math.random() * 100,
-              top: Math.random() * svgHeight * 0.8,
-              left: Math.random() * svgWidth,
+              // Use full viewport height/width for positioning
+              top: Math.random() * window.innerHeight,
+              left: Math.random() * window.innerWidth,
               background: `radial-gradient(circle, ${
                 [
                   "rgba(59,130,246,0.5)",
@@ -207,7 +208,12 @@ function Bash() {
                   />
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
+              <h1
+                className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500 cursor-pointer"
+                onClick={() => {
+                  navigate(`/`);
+                }}
+              >
                 <span className="font-extrabold">BASH</span>
                 <span className="text-xl ml-1 font-light">ESCAPE</span>
               </h1>
@@ -215,6 +221,30 @@ function Bash() {
 
             {/* Player progress indicator */}
             <div className="flex items-center gap-6">
+              <div
+                onClick={() => navigate("/bash/playground")}
+                className="flex items-center gap-2 bg-gray-800/50 px-4 py-2 rounded-md border border-gray-700 cursor-pointer hover:bg-gray-700 transition-all duration-300 transform hover:scale-105"
+              >
+                <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-1 rounded-md">
+                  <svg
+                    className="w-4 h-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 5h16a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2zm4 8l2-2-2-2m8 4h.01"
+                    />
+                  </svg>
+                </div>
+                <span className="text-white text-xs font-medium">
+                  PlayGround
+                </span>
+              </div>
               <div className="flex items-center gap-2 bg-gray-800/50 px-4 py-2 rounded-md border border-gray-700">
                 <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-1 rounded-md">
                   <svg
@@ -252,14 +282,14 @@ function Bash() {
       >
         {/* SVG for paths connecting the levels */}
         <svg
-          className="absolute top-0 left-0 pointer-events-none z-10"
+          className="absolute top-0 left-0 pointer-events-none z-10 w-screen"
           width={svgWidth}
           height={svgHeight}
         >
           {/* Decorative tech elements */}
           {[...Array(30)].map((_, i) => {
-            const x = Math.random() * svgWidth;
-            const y = Math.random() * svgHeight;
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
             const size = 2 + Math.random() * 4;
             return (
               <circle

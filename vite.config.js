@@ -20,5 +20,5 @@ export default defineConfig({
       }
     : undefined, // No server settings in production
 
-  base: "/bitjourney", // Correct base path for GitHub Pages
+  base: "/bitvoyager", // Correct base path for GitHub Pages
 });

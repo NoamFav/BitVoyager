@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Terminal from "./terminal";
 
+import { useEffect, useState } from "react";
 import logo from "./assets/image.png";
 import bash from "./assets/bash.png";
 import python from "./assets/python.png";
@@ -16,7 +17,7 @@ function Home() {
   const [hoveredLanguage, setHoveredLanguage] = useState(null);
   const [hoveredTeacher, setHoveredTeacher] = useState(null);
 
-  const languages = ["Bash", "Python", "JavaScript", "Java", "C++", "Rust"];
+  const languages = ["Bash", "Python", "Rust", "C++", "JavaScript", "Java"];
   const description = {
     Bash:
       "Automate tasks and manage your system right from the command line—like a power user.",
@@ -72,8 +73,9 @@ function Home() {
             style={{
               width: 20 + Math.random() * 100,
               height: 20 + Math.random() * 100,
-              top: Math.random() * 100 + "%",
-              left: Math.random() * 100 + "%",
+              // Use full viewport height/width for positioning
+              top: Math.random() * window.innerHeight,
+              left: Math.random() * window.innerWidth,
               background: `radial-gradient(circle, ${
                 [
                   "rgba(59,130,246,0.5)",
@@ -111,13 +113,13 @@ function Home() {
               <div className="bg-gradient-to-r from-cyan-500 to-blue-500 p-2 rounded-md shadow-lg shadow-cyan-500/30">
                 <img
                   src={logo}
-                  alt="BitJourney logo"
+                  alt="BitVoyager logo"
                   className="w-8 h-8 rounded-full"
                 />
               </div>
               <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
                 <span className="font-extrabold">BIT</span>
-                <span className="text-xl ml-1 font-light">JOURNEY</span>
+                <span className="text-xl ml-1 font-light">VOYAGER</span>
               </h1>
             </div>
 
@@ -151,13 +153,13 @@ function Home() {
             </div>
             <img
               src={logo}
-              alt="BitJourney logo"
+              alt="BitVoyager logo"
               className="relative w-32 h-32 md:w-40 md:h-40 rounded-full border-2 border-cyan-500/50 p-1"
             />
           </div>
 
           <h2 className="mt-6 text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-500 tracking-tight">
-            BitJourney
+            BitVoyager
           </h2>
           <h3 className="mt-2 text-xl md:text-2xl text-gray-300 font-medium">
             The top <span className="text-cyan-400 font-bold">1</span>{" "}
@@ -212,7 +214,7 @@ function Home() {
           </div>
 
           {/* Scrollable language cards with futuristic design */}
-          <div className="flex flex-nowrap items-center space-x-6 overflow-x-auto pb-8 px-4 no-scrollbar">
+          <div className="flex flex-nowrap items-center space-x-6 overflow-x-auto pb-8 px-4 no-scrollbar min-h-[300px]">
             {languages.map((lang) => {
               const isBash = lang === "Bash";
               const isPython = lang === "Python";
