@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Terminal from "./terminal";
 
-import { useEffect, useState } from "react";
 import logo from "./assets/image.png";
 import bash from "./assets/bash.png";
 import python from "./assets/python.png";
@@ -19,18 +17,15 @@ function Home() {
 
   const languages = ["Bash", "Python", "Rust", "C++", "JavaScript", "Java"];
   const description = {
-    Bash:
-      "Automate tasks and manage your system right from the command line—like a power user.",
+    Bash: "Automate tasks and manage your system right from the command line—like a power user.",
     Python:
       "A beginner-friendly, high-level language beloved for data science, web apps, and more.",
     JavaScript:
       "The go-to language for creating interactive websites and dynamic web applications.",
-    Java:
-      "A tried-and-true language powering Android apps and countless enterprise solutions worldwide.",
+    Java: "A tried-and-true language powering Android apps and countless enterprise solutions worldwide.",
     "C++":
       "The powerhouse behind high-performance software, games, and system-level development.",
-    Rust:
-      "A modern, memory-safe language built for speed, reliability, and concurrent programming.",
+    Rust: "A modern, memory-safe language built for speed, reliability, and concurrent programming.",
   };
 
   // Animation for the background glow effects
@@ -59,11 +54,9 @@ function Home() {
             maskImage: "linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))",
             WebkitMaskImage:
               "linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))",
-            backgroundImage:
-              `url("data:image/svg+xml,%3Csvg width='1200' height='300' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,250 L50,240 L80,190 L110,230 L140,210 L180,180 L220,240 L270,220 L300,200 L320,230 L350,210 L380,190 L420,240 L460,200 L490,230 L520,210 L550,190 L590,220 L630,230 L660,210 L690,200 L720,240 L750,220 L790,180 L830,240 L870,210 L910,230 L940,200 L980,220 L1020,240 L1050,190 L1080,210 L1110,230 L1140,200 L1170,240 L1200,250 L1200,300 L0,300 Z' fill='%23111827'/%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='1200' height='300' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,250 L50,240 L80,190 L110,230 L140,210 L180,180 L220,240 L270,220 L300,200 L320,230 L350,210 L380,190 L420,240 L460,200 L490,230 L520,210 L550,190 L590,220 L630,230 L660,210 L690,200 L720,240 L750,220 L790,180 L830,240 L870,210 L910,230 L940,200 L980,220 L1020,240 L1050,190 L1080,210 L1110,230 L1140,200 L1170,240 L1200,250 L1200,300 L0,300 Z' fill='%23111827'/%3E%3C/svg%3E")`,
           }}
-        >
-        </div>
+        ></div>
 
         {/* Glowing city elements */}
         {[...Array(15)].map((_, i) => (
@@ -101,8 +94,7 @@ function Home() {
             backgroundSize: "80px 80px",
             opacity: 0.5,
           }}
-        >
-        </div>
+        ></div>
       </div>
 
       {/* Futuristic header */}
@@ -149,8 +141,7 @@ function Home() {
         {/* Hero Section */}
         <section className="relative max-w-6xl mx-auto mb-16 flex flex-col items-center justify-center text-center pt-8">
           <div className="relative">
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 blur-lg opacity-30 animate-pulse">
-            </div>
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 blur-lg opacity-30 animate-pulse"></div>
             <img
               src={logo}
               alt="BitVoyager logo"
@@ -162,8 +153,8 @@ function Home() {
             BitVoyager
           </h2>
           <h3 className="mt-2 text-xl md:text-2xl text-gray-300 font-medium">
-            The top <span className="text-cyan-400 font-bold">1</span>{" "}
-            coding learning app
+            The top <span className="text-cyan-400 font-bold">1</span> coding
+            learning app
           </h3>
 
           <p className="mt-6 max-w-2xl text-gray-300 text-lg">
@@ -193,10 +184,8 @@ function Home() {
           </Link>
 
           {/* Tech decorative elements */}
-          <div className="absolute top-0 -left-10 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl">
-          </div>
-          <div className="absolute bottom-0 right-0 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl">
-          </div>
+          <div className="absolute top-0 -left-10 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-0 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl"></div>
         </section>
 
         {/* Programming Languages */}
@@ -205,8 +194,7 @@ function Home() {
             <h4 className="inline-block text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-4">
               Learn Any Language You Want
             </h4>
-            <div className="h-1 w-24 bg-gradient-to-r from-cyan-500 to-blue-600 mx-auto rounded-full">
-            </div>
+            <div className="h-1 w-24 bg-gradient-to-r from-cyan-500 to-blue-600 mx-auto rounded-full"></div>
             <p className="mt-4 text-gray-300 max-w-xl mx-auto">
               Choose from a variety of languages and start building your tech
               skills today.
@@ -226,15 +214,15 @@ function Home() {
                   className={`
                     relative min-w-[280px] max-w-xs rounded-lg overflow-hidden transition-all duration-300
                     ${
-                    isHovered
-                      ? "scale-105 shadow-xl shadow-cyan-900/30"
-                      : "shadow-lg shadow-gray-900/50"
-                  }
+                      isHovered
+                        ? "scale-105 shadow-xl shadow-cyan-900/30"
+                        : "shadow-lg shadow-gray-900/50"
+                    }
                     ${
-                    isBash || isPython
-                      ? "border border-cyan-500/30"
-                      : "border border-gray-700/30"
-                  }
+                      isBash || isPython
+                        ? "border border-cyan-500/30"
+                        : "border border-gray-700/30"
+                    }
                   `}
                   onMouseEnter={() => setHoveredLanguage(lang)}
                   onMouseLeave={() => setHoveredLanguage(null)}
@@ -246,8 +234,7 @@ function Home() {
                         ? "bg-gradient-to-br from-gray-800/90 via-gray-900 to-blue-900/30"
                         : "bg-gradient-to-br from-gray-800/90 via-gray-900 to-gray-800"
                     }`}
-                  >
-                  </div>
+                  ></div>
 
                   {/* Decorative tech elements */}
                   <div className="absolute inset-0 opacity-20">
@@ -282,8 +269,7 @@ function Home() {
 
                   {/* Glowing effect for Bash */}
                   {(isBash || isPython) && (
-                    <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/20 via-transparent to-transparent">
-                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/20 via-transparent to-transparent"></div>
                   )}
 
                   {/* Content container */}
@@ -298,23 +284,24 @@ function Home() {
                         }`}
                       >
                         <img
-                          src={lang === "Bash"
-                            ? bash
-                            : lang === "Python"
-                            ? python
-                            : lang === "JavaScript"
-                            ? javascript
-                            : lang === "Java"
-                            ? java
-                            : lang === "C++"
-                            ? cpp
-                            : rust}
+                          src={
+                            lang === "Bash"
+                              ? bash
+                              : lang === "Python"
+                                ? python
+                                : lang === "JavaScript"
+                                  ? javascript
+                                  : lang === "Java"
+                                    ? java
+                                    : lang === "C++"
+                                      ? cpp
+                                      : rust
+                          }
                           alt={`${lang} logo`}
                           className="w-10 h-10"
                         />
                         {(isBash || isPython) && (
-                          <div className="absolute inset-0 rounded-lg border border-cyan-500/30 shadow-sm shadow-cyan-500/30">
-                          </div>
+                          <div className="absolute inset-0 rounded-lg border border-cyan-500/30 shadow-sm shadow-cyan-500/30"></div>
                         )}
                       </div>
 
@@ -322,7 +309,7 @@ function Home() {
                       <div className="flex flex-col">
                         <h2
                           className={`text-xl font-bold mb-1 ${
-                            (isBash || isPython)
+                            isBash || isPython
                               ? "text-cyan-400"
                               : "text-gray-300"
                           }`}
@@ -354,82 +341,79 @@ function Home() {
                             key={i}
                             className={`w-1.5 h-1.5 rounded-full ${
                               isBash || isPython
-                                ? i < 4 ? "bg-cyan-400" : "bg-gray-700"
+                                ? i < 4
+                                  ? "bg-cyan-400"
+                                  : "bg-gray-700"
                                 : "bg-gray-700"
                             }`}
-                          >
-                          </span>
+                          ></span>
                         ))}
                       </div>
                     </div>
 
                     {/* Action button */}
                     <div className="mt-5">
-                      {isBash
-                        ? (
-                          <Link
-                            to="/bash"
-                            className="w-full flex items-center justify-center gap-2 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded border border-cyan-500/30 font-medium hover:from-blue-500 hover:to-cyan-500 transition-colors"
+                      {isBash ? (
+                        <Link
+                          to="/bash"
+                          className="w-full flex items-center justify-center gap-2 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded border border-cyan-500/30 font-medium hover:from-blue-500 hover:to-cyan-500 transition-colors"
+                        >
+                          Start Learning
+                          <svg
+                            className="w-4 h-4"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
                           >
-                            Start Learning
-                            <svg
-                              className="w-4 h-4"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                            >
-                              <path
-                                d="M5 12h14M12 5l7 7-7 7"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </Link>
-                        )
-                        : isPython
-                        ? (
-                          <Link
-                            to="/python"
-                            className="w-full flex items-center justify-center gap-2 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded border border-cyan-500/30 font-medium hover:from-blue-500 hover:to-cyan-500 transition-colors"
+                            <path
+                              d="M5 12h14M12 5l7 7-7 7"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </Link>
+                      ) : isPython ? (
+                        <Link
+                          to="/python"
+                          className="w-full flex items-center justify-center gap-2 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded border border-cyan-500/30 font-medium hover:from-blue-500 hover:to-cyan-500 transition-colors"
+                        >
+                          Start Learning
+                          <svg
+                            className="w-4 h-4"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
                           >
-                            Start Learning
-                            <svg
-                              className="w-4 h-4"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                            >
-                              <path
-                                d="M5 12h14M12 5l7 7-7 7"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </Link>
-                        )
-                        : (
-                          <button
-                            disabled
-                            className="w-full flex items-center justify-center gap-2 py-2.5 bg-gray-800 text-gray-400 rounded border border-gray-700 font-medium cursor-not-allowed"
+                            <path
+                              d="M5 12h14M12 5l7 7-7 7"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </Link>
+                      ) : (
+                        <button
+                          disabled
+                          className="w-full flex items-center justify-center gap-2 py-2.5 bg-gray-800 text-gray-400 rounded border border-gray-700 font-medium cursor-not-allowed"
+                        >
+                          Coming Soon
+                          <svg
+                            className="w-4 h-4"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
                           >
-                            Coming Soon
-                            <svg
-                              className="w-4 h-4"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                            >
-                              <path
-                                d="M12 15V3M12 15l-4-4M12 15l4-4"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </button>
-                        )}
+                            <path
+                              d="M12 15V3M12 15l-4-4M12 15l4-4"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </button>
+                      )}
                     </div>
                   </div>
 
@@ -457,8 +441,7 @@ function Home() {
             <h4 className="inline-block text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500 mb-4">
               Learn from the Best
             </h4>
-            <div className="h-1 w-24 bg-gradient-to-r from-purple-500 to-pink-600 mx-auto rounded-full">
-            </div>
+            <div className="h-1 w-24 bg-gradient-to-r from-purple-500 to-pink-600 mx-auto rounded-full"></div>
             <p className="mt-4 text-gray-300 max-w-xl mx-auto">
               Our courses are taught by elite instructors who will guide you
               through your coding journey.
@@ -485,17 +468,16 @@ function Home() {
                 className={`
                   relative w-64 transition-all duration-300 rounded-xl overflow-hidden
                   ${
-                  hoveredTeacher === teacher.name
-                    ? "scale-105 shadow-xl shadow-purple-900/30"
-                    : "shadow-lg shadow-gray-900/50"
-                }
+                    hoveredTeacher === teacher.name
+                      ? "scale-105 shadow-xl shadow-purple-900/30"
+                      : "shadow-lg shadow-gray-900/50"
+                  }
                 `}
                 onMouseEnter={() => setHoveredTeacher(teacher.name)}
                 onMouseLeave={() => setHoveredTeacher(null)}
               >
                 {/* Background with gradient */}
-                <div className="absolute inset-0 bg-gradient-to-b from-gray-800 via-gray-900 to-purple-900/30">
-                </div>
+                <div className="absolute inset-0 bg-gradient-to-b from-gray-800 via-gray-900 to-purple-900/30"></div>
 
                 {/* Decorative tech grid */}
                 <div className="absolute inset-0 opacity-20">
@@ -528,8 +510,7 @@ function Home() {
                 <div className="relative z-10 p-6 flex flex-col items-center">
                   {/* Teacher image with futuristic frame */}
                   <div className="relative mb-4">
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 blur-md opacity-40">
-                    </div>
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 blur-md opacity-40"></div>
                     <img
                       src={teacher.image}
                       alt={teacher.name}
@@ -541,8 +522,7 @@ function Home() {
                       <div
                         className="w-full h-full rounded-full border-2 border-dashed border-purple-500/20 animate-spin"
                         style={{ animationDuration: "15s" }}
-                      >
-                      </div>
+                      ></div>
                     </div>
                   </div>
 

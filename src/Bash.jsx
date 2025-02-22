@@ -266,7 +266,7 @@ function Bash() {
           </div>
         </div>
       </header>
-      <div className="sticky top-24 left-1/2 transform -translate-x-1/2 max-w-2xl w-full mx-auto px-6 py-4 mb-16 bg-gray-800/80 backdrop-filter backdrop-blur-md rounded-lg border border-cyan-500/30 shadow-xl shadow-cyan-900/20 z-40">
+      <div className="sticky top-24 left-1/2 transform -translate-x-1/2 max-w-2xl w-full mx-auto px-6 py-4 mb-4 bg-gray-800/80 backdrop-filter backdrop-blur-md rounded-lg border border-cyan-500/30 shadow-xl shadow-cyan-900/20 z-40">
         <h2 className="text-lg font-bold text-cyan-400 mb-2">
           MISSION BRIEFING
         </h2>
@@ -275,9 +275,9 @@ function Bash() {
         </p>
       </div>
 
-      {/* Levels map container - increased top padding to accommodate the briefing */}
+      {/* Levels map container */}
       <div
-        className="relative pt-40 pb-16 min-h-screen"
+        className="relative pt-40 pb-16 min-h-screen mx-auto "
         style={{ width: svgWidth, minHeight: svgHeight }}
       >
         {/* SVG for paths connecting the levels */}

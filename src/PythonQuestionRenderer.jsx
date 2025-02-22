@@ -40,9 +40,11 @@ const StarBackground = React.memo(() => {
   );
 });
 
-const PythonQuestionRenderer = (
-  { question, onMissionComplete, progressInfo },
-) => {
+const PythonQuestionRenderer = ({
+  question,
+  onMissionComplete,
+  progressInfo,
+}) => {
   // All hooks must be at the top level
   const [pyodide, setPyodide] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -64,14 +66,18 @@ const PythonQuestionRenderer = (
       setTestResults([]);
 
       const codeLines = code.split("\n");
-      const properlyIndentedCode = codeLines.map((line) => {
-        if (
-          line.trim() && !line.startsWith("    ") && !line.startsWith("def ")
-        ) {
-          return "    " + line;
-        }
-        return line;
-      }).join("\n");
+      const properlyIndentedCode = codeLines
+        .map((line) => {
+          if (
+            line.trim() &&
+            !line.startsWith("    ") &&
+            !line.startsWith("def ")
+          ) {
+            return "    " + line;
+          }
+          return line;
+        })
+        .join("\n");
 
       await pyodide.runPythonAsync(properlyIndentedCode);
 
@@ -81,7 +87,8 @@ const PythonQuestionRenderer = (
       for (const testCase of question.testCases) {
         try {
           const functionName = question.functionName;
-          const inputArgs = testCase.input.map((item) => JSON.stringify(item))
+          const inputArgs = testCase.input
+            .map((item) => JSON.stringify(item))
             .join(",");
           const testWrapper = `
 result = ${functionName}(${inputArgs})
@@ -226,8 +233,8 @@ str(result)`.trim();
                     question.difficulty === "easy"
                       ? "bg-green-900 text-green-300"
                       : question.difficulty === "medium"
-                      ? "bg-yellow-900 text-yellow-300"
-                      : "bg-red-900 text-red-300"
+                        ? "bg-yellow-900 text-yellow-300"
+                        : "bg-red-900 text-red-300"
                   }`}
                 >
                   {question.difficulty.charAt(0).toUpperCase() +
@@ -259,18 +266,15 @@ str(result)`.trim();
                 </h3>
                 <ul className="space-y-3">
                   <li className="flex items-start">
-                    <div className="w-2 h-2 mt-2 mr-3 bg-blue-400 rounded-full">
-                    </div>
+                    <div className="w-2 h-2 mt-2 mr-3 bg-blue-400 rounded-full"></div>
                     Write a Python function that solves the given problem
                   </li>
                   <li className="flex items-start">
-                    <div className="w-2 h-2 mt-2 mr-3 bg-blue-400 rounded-full">
-                    </div>
+                    <div className="w-2 h-2 mt-2 mr-3 bg-blue-400 rounded-full"></div>
                     Test your solution against the provided test cases
                   </li>
                   <li className="flex items-start">
-                    <div className="w-2 h-2 mt-2 mr-3 bg-blue-400 rounded-full">
-                    </div>
+                    <div className="w-2 h-2 mt-2 mr-3 bg-blue-400 rounded-full"></div>
                     Achieve all test cases passing to complete the mission
                   </li>
                 </ul>
@@ -288,7 +292,7 @@ str(result)`.trim();
             <PythonCodeEditor
               initialCode={question.code}
               onCodeChange={setCode}
-              className="mb-6"
+              className="mb-6 overflow-hidden"
             />
 
             <div className="flex justify-end space-x-4">
@@ -326,73 +330,68 @@ str(result)`.trim();
                 Mission Results
               </h2>
 
-              {allTestsPassed
-                ? (
-                  <div className="space-y-6">
-                    <div className="bg-green-900 bg-opacity-50 p-4 rounded-md border border-green-500">
-                      <div className="flex items-center text-green-300">
-                        <CheckCircle className="w-6 h-6 mr-2" />
-                        <span className="text-lg font-semibold">
-                          Mission Accomplished! All tests passed! 🚀
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-center">
-                      <button
-                        onClick={() => onMissionComplete(true)}
-                        className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center space-x-2 group"
-                      >
-                        <Rocket className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                        <span>Continue to Next Mission</span>
-                      </button>
+              {allTestsPassed ? (
+                <div className="space-y-6">
+                  <div className="bg-green-900 bg-opacity-50 p-4 rounded-md border border-green-500">
+                    <div className="flex items-center text-green-300">
+                      <CheckCircle className="w-6 h-6 mr-2" />
+                      <span className="text-lg font-semibold">
+                        Mission Accomplished! All tests passed! 🚀
+                      </span>
                     </div>
                   </div>
-                )
-                : (
-                  <div>
-                    {testResults.find((result) => !result.passed) && (
-                      <div className="p-4 rounded-md bg-red-900 bg-opacity-50 border-red-500 border">
-                        <div className="flex items-center mb-2">
-                          <XCircle className="w-5 h-5 text-red-400 mr-2" />
-                          <h3 className="text-white font-medium">
-                            Mission Check Failed
-                          </h3>
-                        </div>
 
-                        {(() => {
-                          const failedTest = testResults.find((result) =>
-                            !result.passed
-                          );
-                          const index = testResults.indexOf(failedTest);
-                          return (
-                            <div className="space-y-2 text-slate-200">
-                              <p className="text-red-300 mb-4">
-                                Test case {index + 1}{" "}
-                                did not produce the expected output:
-                              </p>
-                              <p>
-                                <span className="text-blue-400">Input:</span>
-                                {" "}
-                                {failedTest.input.join(", ")}
-                              </p>
-                              <p>
-                                <span className="text-blue-400">Expected:</span>
-                                {" "}
-                                {failedTest.expectedOutput}
-                              </p>
-                              <p>
-                                <span className="text-blue-400">Actual:</span>
-                                {" "}
-                                {failedTest.actualOutput}
-                              </p>
-                            </div>
-                          );
-                        })()}
-                      </div>
-                    )}
+                  <div className="flex justify-center">
+                    <button
+                      onClick={() => onMissionComplete(true)}
+                      className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center space-x-2 group"
+                    >
+                      <Rocket className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      <span>Continue to Next Mission</span>
+                    </button>
                   </div>
-                )}
+                </div>
+              ) : (
+                <div>
+                  {testResults.find((result) => !result.passed) && (
+                    <div className="p-4 rounded-md bg-red-900 bg-opacity-50 border-red-500 border">
+                      <div className="flex items-center mb-2">
+                        <XCircle className="w-5 h-5 text-red-400 mr-2" />
+                        <h3 className="text-white font-medium">
+                          Mission Check Failed
+                        </h3>
+                      </div>
+
+                      {(() => {
+                        const failedTest = testResults.find(
+                          (result) => !result.passed,
+                        );
+                        const index = testResults.indexOf(failedTest);
+                        return (
+                          <div className="space-y-2 text-slate-200">
+                            <p className="text-red-300 mb-4">
+                              Test case {index + 1} did not produce the expected
+                              output:
+                            </p>
+                            <p>
+                              <span className="text-blue-400">Input:</span>{" "}
+                              {failedTest.input.join(", ")}
+                            </p>
+                            <p>
+                              <span className="text-blue-400">Expected:</span>{" "}
+                              {failedTest.expectedOutput}
+                            </p>
+                            <p>
+                              <span className="text-blue-400">Actual:</span>{" "}
+                              {failedTest.actualOutput}
+                            </p>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>

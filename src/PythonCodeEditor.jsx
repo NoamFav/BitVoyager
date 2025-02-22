@@ -58,45 +58,54 @@ const PythonCodeEditor = ({
   }, []);
 
   // Highlighting logic remains the same...
-  const highlightCode = useCallback((codeToHighlight) => {
-    if (
-      !mountedRef.current || !prismLoaded || !window.Prism ||
-      !highlightRef.current
-    ) return;
+  const highlightCode = useCallback(
+    (codeToHighlight) => {
+      if (
+        !mountedRef.current ||
+        !prismLoaded ||
+        !window.Prism ||
+        !highlightRef.current
+      )
+        return;
 
-    try {
-      window.Prism.hooks.run("before-highlight", {
-        grammar: window.Prism.languages.python,
-        language: "python",
-        code: codeToHighlight,
-      });
+      try {
+        window.Prism.hooks.run("before-highlight", {
+          grammar: window.Prism.languages.python,
+          language: "python",
+          code: codeToHighlight,
+        });
 
-      const result = window.Prism.highlight(
-        codeToHighlight,
-        window.Prism.languages.python,
-        "python",
-      );
+        const result = window.Prism.highlight(
+          codeToHighlight,
+          window.Prism.languages.python,
+          "python",
+        );
 
-      if (result && highlightRef.current) {
-        highlightRef.current.innerHTML = result;
+        if (result && highlightRef.current) {
+          highlightRef.current.innerHTML = result;
+        }
+      } catch (error) {
+        console.error("Highlighting failed:", error);
+        if (highlightRef.current) {
+          highlightRef.current.textContent = codeToHighlight;
+        }
       }
-    } catch (error) {
-      console.error("Highlighting failed:", error);
-      if (highlightRef.current) {
-        highlightRef.current.textContent = codeToHighlight;
+    },
+    [prismLoaded],
+  );
+
+  const debouncedHighlight = useCallback(
+    (codeToHighlight) => {
+      if (highlightTimeoutRef.current) {
+        clearTimeout(highlightTimeoutRef.current);
       }
-    }
-  }, [prismLoaded]);
 
-  const debouncedHighlight = useCallback((codeToHighlight) => {
-    if (highlightTimeoutRef.current) {
-      clearTimeout(highlightTimeoutRef.current);
-    }
-
-    highlightTimeoutRef.current = setTimeout(() => {
-      highlightCode(codeToHighlight);
-    }, 30);
-  }, [highlightCode]);
+      highlightTimeoutRef.current = setTimeout(() => {
+        highlightCode(codeToHighlight);
+      }, 30);
+    },
+    [highlightCode],
+  );
 
   useEffect(() => {
     const lines = code.split("\n").length;
@@ -156,9 +165,7 @@ const PythonCodeEditor = ({
       requestAnimationFrame(() => {
         if (textareaRef.current) {
           textareaRef.current.selectionStart =
-            textareaRef.current
-              .selectionEnd =
-              start + 4;
+            textareaRef.current.selectionEnd = start + 4;
         }
       });
     } else if (e.key === "Enter") {
@@ -175,8 +182,8 @@ const PythonCodeEditor = ({
 
       // Create the new line with proper indentation
       const indentation = " ".repeat(indentLevel);
-      const newCode = code.substring(0, start) + "\n" + indentation +
-        code.substring(start);
+      const newCode =
+        code.substring(0, start) + "\n" + indentation + code.substring(start);
       setCode(newCode);
       onCodeChange(newCode);
 
@@ -184,9 +191,7 @@ const PythonCodeEditor = ({
         if (textareaRef.current) {
           const newCursorPosition = start + 1 + indentLevel;
           textareaRef.current.selectionStart =
-            textareaRef.current
-              .selectionEnd =
-              newCursorPosition;
+            textareaRef.current.selectionEnd = newCursorPosition;
         }
       });
     }
@@ -206,12 +211,9 @@ const PythonCodeEditor = ({
         </div>
         <div className="flex items-center space-x-4">
           <div className="flex space-x-2">
-            <div className="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-500/100 transition-opacity cursor-pointer">
-            </div>
-            <div className="w-3 h-3 rounded-full bg-yellow-500/80 hover:bg-yellow-500/100 transition-opacity cursor-pointer">
-            </div>
-            <div className="w-3 h-3 rounded-full bg-green-500/80 hover:bg-green-500/100 transition-opacity cursor-pointer">
-            </div>
+            <div className="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-500/100 transition-opacity cursor-pointer"></div>
+            <div className="w-3 h-3 rounded-full bg-yellow-500/80 hover:bg-yellow-500/100 transition-opacity cursor-pointer"></div>
+            <div className="w-3 h-3 rounded-full bg-green-500/80 hover:bg-green-500/100 transition-opacity cursor-pointer"></div>
           </div>
         </div>
       </div>
@@ -220,14 +222,11 @@ const PythonCodeEditor = ({
       <div className="relative flex bg-slate-900 overflow-hidden">
         {/* Line Numbers */}
         <div className="w-12 flex-none py-4 pr-3 text-right font-mono text-slate-500 text-sm border-r border-blue-500/30 select-none bg-slate-800/50">
-          {Array.from(
-            { length: lineCount },
-            (_, i) => (
-              <div key={i + 1} className="leading-6">
-                {i + 1}
-              </div>
-            ),
-          )}
+          {Array.from({ length: lineCount }, (_, i) => (
+            <div key={i + 1} className="leading-6">
+              {i + 1}
+            </div>
+          ))}
         </div>
 
         {/* Code Area */}
