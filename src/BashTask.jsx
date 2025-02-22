@@ -17,7 +17,6 @@ function BashTask() {
   const inputRef = useRef(null);
 
   // Tasks configuration for each level
-  // Tasks configuration for each level
   const tasks = {
     1: {
       title: "Crash Landing",
@@ -928,7 +927,21 @@ function BashTask() {
           "drwxr-xr-x 3 visitor visitor 4096 Feb 22 10:24 ..",
           ...Object.entries(fs.files).map(([name, content]) => {
             const isDir = typeof content === "object";
+            const perms = isDir ? "drwxr-xr-x" : "-rw-r--r--";
+            return `${perms} 1 visitor visitor 4096 Feb 22 10:24 ${name}`;
+          }),
+        ];
+      } else if (args.includes("-a")) {
+        return Object.keys(fs.files);
+      } else if (args.includes("-l")) {
+        return [
+          "total 32",
+          "drwxr-xr-x 4 visitor visitor 4096 Feb 22 10:24 .",
+          "drwxr-xr-x 3 visitor visitor 4096 Feb 22 10:24 ..",
+          ...Object.entries(fs.files).map(([name, content]) => {
+            const isDir = typeof content === "object";
             const isHidden = name.startsWith(".");
+            if (isHidden) return;
             const perms = isDir ? "drwxr-xr-x" : "-rw-r--r--";
             return `${perms} 1 visitor visitor 4096 Feb 22 10:24 ${name}`;
           }),
@@ -939,7 +952,9 @@ function BashTask() {
 
     const handleCd = (dirname) => {};
 
-    const handleRm = (filename) => {};
+    const handleRm = (filename) => {
+      return ["rm: cannot remove 'file': Operation not permitted"];
+    };
 
     const handleCat = (filename) => {
       const file = fs.files[filename];
@@ -971,18 +986,28 @@ function BashTask() {
           output.push(...handleLs(cmd));
         } else if (cmd === "echo $shell" || cmd === "echo $SHELL") {
           output.push("/bin/nexus_shell");
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
       case 2: // First Contact
         if (cmd === "ls -la" || cmd === "ls -al") {
           output.push(...handleLs("-la"));
+        } else if (cmd === "ls -a") {
+          output.push(...handleLs("-a"));
+        } else if (cmd === "ls -l") {
+          output.push(...handleLs("-l"));
+        } else if (cmd === "ls") {
+          output.push(...handleLs(""));
         } else if (cmd.includes("find") && cmd.includes(".key")) {
           output.push(
             "./.access.key",
             "./public_terminal/visitor.key",
             "./.hidden_path/entrance.key",
           );
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1000,6 +1025,8 @@ function BashTask() {
           }
         } else if (cmd.startsWith("touch")) {
           output.push("Navigation marker placed successfully.");
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1014,6 +1041,8 @@ function BashTask() {
           output.push(
             "Permission modification successful. Security level decreased.",
           );
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1027,6 +1056,8 @@ function BashTask() {
           );
         } else if (cmd.includes("awk") || cmd.includes("sed")) {
           output.push("Data patterns extracted and processed.");
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1040,6 +1071,8 @@ function BashTask() {
           );
         } else if (cmd.startsWith("kill")) {
           output.push("Process terminated. Power rerouted successfully.");
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1054,6 +1087,8 @@ function BashTask() {
           output.push(
             "Decryption successful. Communication channel established.",
           );
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1064,6 +1099,8 @@ function BashTask() {
         } else if (cmd === "history -c") {
           output.push("Command history cleared.");
           globalState.securityLevel--;
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1075,6 +1112,8 @@ function BashTask() {
           );
         } else if (cmd.startsWith("test") || cmd.startsWith("[")) {
           output.push("Conditional test evaluated successfully.");
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1087,6 +1126,8 @@ function BashTask() {
             "/dev/sda1       100G   75G    25G  75%",
             "/dev/sdb1        50G   45G     5G  90%",
           );
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1102,6 +1143,8 @@ function BashTask() {
             "Process ID [1234] sent to background",
             "Transport automation running",
           );
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1114,6 +1157,8 @@ function BashTask() {
           );
         } else if (cmd.startsWith("chmod")) {
           output.push("Script permissions updated. Ready for execution.");
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1129,6 +1174,8 @@ function BashTask() {
             "Critical process terminated.",
             "System control acquired.",
           );
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1141,6 +1188,8 @@ function BashTask() {
           );
         } else if (cmd.includes("gpg")) {
           output.push("Decrypting secure communications...", "Access granted.");
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1153,6 +1202,8 @@ function BashTask() {
           );
         } else if (cmd.includes("grep -r")) {
           output.push("Ship signature detected in sector 7.");
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1165,6 +1216,8 @@ function BashTask() {
           );
         } else if (cmd.includes("unset")) {
           output.push("Security traces removed.", "Path cleared.");
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1179,6 +1232,8 @@ function BashTask() {
         } else if (cmd === "wait") {
           output.push("All synthesis processes completed.");
           globalState.fuelLevel = 100;
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1195,6 +1250,8 @@ function BashTask() {
             "All systems nominal.",
             "Launch capability: READY",
           );
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1210,6 +1267,8 @@ function BashTask() {
             "Monitoring launch parameters...",
             "City defenses: ACTIVE - Time window: 180 seconds",
           );
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
 
@@ -1226,6 +1285,8 @@ function BashTask() {
             "Navigation coordinates locked.",
             "Preparing for warp jump.",
           );
+        } else {
+          output.push("Command not used in this level.");
         }
         break;
     }
