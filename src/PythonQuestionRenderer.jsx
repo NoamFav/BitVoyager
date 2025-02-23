@@ -19,13 +19,13 @@ const StarBackground = React.memo(() => {
       top: `${Math.random() * 100}%`,
       size: Math.random() * 8 + 2,
       delay: `${Math.random() * 4}s`,
-      duration: `${Math.random() * 2 + 2}s`, // Random duration between 2-4s
+      duration: `${Math.random() * 2 + 2}s`,
     }));
   }, []);
 
   return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none">
-      <div className="absolute inset-0">
+    <div className="fixed inset-0 w-full h-full overflow-hidden pointer-events-none bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="absolute inset-0 w-full h-full">
         {stars.map((star) => (
           <Star
             key={star.id}
@@ -82,7 +82,8 @@ const PythonQuestionRenderer = (
       setError(null);
       setTestResults([]);
 
-      const codeLines = code.split("\n");
+      const sanitizedCode = code.replace(/\u00A0/g, " ");
+      const codeLines = sanitizedCode.split("\n");
       const properlyIndentedCode = codeLines.map((line) => {
         if (
           line.trim() && !line.startsWith("    ") && !line.startsWith("def ")
@@ -201,7 +202,7 @@ str(result)`.trim();
   }
 
   return (
-    <main className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <main className="min-h-screen w-full">
       <StarBackground />
 
       {/* Main content */}
@@ -311,6 +312,22 @@ str(result)`.trim();
             <h2 className="text-2xl font-semibold text-white mb-4 flex items-center">
               <Code className="mr-2 text-blue-400" />
               Mission Control Center
+              {progressInfo.attempts > 0 && (
+                <span className="ml-4 px-3 py-1 bg-blue-900 text-blue-200 rounded-full text-sm">
+                  Attempts: {progressInfo.attempts}
+                </span>
+              )}
+              {progressInfo.isRetry && (
+                <span className="ml-4 px-3 py-1 bg-purple-900 text-purple-200 rounded-full text-sm">
+                  Another chance !
+                </span>
+              )}
+              {progressInfo.previouslyFailed && (
+                <span className="ml-4 px-3 py-1 bg-red-900 text-red-200 rounded-full text-sm">
+                  Previous Attempts:{" "}
+                  {progressInfo.userProfile?.failedAttempts[question.id] || 0}
+                </span>
+              )}
             </h2>
 
             <PythonCodeEditor
@@ -321,7 +338,7 @@ str(result)`.trim();
 
             <div className="flex justify-end space-x-4">
               <button
-                onClick={() => onMissionComplete(false)}
+                onClick={() => onMissionComplete(false, true)}
                 className="text-slate-400 underline hover:text-slate-300 transition-colors flex items-center space-x-2"
               >
                 <span>Skip this question</span>
