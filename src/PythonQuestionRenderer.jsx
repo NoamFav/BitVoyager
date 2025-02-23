@@ -7,6 +7,8 @@ import React, {
 } from "react";
 import { CheckCircle, Code, Moon, Rocket, Star, XCircle } from "lucide-react";
 
+import { Link } from "react-router-dom";
+
 import PythonCodeEditor from "./PythonCodeEditor";
 
 const StarBackground = React.memo(() => {
@@ -16,7 +18,8 @@ const StarBackground = React.memo(() => {
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
       size: Math.random() * 8 + 2,
-      delay: `${Math.random() * 2}s`,
+      delay: `${Math.random() * 4}s`,
+      duration: `${Math.random() * 2 + 2}s`, // Random duration between 2-4s
     }));
   }, []);
 
@@ -26,10 +29,11 @@ const StarBackground = React.memo(() => {
         {stars.map((star) => (
           <Star
             key={star.id}
-            className="absolute text-yellow-200 opacity-70 animate-pulse"
+            className="absolute text-yellow-200 opacity-0"
             style={{
               left: star.left,
               top: star.top,
+              animation: `twinkle ${star.duration} ease-in-out infinite`,
               animationDelay: star.delay,
             }}
             size={star.size}
@@ -40,6 +44,21 @@ const StarBackground = React.memo(() => {
   );
 });
 
+// Add keyframe animation
+const style = document.createElement("style");
+style.textContent = `
+  @keyframes twinkle {
+    0%, 100% { 
+      opacity: 0;
+      transform: scale(0.5);
+    }
+    50% { 
+      opacity: 0.7;
+      transform: scale(1);
+    }
+  }
+`;
+document.head.appendChild(style);
 const PythonQuestionRenderer = (
   { question, onMissionComplete, progressInfo },
 ) => {
@@ -187,7 +206,16 @@ str(result)`.trim();
 
       {/* Main content */}
       <div className="relative z-10">
-        {/* Rest of the component remains the same... */}
+        {/* Navigation */}
+        <nav className="absolute top-8 left-8">
+          <Link
+            to="/"
+            className="text-blue-200 hover:text-white transition-colors inline-flex items-center gap-1"
+          >
+            <span className="text-lg">&lt;</span>
+            <span>Return to Home</span>
+          </Link>
+        </nav>
         {/* Header Section */}
         <header className="w-full flex flex-col items-center justify-center py-8">
           <div className="flex items-center space-x-4 mb-6">
