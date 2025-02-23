@@ -1,17 +1,22 @@
 import { useEffect, createContext, useState } from "react";
 import PropTypes from "prop-types";
+import Cookies from "js-cookie";
 
 // Create the BashHistoryContext
 const BashHistoryContext = createContext();
 
 const BashHistoryProvider = ({ children }) => {
   const [history, setHistory] = useState(() => {
-    return JSON.parse(sessionStorage.getItem("history")) || [];
+    // Load history from cookies or default to an empty array
+    const storedHistory = Cookies.get("history");
+    return storedHistory ? JSON.parse(storedHistory) : [];
   });
 
   window.commandHistory = history;
+
   useEffect(() => {
-    sessionStorage.setItem("history", JSON.stringify(history));
+    // Save history to cookies
+    Cookies.set("history", JSON.stringify(history), { expires: 30 });
   }, [history]);
 
   const addHistory = (command) => {
@@ -20,6 +25,7 @@ const BashHistoryProvider = ({ children }) => {
 
   const clearHistory = () => {
     setHistory([]);
+    Cookies.remove("history"); // Clear the cookie when history is reset
   };
 
   return (

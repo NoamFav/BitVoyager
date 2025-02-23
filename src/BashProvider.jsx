@@ -1,21 +1,22 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import Cookies from "js-cookie";
 import { BashContext } from "./BashContext";
 
 export function BashProvider({ children }) {
-  // Load initial level from sessionStorage or default to 1
+  // Load initial level from cookies or default to 1
   const [currentLevel, setCurrentLevel] = useState(() => {
-    return sessionStorage.getItem("currentLevel")
-      ? parseInt(sessionStorage.getItem("currentLevel"), 10)
-      : 1;
+    const storedLevel = Cookies.get("currentLevel");
+    return storedLevel ? parseInt(storedLevel, 10) : 1;
   });
 
+  // Expose state globally (if needed)
   window.currentLevel = currentLevel;
   window.setCurrentLevel = setCurrentLevel;
 
-  // Save currentLevel to sessionStorage whenever it changes
+  // Save currentLevel to cookies whenever it changes
   useEffect(() => {
-    sessionStorage.setItem("currentLevel", currentLevel);
+    Cookies.set("currentLevel", currentLevel, { expires: 30 });
   }, [currentLevel]);
 
   return (
