@@ -1,9 +1,354 @@
+// BashPlayground.jsx
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Terminal } from "@xterm/xterm";
 import { WebContainer } from "@webcontainer/api";
 import "@xterm/xterm/css/xterm.css";
+import useBashHistory from "./useBashHistory";
+import { useBash } from "./useBash";
+import TaskGenerator from "./TaskGenerator";
 
+// Define the tasks object
+const tasks = {
+  1: {
+    expectedCommands: ["pwd", "ls"],
+    title: "Basic Location Check",
+    description: "Check your current location and view directory contents",
+    level: 1,
+  },
+  2: {
+    expectedCommands: ["mkdir test_dir", "cd test_dir"],
+    title: "Directory Creation",
+    description: "Create a new directory and navigate into it",
+    level: 3, // Introduced in "City Navigation"
+  },
+  3: {
+    expectedCommands: ["touch file.txt", "ls"],
+    title: "File Creation",
+    description: "Create a new file and verify its existence",
+    level: 3, // Introduced in "City Navigation"
+  },
+  4: {
+    expectedCommands: ["mkdir docs", "cd docs", "touch notes.txt"],
+    title: "Workspace Setup",
+    description: "Create a documents directory and a notes file within it",
+    level: 3, // Introduced in "City Navigation"
+  },
+  5: {
+    expectedCommands: ["touch test.txt", "ls -l"],
+    title: "File Listing",
+    description: "Create a file and view detailed listing",
+    level: 3, // Introduced in "City Navigation"
+  },
+  6: {
+    expectedCommands: ["cp file.txt backup.txt", "ls"],
+    title: "File Backup",
+    description: "Create a backup copy of a file",
+    level: 3, // Introduced in "City Navigation"
+  },
+  7: {
+    expectedCommands: ["mkdir project", "cd project", "touch README.md"],
+    title: "Project Setup",
+    description: "Create a project directory with a readme file",
+    level: 3, // Introduced in "City Navigation"
+  },
+  8: {
+    expectedCommands: ["echo 'test' > file.txt", "cat file.txt"],
+    title: "File Content",
+    description: "Create a file with content and view it",
+    level: 4, // Introduced in "Security Breach" (using cat)
+  },
+  9: {
+    expectedCommands: ["find . -name '*.txt'"],
+    title: "File Search",
+    description: "Find all text files in current directory",
+    level: 4, // Introduced in "Security Breach"
+  },
+  10: {
+    expectedCommands: ["mkdir -p project/src", "cd project/src"],
+    title: "Nested Directories",
+    description: "Create and navigate nested directory structure",
+    level: 5, // Introduced in "Data Retrieval"
+  },
+  11: {
+    expectedCommands: ["touch file{1..3}.txt", "ls"],
+    title: "Multiple Files",
+    description: "Create multiple files at once",
+    level: 5, // Introduced in "Data Retrieval"
+  },
+  12: {
+    expectedCommands: ["ps", "ps aux"],
+    title: "Process List",
+    description: "View running processes",
+    level: 6, // Introduced in "Power Systems"
+  },
+  13: {
+    expectedCommands: ["mkdir logs", "touch logs/app.log"],
+    title: "Log Setup",
+    description: "Create a log directory and file",
+    level: 6, // Introduced in "Power Systems"
+  },
+  14: {
+    expectedCommands: ["df", "du -h"],
+    title: "Storage Check",
+    description: "Check storage usage",
+    level: 10, // Introduced in "Resource Collection"
+  },
+  15: {
+    expectedCommands: ["mkdir backup", "cp -r project/* backup/"],
+    title: "Directory Backup",
+    description: "Back up an entire directory",
+    level: 10, // Introduced in "Resource Collection"
+  },
+  16: {
+    expectedCommands: ["echo 'test' > test.txt", "grep 'test' test.txt"],
+    title: "Text Search",
+    description: "Search for text in a file",
+    level: 4, // Introduced in "Security Breach"
+  },
+  17: {
+    expectedCommands: ["echo '1 2 3' > nums.txt", "wc -w nums.txt"],
+    title: "Word Count",
+    description: "Count words in a file",
+    level: 5, // Introduced in "Data Retrieval"
+  },
+  18: {
+    expectedCommands: ["mkdir web", "cd web", "touch index.html"],
+    title: "Web Setup",
+    description: "Create a basic web project structure",
+    level: 5, // Introduced in "Data Retrieval"
+  },
+  19: {
+    expectedCommands: ["echo 'hello' > file.txt", "cat file.txt"],
+    title: "File Reading",
+    description: "Create and read a text file",
+    level: 4, // Introduced in "Security Breach"
+  },
+  20: {
+    expectedCommands: ["mkdir secure", "chmod 700 secure"],
+    title: "Secure Directory",
+    description: "Create a directory with restricted permissions",
+    level: 4, // Introduced in "Security Breach"
+  },
+  21: {
+    expectedCommands: ["mkdir scripts", "touch scripts/test.sh"],
+    title: "Script Setup",
+    description: "Create a scripts directory and file",
+    level: 12, // Introduced in "Firewall Bypass"
+  },
+  22: {
+    expectedCommands: [
+      "echo 'backup' > backup.txt",
+      "cp backup.txt backup2.txt",
+    ],
+    title: "File Copy",
+    description: "Create and copy a backup file",
+    level: 5, // Introduced in "Data Retrieval"
+  },
+  23: {
+    expectedCommands: ["for i in {1..3}; do touch file$i.txt; done", "ls"],
+    title: "Loop Creation",
+    description: "Create multiple files using a loop",
+    level: 12, // Introduced in "Firewall Bypass"
+  },
+  24: {
+    expectedCommands: ["find . -type f", "ls -R"],
+    title: "File Search",
+    description: "List all files recursively",
+    level: 15, // Introduced in "Rocket Location"
+  },
+  25: {
+    expectedCommands: ["ps | grep node", "ps"],
+    title: "Process Search",
+    description: "Search for specific processes",
+    level: 6, // Introduced in "Power Systems"
+  },
+  26: {
+    expectedCommands: ["mkdir logs", "touch logs/app.log logs/error.log"],
+    title: "Multiple Logs",
+    description: "Create multiple log files",
+    level: 6, // Introduced in "Power Systems"
+  },
+  27: {
+    expectedCommands: ["for f in *.txt; do cp $f $f.bak; done"],
+    title: "Batch Backup",
+    description: "Create backups of all text files",
+    level: 10, // Introduced in "Resource Collection"
+  },
+  28: {
+    expectedCommands: ["mkdir -p web/{css,js}", "touch web/index.html"],
+    title: "Web Structure",
+    description: "Create a web project structure",
+    level: 5, // Introduced in "Data Retrieval"
+  },
+  29: {
+    expectedCommands: ["echo '1,2,3' > data.txt", "cut -d',' -f1 data.txt"],
+    title: "Data Processing",
+    description: "Process comma-separated data",
+    level: 5, // Introduced in "Data Retrieval"
+  },
+  30: {
+    expectedCommands: ["mkdir private", "chmod 700 private"],
+    title: "Private Directory",
+    description: "Create a private directory",
+    level: 4, // Introduced in "Security Breach"
+  },
+  31: {
+    expectedCommands: ["find . -type f -empty", "find . -type d -empty"],
+    title: "Empty Find",
+    description: "Find empty files and directories",
+    level: 15, // Introduced in "Rocket Location"
+  },
+  32: {
+    expectedCommands: ["echo 'test' > file.txt", "cat file.txt"],
+    title: "File Content",
+    description: "Create and view file content",
+    level: 4, // Introduced in "Security Breach"
+  },
+  33: {
+    expectedCommands: ["ln -s file.txt link.txt", "ls -l"],
+    title: "Symbolic Link",
+    description: "Create a symbolic link",
+    level: 10, // Introduced in "Resource Collection"
+  },
+  34: {
+    expectedCommands: ["echo 'export PATH=$PATH:./bin' >> .profile"],
+    title: "Path Setup",
+    description: "Add directory to PATH",
+    level: 16, // Introduced in "Security Bypass"
+  },
+  35: {
+    expectedCommands: ["mkdir test && cd test && touch file.txt"],
+    title: "Command Chain",
+    description: "Chain multiple commands",
+    level: 6, // Introduced in "Power Systems"
+  },
+  36: {
+    expectedCommands: ["find . -type f -exec chmod 644 {} \\;"],
+    title: "File Permissions",
+    description: "Set file permissions recursively",
+    level: 4, // Introduced in "Security Breach"
+  },
+  37: {
+    expectedCommands: ["dd if=/dev/zero of=test bs=1M count=1"],
+    title: "File Generation",
+    description: "Generate a test file",
+    level: 10, // Introduced in "Resource Collection"
+  },
+  38: {
+    expectedCommands: ["cp -r source/. dest/"],
+    title: "Directory Copy",
+    description: "Copy directory contents",
+    level: 10, // Introduced in "Resource Collection"
+  },
+  39: {
+    expectedCommands: ["find . -mtime +7 -type f"],
+    title: "Old Files",
+    description: "Find files older than 7 days",
+    level: 15, // Introduced in "Rocket Location"
+  },
+  40: {
+    expectedCommands: ["ps | sort -k2"],
+    title: "Process Sort",
+    description: "Sort process list",
+    level: 6, // Introduced in "Power Systems"
+  },
+  41: {
+    expectedCommands: ["mkdir -p {dev,test}/app"],
+    title: "Dev Setup",
+    description: "Create development directories",
+    level: 10, // Introduced in "Resource Collection"
+  },
+  42: {
+    expectedCommands: ["echo 'error' > error.log", "grep 'error' *.log"],
+    title: "Error Search",
+    description: "Search for errors in logs",
+    level: 4, // Introduced in "Security Breach"
+  },
+  43: {
+    expectedCommands: ["who", "w"],
+    title: "User Check",
+    description: "Check current users",
+    level: 7, // Introduced in "Communication Array"
+  },
+  44: {
+    expectedCommands: ["du -sh *"],
+    title: "Size Check",
+    description: "Check directory sizes",
+    level: 10, // Introduced in "Resource Collection"
+  },
+  45: {
+    expectedCommands: ["echo $USER", "echo $HOME"],
+    title: "Environment",
+    description: "Check environment variables",
+    level: 16, // Introduced in "Security Bypass"
+  },
+  46: {
+    expectedCommands: ["cp -r src/ backup/"],
+    title: "Directory Backup",
+    description: "Back up a directory",
+    level: 10, // Introduced in "Resource Collection"
+  },
+  47: {
+    expectedCommands: ["mkdir test", "rmdir test"],
+    title: "Directory Remove",
+    description: "Create and remove directory",
+    level: 3, // Introduced in "City Navigation"
+  },
+  48: {
+    expectedCommands: ["find . -type f -print0"],
+    title: "Null Handling",
+    description: "List files with null separator",
+    level: 15, // Introduced in "Rocket Location"
+  },
+  49: {
+    expectedCommands: ["echo 'log entry' >> app.log"],
+    title: "Log Entry",
+    description: "Append to a log file",
+    level: 6, // Introduced in "Power Systems"
+  },
+  50: {
+    expectedCommands: ["mkdir .hidden", "ls -la"],
+    title: "Hidden Files",
+    description: "Work with hidden files",
+    level: 2, // Introduced in "First Contact"
+  },
+};
+// Command reference data
+const cheatsheets = {
+  basic: [
+    { command: "ls", description: "List directory contents" },
+    { command: "cd <dir>", description: "Change directory" },
+    { command: "pwd", description: "Print working directory" },
+    { command: "mkdir <dir>", description: "Create directory" },
+    { command: "touch <file>", description: "Create empty file" },
+    { command: "cp <src> <dest>", description: "Copy files/directories" },
+  ],
+  advanced: [
+    { command: "grep <pattern> <file>", description: "Search text patterns" },
+    {
+      command: "find <path> -name <pattern>",
+      description: "Search files/dirs",
+    },
+    {
+      command: "chmod <permissions> <file>",
+      description: "Change permissions",
+    },
+    { command: "ps aux", description: "List running processes" },
+    { command: "kill <pid>", description: "Terminate process" },
+    { command: "tar -czf <archive> <files>", description: "Create archive" },
+  ],
+  pipes: [
+    { command: "| (pipe)", description: "Send output to next command" },
+    { command: "> (redirect)", description: "Redirect output to file" },
+    { command: ">> (append)", description: "Append output to file" },
+    { command: "< (input)", description: "Take input from file" },
+    { command: "2> (stderr)", description: "Redirect error output" },
+    { command: "&& (and)", description: "Run next if previous succeeds" },
+  ],
+};
+
+// Main BashPlayground Component
 export default function BashPlayground() {
   const webContainerRef = useRef(null);
   const terminalRef = useRef(null);
@@ -11,48 +356,18 @@ export default function BashPlayground() {
   const inputWriterRef = useRef(null);
   const [activeTab, setActiveTab] = useState("basic");
   const navigate = useNavigate();
-
-  const cheatsheets = {
-    basic: [
-      { command: "ls", description: "List directory contents" },
-      { command: "cd <dir>", description: "Change directory" },
-      { command: "pwd", description: "Print working directory" },
-      { command: "mkdir <dir>", description: "Create directory" },
-      { command: "touch <file>", description: "Create empty file" },
-      { command: "cp <src> <dest>", description: "Copy files/directories" },
-    ],
-    advanced: [
-      { command: "grep <pattern> <file>", description: "Search text patterns" },
-      {
-        command: "find <path> -name <pattern>",
-        description: "Search files/dirs",
-      },
-      {
-        command: "chmod <permissions> <file>",
-        description: "Change permissions",
-      },
-      { command: "ps aux", description: "List running processes" },
-      { command: "kill <pid>", description: "Terminate process" },
-      { command: "tar -czf <archive> <files>", description: "Create archive" },
-    ],
-    pipes: [
-      { command: "| (pipe)", description: "Send output to next command" },
-      { command: "> (redirect)", description: "Redirect output to file" },
-      { command: ">> (append)", description: "Append output to file" },
-      { command: "< (input)", description: "Take input from file" },
-      { command: "2> (stderr)", description: "Redirect error output" },
-      { command: "&& (and)", description: "Run next if previous succeeds" },
-    ],
-  };
-
+  const { history: commandHistory, addHistory } = useBashHistory();
+  const { currentLevel, incrementLevel } = useBash();
+  const [latestTerminalCommand, setLatestTerminalCommand] = useState("");
+  const [commandBuffer, setCommandBuffer] = useState("");
   useEffect(() => {
     async function startWebContainer() {
       if (webContainerRef.current) return;
-
       if (!terminalRef.current) {
         terminalRef.current = new Terminal({
           cursorBlink: true,
           fontSize: 14,
+          rendererType: "dom",
           theme: {
             background: "#1a1b26",
             foreground: "#a9b1d6",
@@ -68,7 +383,6 @@ export default function BashPlayground() {
             yellow: "#e0af68",
           },
         });
-
         if (terminalContainerRef.current) {
           terminalRef.current.open(terminalContainerRef.current);
         }
@@ -79,24 +393,120 @@ export default function BashPlayground() {
         terminal: { cols: 80, rows: 25 },
       });
 
+      let currentCommand = "";
+      let outputBuffer = "";
+      let isProcessingCommand = false;
+
+      function stripAnsiCodes(str) {
+        // eslint-disable-next-line no-control-regex
+        return str.replace(/\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])|␊/g, "");
+      }
+
+      function cleanedOutput(rawOutput, lastCommand) {
+        // Strip ANSI codes and normalize line endings
+        let cleaned = stripAnsiCodes(rawOutput)
+          .replace(/\r\n/g, "\n")
+          .replace(/\r/g, "\n");
+
+        // Split into lines and filter empty ones
+        let lines = cleaned
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line !== "");
+
+        // Remove common noise patterns
+        lines = lines.filter((line) => {
+          return !(
+            line.startsWith("~/") || // Remove path prefixes
+            line === "❯" || // Remove prompt
+            line === lastCommand || // Remove echo of the command
+            line.match(/^\.{0,2}\/?$/) || // Remove single slashes and ./
+            line === "~" // Remove tilde
+          );
+        });
+
+        // For 'ls' command, clean up trailing slashes
+        if (lastCommand === "ls") {
+          lines = lines.map((line) => {
+            // Join multiple slashes and clean trailing slash
+            return line.replace(/\/{2,}/g, "/").replace(/\/$/, "");
+          });
+          // Filter out any empty lines that might have been created
+          lines = lines.filter((line) => line !== "");
+          // If we have exactly one line, split it on spaces and clean each entry
+          if (lines.length === 1) {
+            lines = lines[0]
+              .split(/\s+/)
+              .filter((item) => item !== "")
+              .map((item) => item.replace(/\/{2,}/g, "/"));
+          }
+        }
+
+        // Join remaining lines
+        const output = lines.join(" ").trim();
+
+        // Don't return anything for cd/directory navigation commands
+        if (lastCommand.match(/^(cd|\.\.|\.)$/)) {
+          return "";
+        }
+
+        return output;
+      }
+
       shell.output.pipeTo(
         new WritableStream({
           write(chunk) {
             terminalRef.current.write(chunk);
+
+            if (isProcessingCommand) {
+              outputBuffer += chunk;
+            }
           },
         }),
       );
 
       inputWriterRef.current = shell.input.getWriter();
+
       terminalRef.current.onData((input) => {
-        if (inputWriterRef.current) {
-          inputWriterRef.current.write(input);
+        if (!inputWriterRef.current) return;
+
+        inputWriterRef.current.write(input);
+
+        if (input === "\r") {
+          // Enter key pressed
+          isProcessingCommand = true;
+          const trimmedCommand = currentCommand.trim();
+
+          // Reset command tracking
+          currentCommand = "";
+
+          // Process output after a small delay
+          setTimeout(() => {
+            const cleanOutput = cleanedOutput(outputBuffer, trimmedCommand);
+
+            console.log("Last Command:", trimmedCommand);
+            console.log("Output:", cleanOutput);
+
+            if (trimmedCommand && !trimmedCommand.match(/^(\.\.|\.)$/)) {
+              addHistory(trimmedCommand);
+              setLatestTerminalCommand(trimmedCommand);
+            }
+
+            // Reset for next command
+            outputBuffer = "";
+            isProcessingCommand = false;
+          }, 100);
+        } else if (input === "\u007f") {
+          // Backspace
+          currentCommand = currentCommand.slice(0, -1);
+        } else {
+          currentCommand += input;
         }
       });
     }
 
     startWebContainer();
-  }, []);
+  }, [addHistory, commandBuffer, setLatestTerminalCommand]);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
@@ -143,9 +553,9 @@ export default function BashPlayground() {
           className="absolute inset-0"
           style={{
             backgroundImage: `
-               linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
-               linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px)
-             `,
+                 linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+                 linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px)
+               `,
             backgroundSize: "80px 80px",
             opacity: 0.5,
           }}
@@ -160,7 +570,7 @@ export default function BashPlayground() {
           </div>
           <button
             onClick={() => navigate("/bash")}
-            className="ml-auto px-3 flex items-center justify-center gap-2 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded border border-cyan-500/30 font-medium hover:from-blue-500 hover:to-cyan-500 transition-colors"
+            className="ml-auto px-3 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded border border-cyan-500/30 font-medium hover:from-blue-500 hover:to-cyan-500 transition-colors"
           >
             Return to map
           </button>
@@ -184,8 +594,27 @@ export default function BashPlayground() {
             </div>
           </div>
 
-          {/* Cheatsheet Section */}
-          <div className="lg:col-span-1">
+          {/* Sidebar */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Task Generator */}
+            <div className="rounded-lg border border-cyan-500/30 bg-gray-800/50 backdrop-blur-md">
+              <div className="p-4 border-b border-cyan-500/30">
+                <h2 className="text-xl font-semibold text-cyan-400">
+                  Current Task
+                </h2>
+              </div>
+              <div className="p-4">
+                <TaskGenerator
+                  tasks={tasks}
+                  currentLevel={currentLevel}
+                  commandHistory={commandHistory}
+                  onTaskComplete={() => {}}
+                  terminalInput={latestTerminalCommand}
+                />
+              </div>
+            </div>
+
+            {/* Command Reference */}
             <div className="rounded-lg border border-cyan-500/30 bg-gray-800/50 backdrop-blur-md">
               <div className="p-4 border-b border-cyan-500/30">
                 <h2 className="text-xl font-semibold text-cyan-400">

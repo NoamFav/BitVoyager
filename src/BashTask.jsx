@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useBash } from "./useBash";
+import useBashHistory from "./useBashHistory";
 
 function BashTask() {
   const { level } = useParams();
   const navigate = useNavigate();
   const { currentLevel, setCurrentLevel } = useBash();
+  const { history: commandHistory, addHistory } = useBashHistory();
   const [taskCompleted, setTaskCompleted] = useState(false);
-  const [commandHistory, setCommandHistory] = useState([]);
   const [currentCommand, setCurrentCommand] = useState("");
   const [terminalOutput, setTerminalOutput] = useState([]);
   const [hints, setHints] = useState([]);
@@ -618,9 +619,7 @@ function BashTask() {
     if (!currentCommand.trim()) return;
 
     // Add command to history
-    const newHistory = [...commandHistory, currentCommand];
-    setCommandHistory(newHistory);
-
+    addHistory(currentCommand);
     // Add command to terminal output
     const newOutput = [...terminalOutput, `nexus@user:~$ ${currentCommand}`];
 
@@ -948,12 +947,6 @@ function BashTask() {
         ];
       }
       return Object.keys(fs.files).filter((name) => !name.startsWith("."));
-    };
-
-    const handleCd = (dirname) => {};
-
-    const handleRm = (filename) => {
-      return ["rm: cannot remove 'file': Operation not permitted"];
     };
 
     const handleCat = (filename) => {
@@ -1362,7 +1355,6 @@ function BashTask() {
       navigate(`/bash/${nextLevel}`);
       setCurrentLevel(nextLevel);
       setTaskCompleted(false);
-      setCommandHistory([]);
       setCurrentCommand("");
     } else {
       // Otherwise go back to the map

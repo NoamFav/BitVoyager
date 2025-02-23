@@ -10,6 +10,9 @@ export function BashProvider({ children }) {
       : 1;
   });
 
+  window.currentLevel = currentLevel;
+  window.setCurrentLevel = setCurrentLevel;
+
   // Save currentLevel to sessionStorage whenever it changes
   useEffect(() => {
     sessionStorage.setItem("currentLevel", currentLevel);
