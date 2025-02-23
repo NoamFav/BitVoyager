@@ -120,7 +120,7 @@ const PythonCodeEditor = ({
   }, [prismLoaded, code, highlightCode]);
 
   const handleChange = (e) => {
-    const newCode = e.target.value;
+    const newCode = e.target.value.replace(/\u00A0/g, " ");
     setCode(newCode);
     onCodeChange(newCode);
 

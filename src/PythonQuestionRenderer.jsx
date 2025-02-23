@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, {
   useCallback,
   useEffect,
@@ -6,6 +7,8 @@ import React, {
   useState,
 } from "react";
 import { CheckCircle, Code, Moon, Rocket, Star, XCircle } from "lucide-react";
+
+import { Link } from "react-router-dom";
 
 import PythonCodeEditor from "./PythonCodeEditor";
 
@@ -16,20 +19,22 @@ const StarBackground = React.memo(() => {
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
       size: Math.random() * 8 + 2,
-      delay: `${Math.random() * 2}s`,
+      delay: `${Math.random() * 4}s`,
+      duration: `${Math.random() * 2 + 2}s`,
     }));
   }, []);
 
   return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none">
-      <div className="absolute inset-0">
+    <div className="fixed inset-0 w-full h-full overflow-hidden pointer-events-none bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="absolute inset-0 w-full h-full">
         {stars.map((star) => (
           <Star
             key={star.id}
-            className="absolute text-yellow-200 opacity-70 animate-pulse"
+            className="absolute text-yellow-200 opacity-0"
             style={{
               left: star.left,
               top: star.top,
+              animation: `twinkle ${star.duration} ease-in-out infinite`,
               animationDelay: star.delay,
             }}
             size={star.size}
@@ -40,6 +45,21 @@ const StarBackground = React.memo(() => {
   );
 });
 
+// Add keyframe animation
+const style = document.createElement("style");
+style.textContent = `
+  @keyframes twinkle {
+    0%, 100% { 
+      opacity: 0;
+      transform: scale(0.5);
+    }
+    50% { 
+      opacity: 0.7;
+      transform: scale(1);
+    }
+  }
+`;
+document.head.appendChild(style);
 const PythonQuestionRenderer = ({
   question,
   onMissionComplete,
@@ -65,7 +85,8 @@ const PythonQuestionRenderer = ({
       setError(null);
       setTestResults([]);
 
-      const codeLines = code.split("\n");
+      const sanitizedCode = code.replace(/\u00A0/g, " ");
+      const codeLines = sanitizedCode.split("\n");
       const properlyIndentedCode = codeLines
         .map((line) => {
           if (
@@ -189,12 +210,21 @@ str(result)`.trim();
   }
 
   return (
-    <main className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <main className="min-h-screen w-full">
       <StarBackground />
 
       {/* Main content */}
       <div className="relative z-10">
-        {/* Rest of the component remains the same... */}
+        {/* Navigation */}
+        <nav className="absolute top-8 left-8">
+          <Link
+            to="/"
+            className="text-blue-200 hover:text-white transition-colors inline-flex items-center gap-1"
+          >
+            <span className="text-lg">&lt;</span>
+            <span>Return to Home</span>
+          </Link>
+        </nav>
         {/* Header Section */}
         <header className="w-full flex flex-col items-center justify-center py-8">
           <div className="flex items-center space-x-4 mb-6">
@@ -287,6 +317,22 @@ str(result)`.trim();
             <h2 className="text-2xl font-semibold text-white mb-4 flex items-center">
               <Code className="mr-2 text-blue-400" />
               Mission Control Center
+              {progressInfo.attempts > 0 && (
+                <span className="ml-4 px-3 py-1 bg-blue-900 text-blue-200 rounded-full text-sm">
+                  Attempts: {progressInfo.attempts}
+                </span>
+              )}
+              {progressInfo.isRetry && (
+                <span className="ml-4 px-3 py-1 bg-purple-900 text-purple-200 rounded-full text-sm">
+                  Another chance !
+                </span>
+              )}
+              {progressInfo.previouslyFailed && (
+                <span className="ml-4 px-3 py-1 bg-red-900 text-red-200 rounded-full text-sm">
+                  Previous Attempts:{" "}
+                  {progressInfo.userProfile?.failedAttempts[question.id] || 0}
+                </span>
+              )}
             </h2>
 
             <PythonCodeEditor
@@ -297,7 +343,7 @@ str(result)`.trim();
 
             <div className="flex justify-end space-x-4">
               <button
-                onClick={() => onMissionComplete(false)}
+                onClick={() => onMissionComplete(false, true)}
                 className="text-slate-400 underline hover:text-slate-300 transition-colors flex items-center space-x-2"
               >
                 <span>Skip this question</span>

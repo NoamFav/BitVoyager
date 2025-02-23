@@ -1,68 +1,93 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
+import {
+  getUserProfile,
+  ModeSelection,
+  saveUserProfile,
+  selectQuestions,
+  updateSkillLevels,
+} from "./LearningModePython";
 import PythonQuestion from "./PythonQuestion";
-
+import PythonQuestionRenderer from "./PythonQuestionRenderer";
 import { RefreshCw, Rocket, Star, Trophy, XCircle } from "lucide-react";
-import PythonQuestionRenderer from "./PythonQuestionRenderer.jsx";
 
 const DIFFICULTY_ORDER = ["easy", "medium", "hard"];
 
-const initializeQuestions = () => {
-  console.log("Initializing questions...");
-  // Group by difficulty and select one from each level
+const initializeQuestions = (mode, userProfile = null) => {
   try {
-    const selected = DIFFICULTY_ORDER.map((difficulty) => {
-      const difficultyQuestions = PythonQuestion(difficulty);
-      console.log(`${difficulty} questions:`, difficultyQuestions);
-
-      if (difficultyQuestions.length === 0) {
-        throw new Error(`No questions found for difficulty: ${difficulty}`);
+    // Get all questions
+    const allQuestions = {};
+    for (let i = 1; i <= 29; i++) {
+      try {
+        allQuestions[i] = PythonQuestion(i);
+      } catch (e) {
+        console.warn(`Could not load question ${i}:`, e);
       }
+    }
 
-      const randomIndex = Math.floor(
-        Math.random() * difficultyQuestions.length,
-      );
-      const index = difficultyQuestions[randomIndex];
-      console.log("Selected question " + index);
-      return PythonQuestion(index);
-    });
-    return { questions: selected, error: null };
+    // Select questions based on mode
+    const selectedQuestions = selectQuestions(mode, userProfile, allQuestions);
+
+    if (!selectedQuestions) {
+      throw new Error("Could not find enough suitable questions");
+    }
+
+    return {
+      questions: selectedQuestions,
+      allQuestions,
+      error: null,
+    };
   } catch (error) {
-    return { questions: [], error: error.message };
+    return { questions: [], allQuestions: {}, error: error.message };
   }
 };
 
 const Python = () => {
-  // Initialize questions immediately
-  const { questions: initialQuestions, error: initError } =
-    initializeQuestions();
-
-  console.log(initialQuestions);
-  console.log(initError);
-
+  const [mode, setMode] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
   const [currentMissionIndex, setCurrentMissionIndex] = useState(0);
   const [missionComplete, setMissionComplete] = useState(false);
-  const [selectedQuestions] = useState(initialQuestions);
-  const [error] = useState(initError);
+  const [selectedQuestions, setSelectedQuestions] = useState([]);
+  const [allQuestions, setAllQuestions] = useState({});
+  const [error, setError] = useState(null);
   const [completedDifficulties, setCompletedDifficulties] = useState([]);
+  const [currentAttempts, setCurrentAttempts] = useState(0);
 
-  console.log(selectedQuestions);
-  console.log(currentMissionIndex);
+  // Initialize based on selected mode
+  useEffect(() => {
+    if (!mode) return;
 
-  const handleMissionComplete = useCallback((completed = false) => {
+    let profile = null;
+    if (mode === "learning") {
+      profile = getUserProfile();
+      setUserProfile(profile);
+    }
+
+    const { questions, allQuestions, error } = initializeQuestions(
+      mode,
+      profile,
+    );
+    setSelectedQuestions(questions);
+    setAllQuestions(allQuestions);
+    setError(error);
+  }, [mode]);
+
+  const handleMissionComplete = (completed = false, skipped = false) => {
+    if (mode === "standard") {
+      handleStandardModeComplete(completed);
+    } else {
+      handleLearningModeComplete(completed, skipped);
+    }
+  };
+
+  const handleStandardModeComplete = (completed) => {
     if (currentMissionIndex < selectedQuestions.length - 1) {
-      // Only mark as completed if the user actually completed it
       if (completed) {
         setCompletedDifficulties(
           (prev) => [...prev, DIFFICULTY_ORDER[currentMissionIndex]],
         );
       }
       setCurrentMissionIndex((prev) => prev + 1);
+      setCurrentAttempts(0); // Reset attempts for new question
     } else {
       if (completed) {
         setCompletedDifficulties(
@@ -71,18 +96,68 @@ const Python = () => {
       }
       setMissionComplete(true);
     }
-  }, [
-    currentMissionIndex,
-    selectedQuestions.length,
-    completedDifficulties.length,
-  ]);
+  };
 
-  const currentQuestion = useMemo(
-    () => selectedQuestions[currentMissionIndex],
-    [selectedQuestions, currentMissionIndex],
-  );
+  const handleLearningModeComplete = (completed, skipped = false) => {
+    if (!userProfile || !selectedQuestions[currentMissionIndex]) return;
 
-  console.log(currentQuestion);
+    const currentQuestion = selectedQuestions[currentMissionIndex];
+    const attempts = skipped ? 0 : currentAttempts + 1;
+
+    // Update profile with current question result
+    const updatedProfile = updateSkillLevels(
+      userProfile,
+      currentQuestion,
+      completed,
+      attempts,
+      skipped,
+    );
+
+    if (completed) {
+      updatedProfile.completedQuestions.push(currentQuestion.id);
+    }
+
+    // Save updated profile
+    saveUserProfile(updatedProfile);
+    setUserProfile(updatedProfile);
+
+    if (currentMissionIndex < selectedQuestions.length - 1) {
+      // Move to next question
+      setCurrentMissionIndex((prev) => prev + 1);
+      setCurrentAttempts(0); // Reset attempts for new question
+    } else {
+      // Update streak
+      const today = new Date().toDateString();
+      if (updatedProfile.lastSessionDate !== today) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        if (updatedProfile.lastSessionDate === yesterday.toDateString()) {
+          updatedProfile.consecutiveDays += 1;
+        } else {
+          updatedProfile.consecutiveDays = 1;
+        }
+        updatedProfile.lastSessionDate = today;
+        saveUserProfile(updatedProfile);
+      }
+
+      setMissionComplete(true);
+    }
+  };
+
+  const handleTestAttempt = (success) => {
+    setCurrentAttempts((prev) => prev + 1);
+    if (success) {
+      handleMissionComplete(true, false);
+    }
+  };
+
+  const handleSkip = () => {
+    handleMissionComplete(false, true);
+  };
+
+  if (!mode) {
+    return <ModeSelection onModeSelect={setMode} />;
+  }
 
   if (error) {
     return (
@@ -119,29 +194,28 @@ const Python = () => {
           </div>
 
           <h1 className="text-4xl font-bold text-white">Mission Complete!</h1>
-          <p className="text-xl text-blue-300">
-            You've completed your mission! Take some time to rest.
-          </p>
 
-          <div className="flex justify-center space-x-4">
-            {DIFFICULTY_ORDER.map((difficulty) => (
-              <div
-                key={difficulty}
-                className={`p-4 rounded-lg border flex flex-col items-center space-y-2 ${
-                  difficulty === "easy"
-                    ? "border-green-500 text-green-400"
-                    : difficulty === "medium"
-                    ? "border-yellow-500 text-yellow-400"
-                    : "border-red-500 text-red-400"
-                }`}
-              >
-                {completedDifficulties.includes(difficulty)
-                  ? <Star className="w-6 h-6" fill="currentColor" />
-                  : <Star className="w-6 h-6" />}
-                <p className="capitalize">{difficulty}</p>
-              </div>
-            ))}
-          </div>
+          {mode === "standard" && (
+            <div className="flex justify-center space-x-4">
+              {DIFFICULTY_ORDER.map((difficulty) => (
+                <div
+                  key={difficulty}
+                  className={`p-4 rounded-lg border flex flex-col items-center space-y-2 ${
+                    difficulty === "easy"
+                      ? "border-green-500 text-green-400"
+                      : difficulty === "medium"
+                      ? "border-yellow-500 text-yellow-400"
+                      : "border-red-500 text-red-400"
+                  }`}
+                >
+                  {completedDifficulties.includes(difficulty)
+                    ? <Star className="w-6 h-6" fill="currentColor" />
+                    : <Star className="w-6 h-6" />}
+                  <p className="capitalize">{difficulty}</p>
+                </div>
+              ))}
+            </div>
+          )}
 
           <button
             onClick={() => window.location.reload()}
@@ -151,31 +225,12 @@ const Python = () => {
             <span>Start New Journey</span>
           </button>
         </div>
-
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <div
-              key={i}
-              className="absolute animate-float"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${5 + Math.random() * 5}s`,
-              }}
-            >
-              <Star
-                className="text-yellow-200 opacity-70"
-                size={Math.random() * 16 + 8}
-              />
-            </div>
-          ))}
-        </div>
       </div>
     );
   }
 
-  // Only render Python component if we have a current question
+  const currentQuestion = selectedQuestions[currentMissionIndex];
+
   if (!currentQuestion) {
     return (
       <div className="min-h-screen w-full bg-slate-900 flex items-center justify-center">
@@ -191,14 +246,24 @@ const Python = () => {
 
   return (
     <PythonQuestionRenderer
-      key={currentMissionIndex} // Add a key to force remount
+      key={currentMissionIndex}
       question={currentQuestion}
       onMissionComplete={handleMissionComplete}
+      onTestAttempt={handleTestAttempt}
       progressInfo={{
         current: currentMissionIndex + 1,
         total: selectedQuestions.length,
-        difficulty: DIFFICULTY_ORDER[currentMissionIndex],
+        difficulty: mode === "standard"
+          ? DIFFICULTY_ORDER[currentMissionIndex]
+          : currentQuestion.difficulty,
         completedDifficulties,
+        mode,
+        userProfile: mode === "learning" ? userProfile : null,
+        attempts: currentAttempts,
+        isRetry: mode === "learning" &&
+          userProfile?.skippedQuestions?.includes(currentQuestion.id),
+        previouslyFailed: mode === "learning" &&
+          (userProfile?.failedAttempts?.[currentQuestion.id] || 0) > 0,
       }}
     />
   );
