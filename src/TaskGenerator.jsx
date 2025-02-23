@@ -1,6 +1,6 @@
-/* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { Check, Clock, SkipForward } from "lucide-react";
+import Cookies from "js-cookie";
 
 // Helper to track command usage and suggest tasks
 const analyzeCommandUsage = (history, allCommands) => {
@@ -29,11 +29,52 @@ const getAllCommands = (tasks) => {
   return Array.from(commands);
 };
 
-// Generate practice task based on command usage
-const generatePracticeTasks = (commandUsage, currentLevel, tasks) => {
+// Get completed tasks from cookies
+const getCompletedTasksFromCookies = () => {
+  try {
+    const completedTasksCookie = Cookies.get("completedTasks");
+    return completedTasksCookie
+      ? new Set(JSON.parse(completedTasksCookie))
+      : new Set();
+  } catch (e) {
+    return new Set();
+  }
+};
+
+// Save completed tasks to cookies using js-cookie
+const saveCompletedTasksToCookies = (completedTasks) => {
+  Cookies.set("completedTasks", JSON.stringify(Array.from(completedTasks)), {
+    expires: 30,
+  });
+};
+
+const getTaskHistoryFromStorage = () => {
+  try {
+    const storedHistory = localStorage.getItem("taskHistory");
+    return storedHistory ? JSON.parse(storedHistory) : [];
+  } catch (e) {
+    return [];
+  }
+};
+
+// New helper function to save task history to localStorage
+const saveTaskHistoryToStorage = (history) => {
+  localStorage.setItem("taskHistory", JSON.stringify(history));
+};
+
+// Generate practice task based on command usage and exclude completed tasks
+const generatePracticeTasks = (
+  commandUsage,
+  currentLevel,
+  tasks,
+  completedTasks,
+) => {
   const availableTasks = Object.entries(tasks)
-    .filter(([, task]) => task.level <= currentLevel)
+    .filter(
+      ([cmd, task]) => task.level <= currentLevel && !completedTasks.has(cmd),
+    )
     .map(([cmd, task]) => ({
+      id: cmd,
       title: `Master ${cmd}`,
       description: task.description,
       expectedCommands: task.expectedCommands,
@@ -63,22 +104,49 @@ const TaskGenerator = ({
   const [taskQueue, setTaskQueue] = useState([]);
   const [currentTask, setCurrentTask] = useState(null);
   const [completedCommands, setCompletedCommands] = useState(new Set());
-  const [taskHistory, setTaskHistory] = useState([]);
+  const [taskHistory, setTaskHistory] = useState(() =>
+    getTaskHistoryFromStorage(),
+  );
+
   const [isGeneratingPractice, setIsGeneratingPractice] = useState(false);
   const [lastActivityTimestamp, setLastActivityTimestamp] = useState(
     Date.now(),
+  );
+  const [completedTasks, setCompletedTasks] = useState(() =>
+    getCompletedTasksFromCookies(),
   );
   const [isLearning, setIsLearning] = useState(() => {
     const storedValue = localStorage.getItem("isLearning");
     return storedValue !== null ? JSON.parse(storedValue) : true;
   });
-
+  useEffect(() => {
+    if (taskHistory.length === 0 && completedTasks.size > 0) {
+      const initialHistory = Array.from(completedTasks).map((taskId) => {
+        const taskInfo = tasks[taskId];
+        return {
+          id: taskId,
+          title: `Master ${taskId}`,
+          description: taskInfo?.description || "",
+          expectedCommands: taskInfo?.expectedCommands || [],
+          level: taskInfo?.level || 1,
+          completed: true,
+          completedAt: new Date().toISOString(),
+        };
+      });
+      setTaskHistory(initialHistory);
+    }
+  }, [completedTasks, tasks]);
   // Initialize or update task queue
   useEffect(() => {
     if (tasks) {
       const allCommands = getAllCommands(tasks);
       const usage = analyzeCommandUsage(commandHistory, allCommands);
-      const newTasks = generatePracticeTasks(usage, currentLevel, tasks);
+      const newTasks = generatePracticeTasks(
+        usage,
+        currentLevel,
+        tasks,
+        completedTasks,
+      );
 
       if (taskQueue.length === 0 || taskQueue[0].level >= currentLevel) {
         setTaskQueue(newTasks);
@@ -92,7 +160,7 @@ const TaskGenerator = ({
         setCompletedCommands(new Set());
       }
     }
-  }, [currentLevel, commandHistory, tasks]);
+  }, [currentLevel, commandHistory, tasks, completedTasks]);
 
   // Reset task timeout on activity
   useEffect(() => {
@@ -108,7 +176,12 @@ const TaskGenerator = ({
         // 5 minutes timeout
         const allCommands = getAllCommands(tasks);
         const usage = analyzeCommandUsage(commandHistory, allCommands);
-        const newTasks = generatePracticeTasks(usage, currentLevel, tasks);
+        const newTasks = generatePracticeTasks(
+          usage,
+          currentLevel,
+          tasks,
+          completedTasks,
+        );
         setTaskQueue(newTasks);
         setCurrentTask(newTasks.length > 0 ? newTasks[0] : null);
         setCompletedCommands(new Set());
@@ -116,7 +189,14 @@ const TaskGenerator = ({
     }, 60000); // Check every minute
 
     return () => clearInterval(timeoutCheck);
-  }, [currentTask, lastActivityTimestamp, commandHistory, currentLevel, tasks]);
+  }, [
+    currentTask,
+    lastActivityTimestamp,
+    commandHistory,
+    currentLevel,
+    tasks,
+    completedTasks,
+  ]);
 
   // Check command completion
   useEffect(() => {
@@ -135,8 +215,19 @@ const TaskGenerator = ({
 
         // Check if task is complete
         if (newCompletedCommands.size === currentTask.expectedCommands.length) {
-          setTaskHistory([...taskHistory, { ...currentTask, completed: true }]);
-          onTaskComplete?.(currentTask);
+          // Add task to completed tasks and save to cookies
+          const newCompletedTasks = new Set(completedTasks);
+          newCompletedTasks.add(currentTask.id);
+          setCompletedTasks(newCompletedTasks);
+          saveCompletedTasksToCookies(newCompletedTasks);
+
+          const completedTask = {
+            ...currentTask,
+            completed: true,
+            completedAt: new Date().toISOString(),
+          };
+          setTaskHistory([...taskHistory, completedTask]);
+          onTaskComplete?.(completedTask);
 
           // Remove completed task and move to next one
           const updatedQueue = taskQueue.slice(1);
@@ -151,6 +242,7 @@ const TaskGenerator = ({
                 usage,
                 currentLevel,
                 tasks,
+                newCompletedTasks,
               );
               setTaskQueue(newTasks);
               setCurrentTask(newTasks.length > 0 ? newTasks[0] : null);
@@ -175,15 +267,24 @@ const TaskGenerator = ({
     taskHistory,
     tasks,
     terminalInput,
+    completedTasks,
   ]);
+
   const handleSkipTask = () => {
     if (!currentTask) return;
 
-    // Mark task as skipped (but still completed)
-    setTaskHistory([
-      ...taskHistory,
-      { ...currentTask, completed: true, skipped: true },
-    ]);
+    const newCompletedTasks = new Set(completedTasks);
+    newCompletedTasks.add(currentTask.id);
+    setCompletedTasks(newCompletedTasks);
+    saveCompletedTasksToCookies(newCompletedTasks);
+
+    const skippedTask = {
+      ...currentTask,
+      completed: true,
+      skipped: true,
+      completedAt: new Date().toISOString(),
+    };
+    setTaskHistory([...taskHistory, skippedTask]);
 
     // Move to the next task in the queue
     const updatedQueue = taskQueue.slice(1);
@@ -197,7 +298,12 @@ const TaskGenerator = ({
       setTimeout(() => {
         const allCommands = getAllCommands(tasks);
         const usage = analyzeCommandUsage(commandHistory, allCommands);
-        const newTasks = generatePracticeTasks(usage, currentLevel, tasks);
+        const newTasks = generatePracticeTasks(
+          usage,
+          currentLevel,
+          tasks,
+          newCompletedTasks,
+        );
 
         setTaskQueue(newTasks);
         setCurrentTask(newTasks.length > 0 ? newTasks[0] : null);
@@ -206,19 +312,27 @@ const TaskGenerator = ({
       }, 1500);
     }
   };
+
   if (!currentTask) return null;
+
+  const formatTime = (isoString) => {
+    return new Date(isoString).toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold text-cyan-400">Current Task</h3>
-
       {isGeneratingPractice && (
         <div className="flex items-center space-x-2 text-cyan-400">
           <Clock className="h-5 w-5 animate-spin" />
           <span>Generating tasks...</span>
         </div>
       )}
-
       <div className="border border-gray-700 p-4 rounded-md space-y-2">
         <div className="flex items-center justify-between">
           <h4 className="text-md font-semibold text-cyan-300">
@@ -251,7 +365,6 @@ const TaskGenerator = ({
           </div>
         </div>
 
-        {/* Skip Task Button */}
         <button
           onClick={handleSkipTask}
           className="mt-4 flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
@@ -260,7 +373,6 @@ const TaskGenerator = ({
           Skip Task
         </button>
       </div>
-
       {taskHistory.length > 0 && (
         <div className="mt-6 pt-4 border-t border-gray-700">
           <h4 className="text-sm font-medium text-gray-400 mb-2">
@@ -273,12 +385,18 @@ const TaskGenerator = ({
                 className="text-sm text-gray-500 flex items-center gap-2"
               >
                 <Check className="h-4 w-4 text-green-500" />
-                {task.title}
+                <span>{task.title}</span>
+                <span className="text-xs text-gray-600">
+                  {formatTime(task.completedAt)}
+                </span>
+                {task.skipped && (
+                  <span className="text-xs text-orange-500">(Skipped)</span>
+                )}
               </div>
             ))}
           </div>
         </div>
-      )}
+      )}{" "}
     </div>
   );
 };

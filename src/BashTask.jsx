@@ -1092,6 +1092,10 @@ function BashTask() {
         } else if (cmd === "history -c") {
           output.push("Command history cleared.");
           globalState.securityLevel--;
+        } else if (cmd === "nice") {
+          output.push("Execution priority adjusted.");
+        } else if (cmd === "renice") {
+          output.push("Process priority adjusted.");
         } else {
           output.push("Command not used in this level.");
         }

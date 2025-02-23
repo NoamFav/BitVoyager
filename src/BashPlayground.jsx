@@ -318,25 +318,64 @@ const tasks = {
 const cheatsheets = {
   basic: [
     { command: "ls", description: "List directory contents" },
+    {
+      command: "ls -la",
+      description: "List detailed contents including hidden files",
+    },
     { command: "cd <dir>", description: "Change directory" },
+    { command: "cd ..", description: "Move up one directory" },
     { command: "pwd", description: "Print working directory" },
     { command: "mkdir <dir>", description: "Create directory" },
+    { command: "mkdir -p <path>", description: "Create nested directories" },
     { command: "touch <file>", description: "Create empty file" },
     { command: "cp <src> <dest>", description: "Copy files/directories" },
+    {
+      command: "cp -r <src> <dest>",
+      description: "Copy directories recursively",
+    },
+    {
+      command: "mv <src> <dest>",
+      description: "Move/rename files or directories",
+    },
+    { command: "rm <file>", description: "Remove files" },
+    { command: "rm -r <dir>", description: "Remove directories and contents" },
+    { command: "cat <file>", description: "Display file contents" },
+    { command: "less <file>", description: "View file contents page by page" },
   ],
   advanced: [
     { command: "grep <pattern> <file>", description: "Search text patterns" },
+    {
+      command: "grep -r <pattern> <dir>",
+      description: "Search recursively in directories",
+    },
     {
       command: "find <path> -name <pattern>",
       description: "Search files/dirs",
     },
     {
+      command: "find <path> -type f -mtime -7",
+      description: "Find files modified in last 7 days",
+    },
+    {
       command: "chmod <permissions> <file>",
       description: "Change permissions",
     },
+    {
+      command: "chown <user>:<group> <file>",
+      description: "Change file owner and group",
+    },
     { command: "ps aux", description: "List running processes" },
+    { command: "top", description: "Display system processes in real-time" },
     { command: "kill <pid>", description: "Terminate process" },
-    { command: "tar -czf <archive> <files>", description: "Create archive" },
+    { command: "killall <name>", description: "Kill processes by name" },
+    {
+      command: "tar -czf <archive> <files>",
+      description: "Create gzipped archive",
+    },
+    { command: "tar -xzf <archive>", description: "Extract gzipped archive" },
+    { command: "wget <url>", description: "Download files from the internet" },
+    { command: "curl <url>", description: "Transfer data from/to servers" },
+    { command: "ssh <user>@<host>", description: "Connect to remote server" },
   ],
   pipes: [
     { command: "| (pipe)", description: "Send output to next command" },
@@ -345,9 +384,63 @@ const cheatsheets = {
     { command: "< (input)", description: "Take input from file" },
     { command: "2> (stderr)", description: "Redirect error output" },
     { command: "&& (and)", description: "Run next if previous succeeds" },
+    { command: "|| (or)", description: "Run next if previous fails" },
+    { command: "& (background)", description: "Run command in background" },
+    {
+      command: "tee",
+      description: "Read from stdin and write to stdout and files",
+    },
+    {
+      command: "xargs",
+      description: "Build command lines from standard input",
+    },
+  ],
+  system: [
+    { command: "df -h", description: "Show disk space usage" },
+    { command: "du -sh <dir>", description: "Show directory space usage" },
+    { command: "free -h", description: "Display memory usage" },
+    { command: "uptime", description: "Show system uptime" },
+    { command: "uname -a", description: "Show system information" },
+    { command: "htop", description: "Interactive process viewer" },
+    { command: "netstat -tulpn", description: "List network connections" },
+    { command: "ifconfig", description: "Network interface configuration" },
+    { command: "ping <host>", description: "Test network connectivity" },
+    { command: "traceroute <host>", description: "Trace packet route" },
+  ],
+  text: [
+    {
+      command: "sed 's/old/new/g' <file>",
+      description: "Stream editor for text manipulation",
+    },
+    {
+      command: "awk '{print $1}' <file>",
+      description: "Pattern scanning and text processing",
+    },
+    { command: "sort <file>", description: "Sort lines in text files" },
+    { command: "uniq", description: "Report or filter out repeated lines" },
+    { command: "wc -l <file>", description: "Count lines in file" },
+    {
+      command: "cut -d: -f1 <file>",
+      description: "Cut out selected portions of lines",
+    },
+    {
+      command: "diff <file1> <file2>",
+      description: "Compare files line by line",
+    },
+    {
+      command: "head -n <num> <file>",
+      description: "Output first part of files",
+    },
+    {
+      command: "tail -n <num> <file>",
+      description: "Output last part of files",
+    },
+    {
+      command: "tail -f <file>",
+      description: "Follow file content as it grows",
+    },
   ],
 };
-
 // Main BashPlayground Component
 export default function BashPlayground() {
   const webContainerRef = useRef(null);
@@ -540,7 +633,6 @@ export default function BashPlayground() {
             style={{
               width: 20 + Math.random() * 100,
               height: 20 + Math.random() * 100,
-              // Use full viewport height/width for positioning
               top: Math.random() * window.innerHeight,
               left: Math.random() * window.innerWidth,
               background: `radial-gradient(circle, ${
@@ -557,14 +649,14 @@ export default function BashPlayground() {
           />
         ))}
 
-        {/* Grid lines to represent the tech city structure */}
+        {/* Grid lines */}
         <div
           className="absolute inset-0"
           style={{
             backgroundImage: `
-                 linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
-                 linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px)
-               `,
+              linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px)
+            `,
             backgroundSize: "80px 80px",
             opacity: 0.5,
           }}
@@ -585,104 +677,104 @@ export default function BashPlayground() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Terminal Section */}
-          <div className="lg:col-span-3">
-            <div className="rounded-lg border border-cyan-500/30 bg-gray-800/50 backdrop-blur-md">
-              <div className="p-4 border-b border-cyan-500/30">
-                <h2 className="text-xl font-semibold text-cyan-400">
-                  Terminal Emulator
-                </h2>
+        <div className="space-y-6">
+          {/* Terminal and Task Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* Terminal Section */}
+            <div className="lg:col-span-3">
+              <div className="rounded-lg border border-cyan-500/30 bg-gray-800/50 backdrop-blur-md">
+                <div className="p-4 border-b border-cyan-500/30">
+                  <h2 className="text-xl font-semibold text-cyan-400">
+                    Terminal Emulator
+                  </h2>
+                </div>
+                <div className="p-4">
+                  <div
+                    ref={terminalContainerRef}
+                    className="w-full h-[526px] rounded-lg overflow-hidden border border-cyan-500/30 bg-[#1a1b26]"
+                  />
+                </div>
               </div>
-              <div className="p-4">
-                <div
-                  ref={terminalContainerRef}
-                  className="w-full h-[500px] rounded-lg overflow-hidden border border-cyan-500/30 bg-[#1a1b26]"
-                />
+            </div>
+
+            {/* Task Section */}
+            <div className="lg:col-span-1 space-y-6">
+              <div className="rounded-lg border border-cyan-500/30 bg-gray-800/50 backdrop-blur-md">
+                <div className="p-4 border-b border-cyan-500/30 flex items-center justify-between">
+                  <h2 className="text-xl font-semibold text-cyan-400">
+                    Learning Mode
+                  </h2>
+                  <label className="flex items-center space-x-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="cursor-pointer appearance-none w-5 h-5 border border-cyan-500/30 bg-gray-900 rounded-md transition-colors checked:bg-cyan-500 checked:border-cyan-500 focus:ring focus:ring-cyan-500/50"
+                      checked={isLearning}
+                      onChange={() => setIsLearning(!isLearning)}
+                    />
+                    <span className="text-gray-300 text-sm">Enable</span>
+                  </label>
+                </div>
+              </div>
+              <div className="rounded-lg border border-cyan-500/30 bg-gray-800/50 backdrop-blur-md">
+                <div className="p-4 border-b border-cyan-500/30">
+                  <h2 className="text-xl font-semibold text-cyan-400">
+                    Current Task
+                  </h2>
+                </div>
+                <div className="p-4">
+                  <TaskGenerator
+                    tasks={tasks}
+                    currentLevel={currentLevel}
+                    commandHistory={commandHistory}
+                    onTaskComplete={() => {}}
+                    terminalInput={latestTerminalCommand}
+                  />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Task Generator */}
-            <div className="rounded-lg border border-cyan-500/30 bg-gray-800/50 backdrop-blur-md">
-              <div className="p-4 border-b border-cyan-500/30 flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-cyan-400">
-                  Learning Mode
-                </h2>
-
-                {/* Custom Checkbox */}
-                <label className="flex items-center space-x-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="cursor-pointer appearance-none w-5 h-5 border border-cyan-500/30 bg-gray-900 rounded-md transition-colors checked:bg-cyan-500 checked:border-cyan-500 focus:ring focus:ring-cyan-500/50"
-                    checked={isLearning}
-                    onChange={() => setIsLearning(!isLearning)}
-                  />
-                  <span className="text-gray-300 text-sm">Enable</span>
-                </label>
-              </div>
+          {/* Command Reference Section - Now Below Terminal */}
+          <div className="rounded-lg border border-cyan-500/30 bg-gray-800/50 backdrop-blur-md">
+            <div className="p-4 border-b border-cyan-500/30">
+              <h2 className="text-xl font-semibold text-cyan-400">
+                Command Reference
+              </h2>
             </div>
-            <div className="rounded-lg border border-cyan-500/30 bg-gray-800/50 backdrop-blur-md">
-              <div className="p-4 border-b border-cyan-500/30">
-                <h2 className="text-xl font-semibold text-cyan-400">
-                  Current Task
-                </h2>
+            <div className="p-4">
+              {/* Tab Navigation */}
+              <div className="flex space-x-1 mb-4 bg-gray-700/50 p-1 rounded-lg">
+                {Object.keys(cheatsheets).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`flex-1 px-3 py-1.5 text-sm font-medium rounded-md transition-colors
+                      ${
+                        activeTab === tab
+                          ? "bg-cyan-500/20 text-cyan-400"
+                          : "text-gray-400 hover:bg-cyan-500/10 hover:text-cyan-300"
+                      }`}
+                  >
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </button>
+                ))}
               </div>
-              <div className="p-4">
-                <TaskGenerator
-                  tasks={tasks}
-                  currentLevel={currentLevel}
-                  commandHistory={commandHistory}
-                  onTaskComplete={() => {}}
-                  terminalInput={latestTerminalCommand}
-                />
-              </div>
-            </div>
 
-            {/* Command Reference */}
-            <div className="rounded-lg border border-cyan-500/30 bg-gray-800/50 backdrop-blur-md">
-              <div className="p-4 border-b border-cyan-500/30">
-                <h2 className="text-xl font-semibold text-cyan-400">
-                  Command Reference
-                </h2>
-              </div>
-              <div className="p-4">
-                {/* Tab Navigation */}
-                <div className="flex space-x-1 mb-4 bg-gray-700/50 p-1 rounded-lg">
-                  {Object.keys(cheatsheets).map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab)}
-                      className={`flex-1 px-3 py-1.5 text-sm font-medium rounded-md transition-colors
-                        ${
-                          activeTab === tab
-                            ? "bg-cyan-500/20 text-cyan-400"
-                            : "text-gray-400 hover:bg-cyan-500/10 hover:text-cyan-300"
-                        }`}
-                    >
-                      {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Commands List */}
-                <div className="space-y-2">
-                  {cheatsheets[activeTab].map((cmd, i) => (
-                    <div
-                      key={i}
-                      className="p-2 rounded-lg bg-gray-900/50 border border-gray-700/50 hover:border-cyan-500/30 transition-colors"
-                    >
-                      <code className="text-cyan-400 text-sm font-mono">
-                        {cmd.command}
-                      </code>
-                      <p className="text-gray-400 text-xs mt-1">
-                        {cmd.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+              {/* Commands List - Now in a grid for better horizontal space usage */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {cheatsheets[activeTab].map((cmd, i) => (
+                  <div
+                    key={i}
+                    className="p-2 rounded-lg bg-gray-900/50 border border-gray-700/50 hover:border-cyan-500/30 transition-colors"
+                  >
+                    <code className="text-cyan-400 text-sm font-mono">
+                      {cmd.command}
+                    </code>
+                    <p className="text-gray-400 text-xs mt-1">
+                      {cmd.description}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

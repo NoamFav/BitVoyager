@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
 import React, {
   useCallback,
@@ -65,7 +66,6 @@ const PythonQuestionRenderer = ({
   onMissionComplete,
   progressInfo,
 }) => {
-  // All hooks must be at the top level
   const [pyodide, setPyodide] = useState(null);
   const [loading, setLoading] = useState(true);
   const [code, setCode] = useState(question.code);
@@ -235,7 +235,7 @@ str(result)`.trim();
           </div>
           <div className="flex items-center space-x-6">
             <p className="text-blue-200 text-xl">
-              You're on mission control duty!
+              You&apos;re on mission control duty!
             </p>
             <div className="flex items-center space-x-2 bg-slate-800 px-4 py-2 rounded-full border border-blue-500/30">
               <span className="text-blue-400">Mission</span>

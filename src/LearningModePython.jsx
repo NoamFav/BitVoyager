@@ -1,6 +1,6 @@
 import { Brain, Rocket } from "lucide-react";
 
-// Mode Selection Component (preserved from original)
+// Mode Selection Component
 const ModeSelection = ({ onModeSelect }) => {
   return (
     <div className="min-h-screen w-full bg-slate-900 flex items-center justify-center">
@@ -50,21 +50,21 @@ const ModeSelection = ({ onModeSelect }) => {
 // Enhanced user profile structure
 const defaultUserProfile = {
   completedQuestions: [],
-  skippedQuestions: [], // New: Track skipped questions
-  failedAttempts: {}, // New: Track number of failed attempts per question
+  skippedQuestions: [],
+  failedAttempts: {},
   skillLevels: {
-    "loops": 0,
+    loops: 0,
     "list manipulation": 0,
-    "strings": 0,
+    strings: 0,
     "hash tables": 0,
-    "arrays": 0,
-    "recursion": 0,
+    arrays: 0,
+    recursion: 0,
     "dynamic programming": 0,
     "binary search": 0,
-    "matrix": 0,
-    "sorting": 0,
+    matrix: 0,
+    sorting: 0,
   },
-  questionHistory: {}, // New: Track detailed question history
+  questionHistory: {},
   lastSessionDate: null,
   consecutiveDays: 0,
 };
@@ -109,9 +109,9 @@ const calculateSkillAdjustment = (
 
   const SKIP_PENALTY = 0.7;
   const DIFFICULTY_MULTIPLIER = {
-    "easy": 0.8,
-    "medium": 1.0,
-    "hard": 1.2,
+    easy: 0.8,
+    medium: 1.0,
+    hard: 1.2,
   };
   const ATTEMPT_PENALTY = 0.15;
 
@@ -255,8 +255,9 @@ const selectLearningQuestions = (profile, allQuestions) => {
   if (!profile.failedAttempts) profile.failedAttempts = {};
 
   const availableQuestions = Object.entries(allQuestions)
-    .filter(([id]) =>
-      !isNaN(id) && !profile.completedQuestions.includes(parseInt(id))
+    .filter(
+      ([id]) =>
+        !isNaN(id) && !profile.completedQuestions.includes(parseInt(id)),
     )
     .map(([id, question]) => ({ id: parseInt(id), ...question }));
 
@@ -270,21 +271,20 @@ const selectLearningQuestions = (profile, allQuestions) => {
     let score = 0;
 
     // 1. Skill level matching (0-50 points)
-    const avgSkillForTags = question.tags.reduce((sum, tag) =>
-      sum + (profile.skillLevels[tag] || 0), 0) / question.tags.length;
+    const avgSkillForTags =
+      question.tags.reduce(
+        (sum, tag) => sum + (profile.skillLevels[tag] || 0),
+        0,
+      ) / question.tags.length;
     const difficultyScore = getDifficultyScore(question.difficulty);
     score += 50 * (1 - Math.abs(avgSkillForTags - difficultyScore) / 10);
 
     // 2. Tag diversity bonus (0-20 points)
     const uniqueTags = new Set(question.tags);
     const recentQuestions = Object.values(profile.questionHistory)
-      .sort((a, b) =>
-        new Date(b.lastAttempt) - new Date(a.lastAttempt)
-      )
+      .sort((a, b) => new Date(b.lastAttempt) - new Date(a.lastAttempt))
       .slice(0, 5);
-    const recentTags = new Set(recentQuestions.flatMap((q) =>
-      q.tags || []
-    ));
+    const recentTags = new Set(recentQuestions.flatMap((q) => q.tags || []));
     const newTagBonus =
       [...uniqueTags].filter((tag) => !recentTags.has(tag)).length * 5;
     score += Math.min(20, newTagBonus);
@@ -300,7 +300,8 @@ const selectLearningQuestions = (profile, allQuestions) => {
       score -= 50;
     }
 
-    const isRetryQuestion = profile.skippedQuestions.includes(question.id) ||
+    const isRetryQuestion =
+      profile.skippedQuestions.includes(question.id) ||
       (profile.failedAttempts[question.id] || 0) > 0;
 
     if (isRetryQuestion) {

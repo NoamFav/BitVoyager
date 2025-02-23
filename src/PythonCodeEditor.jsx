@@ -31,7 +31,6 @@ const PythonCodeEditor = ({
   const highlightTimeoutRef = useRef(null);
   const mountedRef = useRef(false);
 
-  // Prism loading logic remains the same...
   useEffect(() => {
     const loadPrism = async () => {
       try {
@@ -57,7 +56,6 @@ const PythonCodeEditor = ({
     };
   }, []);
 
-  // Highlighting logic remains the same...
   const highlightCode = useCallback(
     (codeToHighlight) => {
       if (

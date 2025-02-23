@@ -10,7 +10,7 @@ export function BashProvider({ children }) {
     return storedLevel ? parseInt(storedLevel, 10) : 1;
   });
 
-  // Expose state globally (if needed)
+  // Expose state globally
   window.currentLevel = currentLevel;
   window.setCurrentLevel = setCurrentLevel;
 

@@ -18,7 +18,7 @@ export default defineConfig({
           "Cross-Origin-Embedder-Policy": "require-corp",
         },
       }
-    : undefined, // No server settings in production
+    : undefined,
 
-  base: "/bitvoyager", // Correct base path for GitHub Pages
+  base: "/bitvoyager",
 });

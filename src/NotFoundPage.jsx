@@ -8,26 +8,26 @@ export default function NotFoundPage() {
     // Create a more interesting, winding path through the tech city
     // Working with a grid system for better organization
     const basePositions = [
-      { x: 150, y: 220 }, // Starting point (crash site)
-      { x: 320, y: 180 }, // Urban edge
-      { x: 480, y: 260 }, // City entrance
-      { x: 620, y: 180 }, // First district
-      { x: 780, y: 240 }, // Central plaza
-      { x: 880, y: 340 }, // Underground passage
-      { x: 780, y: 420 }, // Industrial zone
-      { x: 620, y: 480 }, // Power plant
-      { x: 460, y: 410 }, // Data center
-      { x: 340, y: 500 }, // Transport hub
-      { x: 220, y: 580 }, // Restricted sector
-      { x: 350, y: 660 }, // Security checkpoint
-      { x: 520, y: 620 }, // Research facility
-      { x: 680, y: 680 }, // Government district
-      { x: 820, y: 600 }, // Orbital control
-      { x: 950, y: 540 }, // Space port entrance
-      { x: 1050, y: 460 }, // Fuel depot
-      { x: 1150, y: 380 }, // Launch pad vicinity
-      { x: 1220, y: 280 }, // Final security zone
-      { x: 1350, y: 220 }, // Rocket location
+      { x: 150, y: 220 },
+      { x: 320, y: 180 },
+      { x: 480, y: 260 },
+      { x: 620, y: 180 },
+      { x: 780, y: 240 },
+      { x: 880, y: 340 },
+      { x: 780, y: 420 },
+      { x: 620, y: 480 },
+      { x: 460, y: 410 },
+      { x: 340, y: 500 },
+      { x: 220, y: 580 },
+      { x: 350, y: 660 },
+      { x: 520, y: 620 },
+      { x: 680, y: 680 },
+      { x: 820, y: 600 },
+      { x: 950, y: 540 },
+      { x: 1050, y: 460 },
+      { x: 1150, y: 380 },
+      { x: 1220, y: 280 },
+      { x: 1350, y: 220 },
     ];
 
     return basePositions;

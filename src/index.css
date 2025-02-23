@@ -11,12 +11,3 @@
   -ms-overflow-style: none; /* for IE and Edge */
   scrollbar-width: none; /* for Firefox */
 }
-.cylinder-top {
-  transform: rotateX(70deg) translateY(0px) scale(1);
-  transition: transform 0.2s ease-in-out;
-}
-
-/* When the parent group is hovered, depress the cylinder top */
-.group:hover .cylinder-top {
-  transform: rotateX(70deg) translateY(4px) scale(0.95);
-}
