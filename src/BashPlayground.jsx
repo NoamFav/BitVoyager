@@ -360,6 +360,15 @@ export default function BashPlayground() {
   const { currentLevel, incrementLevel } = useBash();
   const [latestTerminalCommand, setLatestTerminalCommand] = useState("");
   const [commandBuffer, setCommandBuffer] = useState("");
+  const [isLearning, setIsLearning] = useState(() => {
+    const storedValue = localStorage.getItem("isLearning");
+    return storedValue !== null ? JSON.parse(storedValue) : true;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("isLearning", isLearning);
+  }, [isLearning]);
+
   useEffect(() => {
     async function startWebContainer() {
       if (webContainerRef.current) return;
@@ -597,6 +606,24 @@ export default function BashPlayground() {
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
             {/* Task Generator */}
+            <div className="rounded-lg border border-cyan-500/30 bg-gray-800/50 backdrop-blur-md">
+              <div className="p-4 border-b border-cyan-500/30 flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-cyan-400">
+                  Learning Mode
+                </h2>
+
+                {/* Custom Checkbox */}
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="cursor-pointer appearance-none w-5 h-5 border border-cyan-500/30 bg-gray-900 rounded-md transition-colors checked:bg-cyan-500 checked:border-cyan-500 focus:ring focus:ring-cyan-500/50"
+                    checked={isLearning}
+                    onChange={() => setIsLearning(!isLearning)}
+                  />
+                  <span className="text-gray-300 text-sm">Enable</span>
+                </label>
+              </div>
+            </div>
             <div className="rounded-lg border border-cyan-500/30 bg-gray-800/50 backdrop-blur-md">
               <div className="p-4 border-b border-cyan-500/30">
                 <h2 className="text-xl font-semibold text-cyan-400">

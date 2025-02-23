@@ -68,6 +68,10 @@ const TaskGenerator = ({
   const [lastActivityTimestamp, setLastActivityTimestamp] = useState(
     Date.now(),
   );
+  const [isLearning, setIsLearning] = useState(() => {
+    const storedValue = localStorage.getItem("isLearning");
+    return storedValue !== null ? JSON.parse(storedValue) : true;
+  });
 
   // Initialize or update task queue
   useEffect(() => {
@@ -78,7 +82,13 @@ const TaskGenerator = ({
 
       if (taskQueue.length === 0 || taskQueue[0].level >= currentLevel) {
         setTaskQueue(newTasks);
-        setCurrentTask(newTasks.length > 0 ? newTasks[0] : null);
+        if (isLearning) {
+          setCurrentTask(newTasks.length > 0 ? newTasks[0] : null);
+        } else {
+          const randomTask =
+            newTasks[Math.floor(Math.random() * newTasks.length)];
+          setCurrentTask(randomTask);
+        }
         setCompletedCommands(new Set());
       }
     }
