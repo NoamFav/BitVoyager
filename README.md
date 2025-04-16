@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 <div align="center">
-  <img src="src/assets/logo.png" alt="BitVoyager Logo" width="200px">
+  <img src="src/assets/image.png" alt="BitVoyager Logo" width="200px">
 </div>
 
 > A gamified coding platform to learn programming languages through interactive terminal-based adventures in the browser.
