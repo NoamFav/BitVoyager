@@ -43,7 +43,7 @@ BitVoyager is a web-based platform that teaches programming languages through in
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/bitvoyager.git
+   git clone https://github.com/NoamFav/bitvoyager.git
    cd bitvoyager
    ```
 
