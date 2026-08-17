@@ -1,73 +1,47 @@
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBash } from "./useBash";
+import CityBackdrop from "./components/CityBackdrop";
 import bash from "./assets/bash.png";
+import lessons from "./data/bashLessons.json";
+
+const DOT_COLORS = ["#0ea5e9", "#6366f1", "#10b981", "#f59e0b"];
 
 function Bash() {
   const [hoveredLevel, setHoveredLevel] = useState(null);
-  const { currentLevel, setCurrentLevel } = useBash();
+  const { currentLevel } = useBash();
   const navigate = useNavigate();
 
-  // Story progression stages
-  const storyStages = [
-    "Crash Landing",
-    "First Contact",
-    "City Navigation",
-    "Security Breach",
-    "Data Retrieval",
-    "Power Systems",
-    "Communication Array",
-    "Stealth Operations",
-    "AI Negotiation",
-    "Resource Collection",
-    "Transport Systems",
-    "Firewall Bypass",
-    "System Override",
-    "Restricted Zone",
-    "Rocket Location",
-    "Security Bypass",
-    "Fuel Synthesis",
-    "Launch Preparation",
-    "Final Countdown",
-    "Escape",
-  ];
+  // Computed once so hovering a level doesn't reshuffle every dot on the map.
+  const techDots = useMemo(
+    () =>
+      Array.from({ length: 30 }, (_, i) => ({
+        id: i,
+        x: Math.random() * (typeof window !== "undefined" ? window.innerWidth : 1200),
+        y: Math.random() * (typeof window !== "undefined" ? window.innerHeight : 800),
+        size: 2 + Math.random() * 4,
+        color: DOT_COLORS[Math.floor(Math.random() * DOT_COLORS.length)],
+        min: 0.15 + Math.random() * 0.15,
+        max: 0.5 + Math.random() * 0.4,
+        duration: 2.5 + Math.random() * 3,
+        delay: -Math.random() * 4,
+      })),
+    [],
+  );
 
-  const stageDescription = [
-    "Your spacecraft has crash-landed on NEXUS-9, a highly advanced technological planet. To return to your rocket and escape, you must navigate through the city's systems using BASH commands. Each challenge you overcome brings you closer to freedom. Good luck, Commander.",
-    "You have made first contact with the city's inhabitants. They are willing to help you, but only if you can prove your worth. Navigate through the city's urban edge to reach the city entrance.",
-    "The city's systems are complex and interconnected. Use your BASH skills to navigate through the first district and reach the central plaza.",
-    "Security measures have been triggered. You must bypass security protocols and gain deeper access to the city's restricted zones.",
-    "Critical information about the city's infrastructure is stored in secure data vaults. Extract this data to advance.",
-    "The city's power grid is unstable. Restore the energy systems using advanced shell commands.",
-    "Communication systems are heavily encrypted. Decipher and establish a secure link to communicate with potential allies.",
-    "Security drones are patrolling the area. Use stealth and redirection techniques to avoid detection.",
-    "An AI overlord governs the city. Engage in negotiations, convincing the AI to grant you access to deeper levels.",
-    "Resources are scarce, and you need vital supplies to proceed. Collect and manage resources strategically.",
-    "You must gain control of transport systems to move swiftly through the city and avoid obstacles.",
-    "The city's firewalls are blocking further progress. Use advanced scripting techniques to bypass digital barriers.",
-    "You need full system control. Override critical processes and take command of city operations.",
-    "You've entered a restricted zone filled with high-level encryption and security traps. Navigate safely and find a way out.",
-    "Your rocket’s last known location is deep within the city's most fortified sector. Locate and secure it before it’s too late.",
-    "Final security barriers stand between you and the launch site. Use all your skills to bypass them.",
-    "Fuel synthesis is needed for liftoff. Access chemical processing units and optimize fuel production.",
-    "Prepare your ship for launch by ensuring all systems are functional and secure.",
-    "The final countdown begins. Time is running out—execute the last set of commands to initiate the launch sequence.",
-    "Mission complete! Your rocket is airborne, and you have successfully escaped NEXUS-9. Congratulations, Commander!",
-  ];
-  // Generate 20 levels with game progression context
-  const levels = Array.from({ length: 20 }, (_, i) => ({
-    number: i + 1,
-    name: storyStages[i],
+  // Generate levels with game progression context, sourced from the lesson data
+  const levels = lessons.map((lesson, i) => ({
+    number: lesson.id,
+    name: lesson.title,
+    objective: lesson.objective,
     completed: i < currentLevel - 1,
     current: i === currentLevel - 1,
-    locked: i > currentLevel,
-    bashSkill: getBashSkillForLevel(i + 1),
+    locked: i > currentLevel - 1,
+    bashSkill: getBashSkillForLevel(lesson.id),
   }));
 
   // Calculate positions for a futuristic path through a neon city
   const calculatePositions = () => {
-    // Create a more interesting, winding path through the tech city
-    // Working with a grid system for better organization
     const basePositions = [
       { x: 150, y: 220 },
       { x: 320, y: 180 },
@@ -90,100 +64,29 @@ function Bash() {
       { x: 1220, y: 280 },
       { x: 1350, y: 220 },
     ];
-
     return basePositions;
   };
 
   const positions = calculatePositions();
 
-  // Dimensions for the SVG that draws the paths
   const svgWidth = Math.max(...positions.map((p) => p.x)) + 200;
   const svgHeight = Math.max(...positions.map((p) => p.y)) + 120;
 
-  // Create paths between levels with futuristic/tech style
-  const getPathBetweenLevels = (pos1, pos2, isCompleted) => {
-    // Calculate control points for a gentle curve
+  const getPathBetweenLevels = (pos1, pos2) => {
     const dx = pos2.x - pos1.x;
     const dy = pos2.y - pos1.y;
     const midX = pos1.x + dx / 2;
     const midY = pos1.y + dy / 2;
-
-    // Offset control point perpendicular to the line for a nice curve
     const perpX = -dy * 0.3;
     const perpY = dx * 0.3;
-
-    return `M ${pos1.x},${pos1.y} 
+    return `M ${pos1.x},${pos1.y}
             Q ${midX + perpX},${midY + perpY} ${pos2.x},${pos2.y}`;
   };
 
-  // Animation for the background glow effects
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const glows = document.querySelectorAll(".city-glow");
-      glows.forEach((glow) => {
-        const newOpacity = 0.3 + Math.random() * 0.3;
-        const newBlur = 20 + Math.random() * 15;
-        glow.style.opacity = newOpacity;
-        glow.style.filter = `blur(${newBlur}px)`;
-      });
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="relative w-full h-screen bg-gray-900 overflow-auto no-scrollbar">
-      {/* Futuristic tech sky with distant cities and glowing elements */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-gray-900 via-indigo-900 to-gray-900 overflow-hidden">
-        {/* Distant skyline silhouette */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-64 bg-gray-900 opacity-60"
-          style={{
-            maskImage: "linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))",
-            WebkitMaskImage:
-              "linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))",
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='1200' height='300' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,250 L50,240 L80,190 L110,230 L140,210 L180,180 L220,240 L270,220 L300,200 L320,230 L350,210 L380,190 L420,240 L460,200 L490,230 L520,210 L550,190 L590,220 L630,230 L660,210 L690,200 L720,240 L750,220 L790,180 L830,240 L870,210 L910,230 L940,200 L980,220 L1020,240 L1050,190 L1080,210 L1110,230 L1140,200 L1170,240 L1200,250 L1200,300 L0,300 Z' fill='%23111827'/%3E%3C/svg%3E")`,
-          }}
-        ></div>
+      <CityBackdrop />
 
-        {/* Glowing city elements */}
-        {[...Array(15)].map((_, i) => (
-          <div
-            key={`citylight-${i}`}
-            className="city-glow absolute rounded-full transition-all duration-2000"
-            style={{
-              width: 20 + Math.random() * 100,
-              height: 20 + Math.random() * 100,
-              // Use full viewport height/width for positioning
-              top: Math.random() * window.innerHeight,
-              left: Math.random() * window.innerWidth,
-              background: `radial-gradient(circle, ${
-                [
-                  "rgba(59,130,246,0.5)",
-                  "rgba(139,92,246,0.5)",
-                  "rgba(6,182,212,0.5)",
-                  "rgba(16,185,129,0.5)",
-                ][Math.floor(Math.random() * 4)]
-              } 0%, transparent 70%)`,
-              opacity: 0.3 + Math.random() * 0.3,
-              filter: `blur(${20 + Math.random() * 15}px)`,
-            }}
-          />
-        ))}
-
-        {/* Grid lines to represent the tech city structure */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-                 linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
-                 linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px)
-               `,
-            backgroundSize: "80px 80px",
-            opacity: 0.5,
-          }}
-        ></div>
-      </div>
       {/* Futuristic header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-gray-900 bg-opacity-80 backdrop-filter backdrop-blur-md border-b border-cyan-500/30">
         <div className="w-full max-w-6xl mx-auto px-6 py-4">
@@ -243,7 +146,7 @@ function Bash() {
                 <span className="text-white text-xs font-medium">
                   MISSION PROGRESS:{" "}
                   <span className="font-mono text-cyan-400">
-                    {Math.round(((currentLevel - 1) / 20) * 100)}%
+                    {Math.round(((currentLevel - 1) / levels.length) * 100)}%
                   </span>
                 </span>
               </div>
@@ -256,7 +159,7 @@ function Bash() {
           MISSION BRIEFING
         </h2>
         <p className="text-gray-200 leading-relaxed">
-          {stageDescription[currentLevel - 1]}
+          {lessons[currentLevel - 1]?.briefing?.[0]}
         </p>
       </div>
 
@@ -272,25 +175,20 @@ function Bash() {
           height={svgHeight}
         >
           {/* Decorative tech elements */}
-          {[...Array(30)].map((_, i) => {
-            const x = Math.random() * window.innerWidth;
-            const y = Math.random() * window.innerHeight;
-            const size = 2 + Math.random() * 4;
-            return (
-              <circle
-                key={`tech-dot-${i}`}
-                cx={x}
-                cy={y}
-                r={size}
-                fill={
-                  ["#0ea5e9", "#6366f1", "#10b981", "#f59e0b"][
-                    Math.floor(Math.random() * 4)
-                  ]
-                }
-                opacity={0.4 + Math.random() * 0.4}
-              />
-            );
-          })}
+          {techDots.map((dot) => (
+            <circle
+              key={`tech-dot-${dot.id}`}
+              cx={dot.x}
+              cy={dot.y}
+              r={dot.size}
+              fill={dot.color}
+              style={{
+                "--dot-min": dot.min,
+                "--dot-max": dot.max,
+                animation: `dotTwinkle ${dot.duration}s ease-in-out ${dot.delay}s infinite`,
+              }}
+            />
+          ))}
 
           {/* Connection paths */}
           {positions.map((pos, i) => {
@@ -298,9 +196,8 @@ function Bash() {
             const nextPos = positions[i + 1];
             const isPathCompleted = levels[i].completed;
             const isPathActive = levels[i].completed && levels[i + 1].current;
-            const d = getPathBetweenLevels(pos, nextPos, isPathCompleted);
+            const d = getPathBetweenLevels(pos, nextPos);
 
-            // Different path styles based on progress
             let strokeColor = "url(#lockedGradient)";
             let strokeWidth = 4;
             let strokeDasharray = "";
@@ -320,7 +217,6 @@ function Bash() {
 
             return (
               <g key={`path-${i}`}>
-                {/* Main path */}
                 <path
                   d={d}
                   stroke={strokeColor}
@@ -331,7 +227,6 @@ function Bash() {
                   style={{ animation: pathAnimation }}
                 />
 
-                {/* Glow effect for completed paths */}
                 {(isPathCompleted || isPathActive) && (
                   <path
                     d={d}
@@ -347,40 +242,20 @@ function Bash() {
             );
           })}
 
-          {/* Gradient definitions */}
           <defs>
-            <linearGradient
-              id="completedGradient"
-              x1="0%"
-              y1="0%"
-              x2="100%"
-              y2="0%"
-            >
+            <linearGradient id="completedGradient" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#10b981" />
               <stop offset="100%" stopColor="#06b6d4" />
             </linearGradient>
-            <linearGradient
-              id="currentGradient"
-              x1="0%"
-              y1="0%"
-              x2="100%"
-              y2="0%"
-            >
+            <linearGradient id="currentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#0ea5e9" />
               <stop offset="100%" stopColor="#6366f1" />
             </linearGradient>
-            <linearGradient
-              id="lockedGradient"
-              x1="0%"
-              y1="0%"
-              x2="100%"
-              y2="0%"
-            >
+            <linearGradient id="lockedGradient" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#475569" stopOpacity="0.3" />
               <stop offset="100%" stopColor="#475569" stopOpacity="0.1" />
             </linearGradient>
 
-            {/* Animations */}
             <style>
               {`
                 @keyframes activePath {
@@ -400,6 +275,10 @@ function Bash() {
                   0% { transform: translateX(-50%) translateY(-50%) rotate(0deg) translateX(24px) rotate(0deg); }
                   100% { transform: translateX(-50%) translateY(-50%) rotate(360deg) translateX(24px) rotate(-360deg); }
                 }
+                @keyframes dotTwinkle {
+                  0%, 100% { opacity: var(--dot-min); }
+                  50% { opacity: var(--dot-max); }
+                }
               `}
             </style>
           </defs>
@@ -408,11 +287,10 @@ function Bash() {
         {/* Render each level as a futuristic tech node */}
         {positions.map((pos, i) => {
           const level = levels[i];
+          if (!level) return null;
 
-          // Determine level appearance based on status
           let bgGradient, ringColor, textColor, nodeSize;
           let iconType = null;
-          let animation = "";
 
           if (level.completed) {
             bgGradient = "bg-gradient-to-br from-emerald-500 to-teal-600";
@@ -425,7 +303,6 @@ function Bash() {
             ringColor = "border-blue-400";
             textColor = "text-white";
             nodeSize = "w-20 h-20";
-            animation = "animation: pulseGlow 2s ease-in-out infinite;";
           } else {
             bgGradient = "bg-gradient-to-br from-gray-700 to-gray-800";
             ringColor = "border-gray-600";
@@ -453,13 +330,11 @@ function Bash() {
                 }
               }}
             >
-              {/* Tech Node with futuristic design */}
               <div
                 className={`relative ${isHovered ? "-translate-y-1" : ""} transition-transform duration-200`}
               >
-                {/* Node glow effect */}
                 <div
-                  className={`absolute rounded-full transition-all duration-300 opacity-70`}
+                  className="absolute rounded-full transition-all duration-300 opacity-70"
                   style={{
                     width: level.current ? "100px" : "80px",
                     height: level.current ? "100px" : "80px",
@@ -478,9 +353,9 @@ function Bash() {
 
                 {isHovered && (
                   <div
-                    className="absolute -top-20 whitespace-nowrap bg-gray-800/90 backdrop-filter backdrop-blur-md px-4 py-3 rounded-lg shadow-xl border border-gray-700 z-999 text-center"
+                    className="absolute -top-24 bg-gray-800/90 backdrop-filter backdrop-blur-md px-4 py-3 rounded-lg shadow-xl border border-gray-700 z-50 text-center"
                     style={{
-                      width: "220px",
+                      width: "240px",
                       left: "50%",
                       transform: "translateX(-50%)",
                     }}
@@ -491,19 +366,21 @@ function Bash() {
                       >
                         {level.name}
                       </span>
-                      <span className="text-xs text-gray-300">
+                      <span className="text-xs text-gray-300 leading-relaxed">
                         {level.locked
                           ? "Access restricted. Complete previous challenges."
                           : level.completed
                             ? "Challenge completed! Revisit this node for practice."
-                            : `Bash Skill: ${level.bashSkill}`}
+                            : level.objective}
+                      </span>
+                      <span className="text-[10px] text-cyan-500/80 mt-1.5 uppercase tracking-wide">
+                        {level.bashSkill}
                       </span>
                     </div>
                     <div className="absolute w-3 h-3 bg-gray-800 border-t border-l border-gray-700 transform rotate-45 bottom-0 translate-y-1.5 left-1/2 -ml-1.5"></div>
                   </div>
                 )}
 
-                {/* Tech node shape */}
                 <div
                   className={`relative ${nodeSize} rounded-full flex items-center justify-center ${bgGradient} border-2 ${ringColor} shadow-lg transition-all duration-300 overflow-hidden`}
                   style={{
@@ -515,29 +392,10 @@ function Bash() {
                     }),
                   }}
                 >
-                  {/* Tech patterns - decorative circuitry-like lines */}
                   <div className="absolute inset-0 opacity-20 pointer-events-none">
-                    <svg
-                      width="100%"
-                      height="100%"
-                      viewBox="0 0 100 100"
-                      fill="none"
-                    >
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke="white"
-                        strokeWidth="0.5"
-                        strokeDasharray="1 4"
-                      />
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="30"
-                        stroke="white"
-                        strokeWidth="0.5"
-                      />
+                    <svg width="100%" height="100%" viewBox="0 0 100 100" fill="none">
+                      <circle cx="50" cy="50" r="40" stroke="white" strokeWidth="0.5" strokeDasharray="1 4" />
+                      <circle cx="50" cy="50" r="30" stroke="white" strokeWidth="0.5" />
                       <path
                         d="M50 10 L50 20 M50 80 L50 90 M10 50 L20 50 M80 50 L90 50"
                         stroke="white"
@@ -546,7 +404,6 @@ function Bash() {
                     </svg>
                   </div>
 
-                  {/* Orbital dots for current level */}
                   {level.current && (
                     <div className="absolute inset-0 pointer-events-none">
                       <div
@@ -555,35 +412,18 @@ function Bash() {
                       ></div>
                       <div
                         className="absolute top-1/2 left-1/2 w-1 h-1 bg-white rounded-full opacity-80"
-                        style={{
-                          animation: "orbitDot 3s linear infinite reverse",
-                        }}
+                        style={{ animation: "orbitDot 3s linear infinite reverse" }}
                       ></div>
                     </div>
                   )}
 
-                  {/* Level content */}
                   <div className="relative flex flex-col items-center justify-center">
                     {iconType === "checkmark" ? (
-                      <svg
-                        className="w-8 h-8 text-white"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                      >
-                        <path
-                          d="M5 13l4 4L19 7"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
+                      <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                        <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     ) : iconType === "lock" ? (
-                      <svg
-                        className="w-8 h-8 text-gray-400"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                      >
+                      <svg className="w-8 h-8 text-gray-400" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2C9.24 2 7 4.24 7 7v4H6c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2h-1V7c0-2.76-2.24-5-5-5zm1 15.06c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM14 10h-4V7c0-1.1.9-2 2-2s2 .9 2 2v3z" />
                       </svg>
                     ) : (
@@ -594,7 +434,6 @@ function Bash() {
                   </div>
                 </div>
 
-                {/* Level number badge for completed levels */}
                 {level.completed && (
                   <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white text-emerald-600 flex items-center justify-center text-xs font-bold shadow-md z-10">
                     {level.number}
@@ -602,7 +441,6 @@ function Bash() {
                 )}
               </div>
 
-              {/* Level name below the tech node */}
               <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 text-center">
                 <span
                   className={`text-xs font-medium ${level.locked ? "text-gray-500" : level.current ? "text-cyan-400" : "text-emerald-400"}`}
@@ -618,7 +456,7 @@ function Bash() {
   );
 }
 
-// Helper function to get a Bash skill for each level
+// Helper function to get a Bash skill label for each level
 function getBashSkillForLevel(level) {
   const skills = [
     "Basic Commands",

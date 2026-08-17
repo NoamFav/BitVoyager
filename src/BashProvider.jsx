@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import Cookies from "js-cookie";
 import { BashContext } from "./BashContext";
 
+// eslint-disable-next-line react/prop-types -- children: node, no prop-types dependency in this project
 export function BashProvider({ children }) {
   // Load initial level from cookies or default to 1
   const [currentLevel, setCurrentLevel] = useState(() => {
@@ -25,7 +25,3 @@ export function BashProvider({ children }) {
     </BashContext.Provider>
   );
 }
-
-BashProvider.propTypes = {
-  children: PropTypes.node.isRequired,
-};

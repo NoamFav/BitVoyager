@@ -1,0 +1,437 @@
+[
+  {
+    "id": 1,
+    "title": "Crash Landing",
+    "briefing": [
+      "Your ship went down hard on NEXUS-9, a planet wired with technology centuries ahead of anything back home.",
+      "The emergency terminal is the only system still responding. Before you do anything else, you need to know where you are, what you're running, and what's around you."
+    ],
+    "objective": "A distress beacon needs its activation code. Find the hidden code file and copy its contents into beacon_status.txt.",
+    "hints": [
+      "ls only shows what isn't hidden. Add -a to see everything, including dotfiles.",
+      "pwd tells you where you are; uname -a tells you what you're running.",
+      "Redirect one file's contents into a new one: cat SOURCE > beacon_status.txt"
+    ],
+    "cwd": "/home/voyager/landing_zone",
+    "files": {
+      "home/voyager/landing_zone/crash.log": "NEXUS-9 EMERGENCY SYSTEM\nImpact registered at 03:14 local time.\nHull integrity: 81% and holding.\nEmergency terminal activated.",
+      "home/voyager/landing_zone/system_logs/system.log": "Boot sequence nominal.\nAll subsystems responding.",
+      "home/voyager/landing_zone/.beacon_code": "BEACON-7719-ACTIVE"
+    },
+    "check": {
+      "all": [
+        { "type": "fileExists", "path": "/home/voyager/landing_zone/beacon_status.txt" },
+        { "type": "fileEquals", "path": "/home/voyager/landing_zone/beacon_status.txt", "other": "/home/voyager/landing_zone/.beacon_code" }
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "title": "First Contact",
+    "briefing": [
+      "A local has patched you into the city's edge network. They won't help directly — city custom, apparently — but they've left the door unlocked.",
+      "Somewhere in this segment of the network is a real entrance key. There's also a decoy, sitting in plain sight, for anyone who doesn't look twice."
+    ],
+    "objective": "Find the real entrance key hidden in the city's edge network and copy it to ~/access_granted.key.",
+    "hints": [
+      "find . -type f -name \"*.key\" surfaces every key file, public or hidden.",
+      "Hidden directories dodge plain ls too — ls -a reveals them.",
+      "cp the real key to /home/voyager/access_granted.key once you've identified it."
+    ],
+    "cwd": "/home/voyager/city/edge",
+    "files": {
+      "home/voyager/city/edge/.access_history": "Recent access attempts logged.",
+      "home/voyager/city/edge/public_terminal/visitor.key": "VISITOR-KEY-88 (public terminal, low clearance)",
+      "home/voyager/city/edge/.hidden_path/entrance.key": "ENTRANCE-KEY-NX9-2210"
+    },
+    "check": {
+      "all": [
+        { "type": "fileExists", "path": "/home/voyager/access_granted.key" },
+        { "type": "fileEquals", "path": "/home/voyager/access_granted.key", "other": "/home/voyager/city/edge/.hidden_path/entrance.key" }
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "title": "City Navigation",
+    "briefing": [
+      "District 1's layout doesn't hold still — the city reshapes its streets on some schedule nobody's cracked yet.",
+      "The old hands here don't rely on landmarks. They build their own: a fixed path of directories, marked with a file at the end so it's unmistakable."
+    ],
+    "objective": "Lay a stable path through the district: create the nested folders path/to/central/plaza, then drop a breadcrumb.txt file inside it.",
+    "hints": [
+      "mkdir -p path/to/central/plaza creates every level of that path in one shot.",
+      "touch path/to/central/plaza/breadcrumb.txt marks the end of the trail.",
+      "ls -R will show you the whole structure you've built."
+    ],
+    "cwd": "/home/voyager/city/district_1",
+    "files": {
+      "home/voyager/city/district_1/district_map.txt": "District 1: layout unstable. Coordinates unreliable without physical markers."
+    },
+    "check": {
+      "all": [
+        { "type": "dirExists", "path": "/home/voyager/city/district_1/path/to/central/plaza" },
+        { "type": "fileExists", "path": "/home/voyager/city/district_1/path/to/central/plaza/breadcrumb.txt" }
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "title": "Security Breach",
+    "briefing": [
+      "Sector 7-G's alarms are still going off. Something tripped them, and the access log is full of noise from routine traffic.",
+      "Buried in there are the actual CRITICAL entries — the ones worth reading. And whoever left the vault config lying around with open permissions made this easier than it should be."
+    ],
+    "objective": "Pull every CRITICAL line out of the security log into alerts.txt, then lock vault.conf down to owner-only access (600).",
+    "hints": [
+      "grep CRITICAL security_logs/access.log filters the log down to what matters.",
+      "Redirect that output into a new file: grep CRITICAL security_logs/access.log > alerts.txt",
+      "chmod 600 vault.conf leaves read/write for the owner only."
+    ],
+    "cwd": "/home/voyager/security/zone_7g",
+    "files": {
+      "home/voyager/security/zone_7g/security_logs/access.log": "192.168.4.2 GET /status 200 OK\n192.168.4.9 GET /admin 403 DENIED\nCRITICAL: unauthenticated write attempt on /config\n192.168.4.2 GET /status 200 OK\nCRITICAL: privilege escalation attempt blocked\n192.168.4.15 GET /health 200 OK",
+      "home/voyager/security/zone_7g/vault.conf": "clearance=restricted\ncontents=launch_override_codes"
+    },
+    "check": {
+      "all": [
+        { "type": "pipelineOutput", "pipeline": "grep CRITICAL /home/voyager/security/zone_7g/security_logs/access.log", "path": "/home/voyager/security/zone_7g/alerts.txt" },
+        { "type": "mode", "path": "/home/voyager/security/zone_7g/vault.conf", "equals": "600" }
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "title": "Data Retrieval",
+    "briefing": [
+      "The data vault holds records on everyone who's passed through NEXUS-9 — but the archive is a mess of duplicates and unordered noise.",
+      "A pipeline of small, sharp tools will do what no single command can: cut the ID column out, drop the duplicates, and put it in order."
+    ],
+    "objective": "Extract every unique record ID from records.csv, sorted numerically, into sorted_ids.txt.",
+    "hints": [
+      "cut -d, -f1 records.csv pulls out just the first comma-separated column.",
+      "Pipe that into sort -nu to sort numerically and drop duplicates in one step.",
+      "Chain it all together and redirect: cut -d, -f1 records.csv | sort -nu > sorted_ids.txt"
+    ],
+    "cwd": "/home/voyager/data_vault",
+    "files": {
+      "home/voyager/data_vault/records.csv": "3,charlie\n1,alpha\n2,bravo\n1,alpha\n2,bravo\n3,charlie"
+    },
+    "check": {
+      "type": "pipelineOutput",
+      "pipeline": "cut -d, -f1 /home/voyager/data_vault/records.csv | sort -nu",
+      "path": "/home/voyager/data_vault/sorted_ids.txt"
+    }
+  },
+  {
+    "id": 6,
+    "title": "Power Systems",
+    "briefing": [
+      "The grid is bleeding power and there's a runaway process to blame — something spawned during the crash and never stopped.",
+      "It's still in the process table if you know where to look. Find it, and put it down."
+    ],
+    "objective": "A rogue process called power_leak is draining the grid. Find its PID and kill it.",
+    "hints": [
+      "ps aux lists every running process, including its PID.",
+      "kill -9 PID terminates a process by its ID, no questions asked.",
+      "pgrep power_leak will find the PID for you directly, if you'd rather skip ps."
+    ],
+    "cwd": "/home/voyager/power/control",
+    "files": {
+      "home/voyager/power/control/grid.conf": "main_grid=UNSTABLE\ndraw_rate=CRITICAL"
+    },
+    "processes": [{ "pid": 1842, "name": "power_leak" }],
+    "check": { "type": "processGone", "name": "power_leak" }
+  },
+  {
+    "id": 7,
+    "title": "Communication Array",
+    "briefing": [
+      "There's a signal coming in on the array, but the network interface has been down since the crash and the transmission itself is encoded.",
+      "Bring the link up, then work out what's being said."
+    ],
+    "objective": "Bring the network interface online, then decode the incoming signal into decoded.txt.",
+    "hints": [
+      "ifconfig eth0 up brings the interface online.",
+      "The signal file is base64 underneath — base64 -d signal_1.enc decodes it directly.",
+      "gpg --decrypt also works here, and writes straight to a file with -o decoded.txt."
+    ],
+    "cwd": "/home/voyager/comms/array",
+    "files": {
+      "home/voyager/comms/array/encrypted_comms/signal_1.enc": "QUxMWSBGUkVRVUVOQ1kgMTE4LjcgTUhaIC0gUkVTUE9ORCBPTiBDT05UQUNU"
+    },
+    "check": {
+      "all": [
+        { "type": "interfaceUp", "iface": "eth0" },
+        { "type": "fileContains", "path": "/home/voyager/comms/array/decoded.txt", "contains": "118.7" }
+      ]
+    }
+  },
+  {
+    "id": 8,
+    "title": "Stealth Operations",
+    "briefing": [
+      "Security drones are sweeping this sector on a 45-second interval. Every command you run risks lighting up their sensors.",
+      "The trick isn't avoiding commands — it's avoiding evidence. Discard your output, then erase the log of what you did."
+    ],
+    "objective": "Run a scan without leaving a trace: redirect its output to /dev/null, then wipe your command history clean.",
+    "hints": [
+      "Redirect anything you don't want seen straight to /dev/null.",
+      "history -c erases your command history — the only proof you were ever here.",
+      "Once history is cleared, you're done — no drone can reconstruct what it didn't log."
+    ],
+    "cwd": "/home/voyager/stealth/zone",
+    "files": {
+      "home/voyager/stealth/zone/drone_patterns.log": "Drone sweep interval: 45s\nLast detection: none"
+    },
+    "check": { "all": [{ "type": "historyCleared" }, { "type": "historyEmpty" }] }
+  },
+  {
+    "id": 9,
+    "title": "AI Negotiation",
+    "briefing": [
+      "The city's central AI runs on pure logic and doesn't extend courtesy to those who can't speak its language.",
+      "It wants to see conditional reasoning: check the state of the core, and respond appropriately depending on what you find."
+    ],
+    "objective": "Check whether paradox.dat exists. If it does, write STABLE into core_state.txt — otherwise write CRITICAL.",
+    "hints": [
+      "test -f FILE (or [ -f FILE ]) checks whether a file exists.",
+      "if [ -f paradox.dat ]; then ... ; else ... ; fi is the full shape of the statement.",
+      "Full line: if [ -f paradox.dat ]; then echo STABLE > core_state.txt; else echo CRITICAL > core_state.txt; fi"
+    ],
+    "cwd": "/home/voyager/ai/nexus",
+    "files": {
+      "home/voyager/ai/nexus/paradox.dat": "PARADOX-STATE: UNSTABLE"
+    },
+    "check": { "type": "fileContains", "path": "/home/voyager/ai/nexus/core_state.txt", "contains": "STABLE" }
+  },
+  {
+    "id": 10,
+    "title": "Resource Collection",
+    "briefing": [
+      "Your cargo hold survived the crash, but there's barely room in it for anything. Every resource you collect from here on has to be packed tight.",
+      "The city runs on the same problem at a larger scale — which is why it has tools for exactly this."
+    ],
+    "objective": "Archive the resources directory and compress it to fit the ship's limited cargo hold.",
+    "hints": [
+      "tar cvf resources.tar resources bundles the whole folder into one archive.",
+      "gzip resources.tar compresses it down to resources.tar.gz.",
+      "du -sh resources.tar.gz shows you how much space you actually saved."
+    ],
+    "cwd": "/home/voyager/resources/storage",
+    "files": {
+      "home/voyager/resources/storage/resources/water.dat": "H2O reserve: 340L, purity 98%",
+      "home/voyager/resources/storage/resources/food.dat": "Ration packs: 56 units",
+      "home/voyager/resources/storage/resources/air.dat": "O2 scrubber charge: 71%"
+    },
+    "check": { "type": "fileExists", "path": "/home/voyager/resources/storage/resources.tar.gz" }
+  },
+  {
+    "id": 11,
+    "title": "Transport Systems",
+    "briefing": [
+      "The transport grid can route you across the city automatically, but only if you can get comfortable handing work off to the background instead of waiting on it.",
+      "Queue the route calculation, let it run, and check in on it without blocking your own terminal."
+    ],
+    "objective": "Queue an automated transport calculation in the background, then confirm it shows up in your job table.",
+    "hints": [
+      "Append & to a command to run it in the background: sleep 2 &",
+      "jobs lists everything you've backgrounded, and its current state.",
+      "Give it a moment, then run jobs again — it should flip from running to done on its own."
+    ],
+    "cwd": "/home/voyager/transport/control",
+    "files": {
+      "home/voyager/transport/control/routes.conf": "coverage=63%\nactive_vehicles=42"
+    },
+    "check": { "type": "jobDone", "name": "sleep" }
+  },
+  {
+    "id": 12,
+    "title": "Firewall Bypass",
+    "briefing": [
+      "There's a probe script sitting here, already written, already capable of testing the firewall's rule set for weaknesses.",
+      "It just isn't allowed to run yet. That's a permissions problem, and permissions problems have a one-line fix."
+    ],
+    "objective": "Make the firewall probe script executable, then run it to reveal the vulnerable rule.",
+    "hints": [
+      "chmod +x probe.sh grants execute permission.",
+      "Run it with ./probe.sh once it's executable.",
+      "Whatever it finds, it'll write to vulnerability.txt — check that file once it's run."
+    ],
+    "cwd": "/home/voyager/security/firewall",
+    "files": {
+      "home/voyager/security/firewall/probe.sh": "echo 'Probing rule set...'\necho 'VULNERABILITY: rule 7 permits unauthenticated access' > vulnerability.txt"
+    },
+    "fileModes": {
+      "home/voyager/security/firewall/probe.sh": 420
+    },
+    "check": { "type": "fileContains", "path": "/home/voyager/security/firewall/vulnerability.txt", "contains": "rule 7" }
+  },
+  {
+    "id": 13,
+    "title": "System Override",
+    "briefing": [
+      "core.lock has full control of the mainframe and it isn't going anywhere — not for an ordinary user, anyway.",
+      "This is the kind of process that only answers to root. You'll need to become root first."
+    ],
+    "objective": "Escalate your privileges and forcefully terminate core.lock — it will refuse an ordinary kill.",
+    "hints": [
+      "kill -9 on its own will come back with 'Operation not permitted'.",
+      "sudo runs a single command with root privileges: sudo kill -9 PID",
+      "ps aux will remind you of its PID if you need it."
+    ],
+    "cwd": "/home/voyager/system/control",
+    "files": {
+      "home/voyager/system/control/override.conf": "distributed_control=true\ncritical_systems=17"
+    },
+    "processes": [{ "pid": 501, "name": "core.lock", "protected": true }],
+    "check": { "type": "processGone", "name": "core.lock" }
+  },
+  {
+    "id": 14,
+    "title": "Restricted Zone",
+    "briefing": [
+      "The vault partition here is encrypted, and it's not coming loose without the right unlock procedure.",
+      "Whatever's inside was worth locking up. Given where you are, it's probably worth finding."
+    ],
+    "objective": "Unlock the encrypted vault partition and read the coordinates stored inside.",
+    "hints": [
+      "cryptsetup luksOpen secret.luks vault unlocks the device and maps it.",
+      "Once unlocked, the plaintext lives at /dev/mapper/vault.",
+      "cat /dev/mapper/vault to read it."
+    ],
+    "cwd": "/home/voyager/restricted/vault",
+    "files": {
+      "home/voyager/restricted/vault/secret.luks": "QkFZIENPT1JESU5BVEVTOiA0MS4yTiAtOC42VyAtIEhVTEwgQlJFQUNIIFNFQUxFRA=="
+    },
+    "check": { "type": "fileContains", "path": "/dev/mapper/vault", "contains": "COORDINATES" }
+  },
+  {
+    "id": 15,
+    "title": "Rocket Location",
+    "briefing": [
+      "Your ship's last known position was scattered across the tracking system in fragments — a defense measure against exactly this kind of search.",
+      "Individually the fragments mean nothing. Combined, they're a location."
+    ],
+    "objective": "Combine every coordinate fragment in coordinate_fragments/ into a single file, ship_location.txt.",
+    "hints": [
+      "find . -name \"*.dat\" will surface every fragment, wherever it's hiding.",
+      "A glob works just as well here since they're all in one folder: cat coordinate_fragments/*.dat",
+      "Redirect the combined output: cat coordinate_fragments/*.dat > ship_location.txt"
+    ],
+    "cwd": "/home/voyager/tracking/system",
+    "files": {
+      "home/voyager/tracking/system/coordinate_fragments/x.dat": "X: 41.2",
+      "home/voyager/tracking/system/coordinate_fragments/y.dat": "Y: -8.6",
+      "home/voyager/tracking/system/coordinate_fragments/z.dat": "Z: 0.3"
+    },
+    "check": {
+      "type": "pipelineOutput",
+      "pipeline": "cat /home/voyager/tracking/system/coordinate_fragments/*.dat",
+      "path": "/home/voyager/tracking/system/ship_location.txt"
+    }
+  },
+  {
+    "id": 16,
+    "title": "Security Bypass",
+    "briefing": [
+      "The launch site gateway doesn't check credentials the way you'd expect — it checks your environment itself, looking for a specific signature before it lets anyone through.",
+      "You don't need to break in. You just need to look like you belong."
+    ],
+    "objective": "The gateway checks for a specific environment variable. Export CLEARANCE_CODE=NX9-OMEGA to satisfy it.",
+    "hints": [
+      "export VARIABLE=value sets an environment variable for your session.",
+      "env (or just set) lists everything currently exported, if you want to double-check.",
+      "The gateway is looking for exactly one name and one value — case and spelling both matter."
+    ],
+    "cwd": "/home/voyager/launch/security",
+    "files": {
+      "home/voyager/launch/security/validation.conf": "expects=CLEARANCE_CODE"
+    },
+    "check": { "type": "envVar", "name": "CLEARANCE_CODE", "equals": "NX9-OMEGA" }
+  },
+  {
+    "id": 17,
+    "title": "Fuel Synthesis",
+    "briefing": [
+      "Fuel synthesis needs two reactant mixers running at once — sequential processing won't finish before your launch window closes.",
+      "Start them both, then hold until they're done before you touch anything downstream."
+    ],
+    "objective": "Run both reactant mixers in parallel in the background, then wait for them to finish.",
+    "hints": [
+      "Append & to a command to background it: sleep 1 &",
+      "Start a second one the same way — both now run at once.",
+      "wait blocks until every background job you've started has completed."
+    ],
+    "cwd": "/home/voyager/synthesis/lab",
+    "files": {
+      "home/voyager/synthesis/lab/fuel_formula.dat": "type=RP-1/LOX\nstatus=pending"
+    },
+    "check": { "type": "jobDone", "name": "sleep" }
+  },
+  {
+    "id": 18,
+    "title": "Launch Preparation",
+    "briefing": [
+      "Before anything leaves the ground, the ship's diagnostics script needs to run clean, and the results need to reach the relay so ground control has a copy.",
+      "Everything you need to do this is already sitting on disk — it just needs running, and sending."
+    ],
+    "objective": "Run the ship's diagnostics script, then securely copy the results to the remote relay.",
+    "hints": [
+      "chmod +x ship_systems/diagnostics.sh, then ./ship_systems/diagnostics.sh to run it.",
+      "It writes its results to diagnostics_result.txt in this directory.",
+      "scp diagnostics_result.txt relay@nexus:/logs/diagnostics_result.txt copies it to the relay."
+    ],
+    "cwd": "/home/voyager/ship/control",
+    "files": {
+      "home/voyager/ship/control/ship_systems/diagnostics.sh": "echo 'Hull: OK'\necho 'Nav: OK'\necho 'Engines: OK' > /home/voyager/ship/control/diagnostics_result.txt"
+    },
+    "fileModes": {
+      "home/voyager/ship/control/ship_systems/diagnostics.sh": 420
+    },
+    "check": {
+      "all": [
+        { "type": "fileContains", "path": "/home/voyager/ship/control/diagnostics_result.txt", "contains": "OK" },
+        { "type": "fileExists", "path": "/remote/logs/diagnostics_result.txt" }
+      ]
+    }
+  },
+  {
+    "id": 19,
+    "title": "Final Countdown",
+    "briefing": [
+      "City defenses have picked up your launch prep and they're closing in. The ignition sequence has to run in exact order, with real timing — not a heartbeat early.",
+      "Hold, then go."
+    ],
+    "objective": "Pause for a couple of seconds to let the countdown clear, then confirm ignition by writing GO into ignition.txt.",
+    "hints": [
+      "sleep N pauses for N real seconds before the next command runs.",
+      "Chain commands in sequence with a semicolon: sleep 2; echo GO > ignition.txt",
+      "The pause has to actually happen before the file is written — order matters here."
+    ],
+    "cwd": "/home/voyager/launch/control",
+    "files": {
+      "home/voyager/launch/control/timing.conf": "sequence=strict\nwindow=180s"
+    },
+    "check": { "type": "fileContains", "path": "/home/voyager/launch/control/ignition.txt", "contains": "GO" }
+  },
+  {
+    "id": 20,
+    "title": "Escape",
+    "briefing": [
+      "You're off the ground and NEXUS-9 is falling away behind you. One task left: engage the autopilot, then close this session for good.",
+      "Congratulations, Commander. Let's go home."
+    ],
+    "objective": "Engage the autopilot, then close out your session.",
+    "hints": [
+      "bash final_systems/autopilot.sh runs the autopilot script directly.",
+      "It reports its status to autopilot_status.txt once engaged.",
+      "exit (or logout) closes out your terminal session."
+    ],
+    "cwd": "/home/voyager/ship/bridge",
+    "files": {
+      "home/voyager/ship/bridge/final_systems/autopilot.sh": "echo 'Autopilot engaged'\necho ENGAGED > /home/voyager/ship/bridge/autopilot_status.txt"
+    },
+    "check": { "type": "fileContains", "path": "/home/voyager/ship/bridge/autopilot_status.txt", "contains": "ENGAGED" }
+  }
+]

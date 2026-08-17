@@ -1,141 +1,79 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import CityBackdrop from "./components/CityBackdrop";
+import SiteHeader from "./components/SiteHeader";
+import LanguageCard from "./components/LanguageCard";
+import { languages } from "./data/languages";
 import logo from "./assets/image.png";
-import bash from "./assets/bash.png";
-import python from "./assets/python.png";
-import javascript from "./assets/javascript.png";
-import java from "./assets/java.png";
-import cpp from "./assets/c++.png";
-import rust from "./assets/rust.png";
 import noam from "./assets/noam.png";
 import mathieu from "./assets/mathieu.png";
 
 function Home() {
   const [hoveredLanguage, setHoveredLanguage] = useState(null);
   const [hoveredTeacher, setHoveredTeacher] = useState(null);
+  const scrollerRef = useRef(null);
+  const trackRef = useRef(null);
+  const [scrollMetrics, setScrollMetrics] = useState({ scrollLeft: 0, scrollWidth: 1, clientWidth: 1 });
+  const [dragging, setDragging] = useState(false);
 
-  const languages = ["Bash", "Python", "Rust", "C++", "JavaScript", "Java"];
-  const description = {
-    Bash: "Automate tasks and manage your system right from the command line—like a power user.",
-    Python:
-      "A beginner-friendly, high-level language beloved for data science, web apps, and more.",
-    JavaScript:
-      "The go-to language for creating interactive websites and dynamic web applications.",
-    Java: "A tried-and-true language powering Android apps and countless enterprise solutions worldwide.",
-    "C++":
-      "The powerhouse behind high-performance software, games, and system-level development.",
-    Rust: "A modern, memory-safe language built for speed, reliability, and concurrent programming.",
+  const scrollByCards = (direction) => {
+    scrollerRef.current?.scrollBy({ left: direction * 304, behavior: "smooth" });
   };
 
-  // Animation for the background glow effects
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const glows = document.querySelectorAll(".city-glow");
-      glows.forEach((glow) => {
-        const newOpacity = 0.3 + Math.random() * 0.3;
-        const newBlur = 20 + Math.random() * 15;
-        glow.style.opacity = newOpacity;
-        glow.style.filter = `blur(${newBlur}px)`;
-      });
-    }, 2000);
+  const readMetrics = () => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    setScrollMetrics({ scrollLeft: el.scrollLeft, scrollWidth: el.scrollWidth, clientWidth: el.clientWidth });
+  };
 
-    return () => clearInterval(interval);
+  useEffect(() => {
+    readMetrics();
+    const el = scrollerRef.current;
+    el?.addEventListener("scroll", readMetrics);
+    window.addEventListener("resize", readMetrics);
+    return () => {
+      el?.removeEventListener("scroll", readMetrics);
+      window.removeEventListener("resize", readMetrics);
+    };
   }, []);
 
+  const maxScroll = Math.max(1, scrollMetrics.scrollWidth - scrollMetrics.clientWidth);
+  const thumbWidthPct = Math.min(100, Math.max(12, (scrollMetrics.clientWidth / scrollMetrics.scrollWidth) * 100));
+  const thumbLeftPct = (scrollMetrics.scrollLeft / maxScroll) * (100 - thumbWidthPct);
+
+  const scrollToClientX = (clientX) => {
+    const track = trackRef.current;
+    const el = scrollerRef.current;
+    if (!track || !el) return;
+    const rect = track.getBoundingClientRect();
+    const fraction = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+    el.scrollLeft = fraction * maxScroll;
+  };
+
+  const handleTrackClick = (e) => {
+    if (dragging) return;
+    scrollToClientX(e.clientX);
+  };
+
+  const handleThumbPointerDown = (e) => {
+    e.stopPropagation();
+    setDragging(true);
+    const onMove = (moveEvent) => scrollToClientX(moveEvent.clientX);
+    const onUp = () => {
+      setDragging(false);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+  };
+
   return (
-    <div className="relative w-full min-h-screen bg-gray-900 overflow-auto">
-      {/* Futuristic tech sky with distant cities and glowing elements */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-gray-900 via-indigo-900 to-gray-900 overflow-hidden">
-        {/* Distant skyline silhouette */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-64 bg-gray-900 opacity-60"
-          style={{
-            maskImage: "linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))",
-            WebkitMaskImage:
-              "linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))",
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='1200' height='300' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,250 L50,240 L80,190 L110,230 L140,210 L180,180 L220,240 L270,220 L300,200 L320,230 L350,210 L380,190 L420,240 L460,200 L490,230 L520,210 L550,190 L590,220 L630,230 L660,210 L690,200 L720,240 L750,220 L790,180 L830,240 L870,210 L910,230 L940,200 L980,220 L1020,240 L1050,190 L1080,210 L1110,230 L1140,200 L1170,240 L1200,250 L1200,300 L0,300 Z' fill='%23111827'/%3E%3C/svg%3E")`,
-          }}
-        ></div>
-
-        {/* Glowing city elements */}
-        {[...Array(15)].map((_, i) => (
-          <div
-            key={`citylight-${i}`}
-            className="city-glow absolute rounded-full transition-all duration-2000"
-            style={{
-              width: 20 + Math.random() * 100,
-              height: 20 + Math.random() * 100,
-              // Use full viewport height/width for positioning
-              top: Math.random() * window.innerHeight,
-              left: Math.random() * window.innerWidth,
-              background: `radial-gradient(circle, ${
-                [
-                  "rgba(59,130,246,0.5)",
-                  "rgba(139,92,246,0.5)",
-                  "rgba(6,182,212,0.5)",
-                  "rgba(16,185,129,0.5)",
-                ][Math.floor(Math.random() * 4)]
-              } 0%, transparent 70%)`,
-              opacity: 0.3 + Math.random() * 0.3,
-              filter: `blur(${20 + Math.random() * 15}px)`,
-            }}
-          />
-        ))}
-
-        {/* Grid lines to represent the tech city structure */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-               linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
-               linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px)
-             `,
-            backgroundSize: "80px 80px",
-            opacity: 0.5,
-          }}
-        ></div>
-      </div>
-
-      {/* Futuristic header */}
-      <header className="sticky top-0 z-50 bg-gray-900 bg-opacity-80 backdrop-filter backdrop-blur-md border-b border-cyan-500/30">
-        <div className="w-full max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="bg-gradient-to-r from-cyan-500 to-blue-500 p-2 rounded-md shadow-lg shadow-cyan-500/30">
-                <img
-                  src={logo}
-                  alt="BitVoyager logo"
-                  className="w-8 h-8 rounded-full"
-                />
-              </div>
-              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
-                <span className="font-extrabold">BIT</span>
-                <span className="text-xl ml-1 font-light">VOYAGER</span>
-              </h1>
-            </div>
-
-            {/* Navigation Links */}
-            <nav className="flex items-center">
-              <ul className="flex gap-8 text-sm font-medium">
-                {["Home", "About", "Courses"].map((item) => (
-                  <li key={item}>
-                    <Link
-                      to={`/${
-                        item.toLowerCase() === "home" ? "" : item.toLowerCase()
-                      }`}
-                      className="text-gray-300 hover:text-cyan-400 transition-colors duration-300 flex items-center gap-2 py-2"
-                    >
-                      <span className="w-1 h-1 rounded-full bg-cyan-500"></span>
-                      {item}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </header>
+    <div className="relative w-full min-h-screen bg-gray-900 overflow-auto scroll-smooth">
+      <CityBackdrop />
+      <SiteHeader />
 
       <main className="relative z-10 pt-8 pb-20 px-4">
         {/* Hero Section */}
@@ -163,33 +101,43 @@ function Home() {
             starts here.
           </p>
 
-          <Link
-            to="/courses"
-            className="mt-8 inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-8 py-3 rounded-md text-lg font-medium hover:from-blue-500 hover:to-cyan-500 transition-all duration-300 shadow-lg shadow-blue-900/30 border border-blue-700/50"
-          >
-            <span>Launch Your Journey</span>
-            <svg
-              className="w-5 h-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                d="M5 12h14M12 5l7 7-7 7"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+          <Link to="/courses" className="relative mt-8 inline-flex group">
+            <span className="absolute -inset-1 rounded-md bg-gradient-to-r from-blue-500 to-cyan-400 opacity-50 blur-lg cta-pulse"></span>
+            <span className="relative inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-8 py-3 rounded-md text-lg font-medium group-hover:from-blue-500 group-hover:to-cyan-500 transition-colors duration-300 shadow-lg shadow-blue-900/30 border border-blue-700/50">
+              <span>Launch Your Journey</span>
+              <svg
+                className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  d="M5 12h14M12 5l7 7-7 7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
           </Link>
 
           {/* Tech decorative elements */}
           <div className="absolute top-0 -left-10 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-0 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl"></div>
+
+          <style>
+            {`
+              @keyframes ctaPulse {
+                0%, 100% { opacity: 0.35; transform: scale(0.98); }
+                50% { opacity: 0.65; transform: scale(1.04); }
+              }
+              .cta-pulse { animation: ctaPulse 2.8s ease-in-out infinite; }
+            `}
+          </style>
         </section>
 
         {/* Programming Languages */}
-        <section className="max-w-6xl mx-auto mb-24 px-4">
+        <section id="languages" className="max-w-6xl mx-auto mb-24 px-4 scroll-mt-24">
           <div className="text-center mb-12">
             <h4 className="inline-block text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-4">
               Learn Any Language You Want
@@ -202,236 +150,49 @@ function Home() {
           </div>
 
           {/* Scrollable language cards with futuristic design */}
-          <div className="flex flex-nowrap items-center space-x-6 overflow-x-auto pb-8 px-4 no-scrollbar min-h-[300px]">
-            {languages.map((lang) => {
-              const isBash = lang === "Bash";
-              const isPython = lang === "Python";
-              const isHovered = hoveredLanguage === lang;
+          <div className="relative">
+            <button
+              onClick={() => scrollByCards(-1)}
+              aria-label="Scroll left"
+              className="hidden md:flex absolute -left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 items-center justify-center rounded-full bg-gray-900/90 border border-cyan-500/30 text-cyan-400 hover:bg-gray-800 hover:border-cyan-400/60 transition-colors shadow-lg"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => scrollByCards(1)}
+              aria-label="Scroll right"
+              className="hidden md:flex absolute -right-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 items-center justify-center rounded-full bg-gray-900/90 border border-cyan-500/30 text-cyan-400 hover:bg-gray-800 hover:border-cyan-400/60 transition-colors shadow-lg"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
 
-              return (
-                <div
-                  key={lang}
-                  className={`
-                    relative min-w-[280px] max-w-xs rounded-lg overflow-hidden transition-all duration-300
-                    ${
-                      isHovered
-                        ? "scale-105 shadow-xl shadow-cyan-900/30"
-                        : "shadow-lg shadow-gray-900/50"
-                    }
-                    ${
-                      isBash || isPython
-                        ? "border border-cyan-500/30"
-                        : "border border-gray-700/30"
-                    }
-                  `}
-                  onMouseEnter={() => setHoveredLanguage(lang)}
-                  onMouseLeave={() => setHoveredLanguage(null)}
-                >
-                  {/* Background gradient */}
-                  <div
-                    className={`absolute inset-0 ${
-                      isBash || isPython
-                        ? "bg-gradient-to-br from-gray-800/90 via-gray-900 to-blue-900/30"
-                        : "bg-gradient-to-br from-gray-800/90 via-gray-900 to-gray-800"
-                    }`}
-                  ></div>
+            <div
+              ref={scrollerRef}
+              className="no-scrollbar flex flex-nowrap items-center gap-6 overflow-x-auto pb-6 px-4 min-h-[300px]"
+            >
+              {languages.map((lang) => (
+                <LanguageCard
+                  key={lang.name}
+                  lang={lang}
+                  isHovered={hoveredLanguage === lang.name}
+                  onHoverStart={() => setHoveredLanguage(lang.name)}
+                  onHoverEnd={() => setHoveredLanguage(null)}
+                />
+              ))}
+            </div>
 
-                  {/* Decorative tech elements */}
-                  <div className="absolute inset-0 opacity-20">
-                    <svg
-                      width="100%"
-                      height="100%"
-                      className="absolute inset-0"
-                    >
-                      <pattern
-                        id={`grid-${lang}`}
-                        width="40"
-                        height="40"
-                        patternUnits="userSpaceOnUse"
-                      >
-                        <path
-                          d="M 40 0 L 0 0 0 40"
-                          fill="none"
-                          stroke={isBash || isPython ? "#0ea5e9" : "#6b7280"}
-                          strokeWidth="0.5"
-                          opacity="0.3"
-                        />
-                      </pattern>
-                      <rect
-                        x="0"
-                        y="0"
-                        width="100%"
-                        height="100%"
-                        fill={`url(#grid-${lang})`}
-                      />
-                    </svg>
-                  </div>
-
-                  {/* Glowing effect for Bash */}
-                  {(isBash || isPython) && (
-                    <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/20 via-transparent to-transparent"></div>
-                  )}
-
-                  {/* Content container */}
-                  <div className="relative z-10 p-6">
-                    <div className="flex items-start space-x-4">
-                      {/* Language Icon with glowing effect */}
-                      <div
-                        className={`relative flex-shrink-0 p-3 rounded-lg ${
-                          isBash || isPython
-                            ? "bg-gradient-to-br from-blue-900/50 to-cyan-900/50"
-                            : "bg-gray-800/50"
-                        }`}
-                      >
-                        <img
-                          src={
-                            lang === "Bash"
-                              ? bash
-                              : lang === "Python"
-                                ? python
-                                : lang === "JavaScript"
-                                  ? javascript
-                                  : lang === "Java"
-                                    ? java
-                                    : lang === "C++"
-                                      ? cpp
-                                      : rust
-                          }
-                          alt={`${lang} logo`}
-                          className="w-10 h-10"
-                        />
-                        {(isBash || isPython) && (
-                          <div className="absolute inset-0 rounded-lg border border-cyan-500/30 shadow-sm shadow-cyan-500/30"></div>
-                        )}
-                      </div>
-
-                      {/* Language info */}
-                      <div className="flex flex-col">
-                        <h2
-                          className={`text-xl font-bold mb-1 ${
-                            isBash || isPython
-                              ? "text-cyan-400"
-                              : "text-gray-300"
-                          }`}
-                        >
-                          {lang}
-                        </h2>
-                        <p className="text-sm text-gray-400 line-clamp-3">
-                          {description[lang]}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Status indicator */}
-                    <div
-                      className={`mt-5 flex items-center justify-between ${
-                        isBash || isPython ? "" : "opacity-60"
-                      }`}
-                    >
-                      <span
-                        className={`text-xs uppercase tracking-wide ${
-                          isBash || isPython ? "text-cyan-400" : "text-gray-500"
-                        }`}
-                      >
-                        {isBash || isPython ? "Available Now" : "Coming Soon"}
-                      </span>
-                      <div className="flex items-center gap-1">
-                        {[...Array(4)].map((_, i) => (
-                          <span
-                            key={i}
-                            className={`w-1.5 h-1.5 rounded-full ${
-                              isBash || isPython
-                                ? i < 4
-                                  ? "bg-cyan-400"
-                                  : "bg-gray-700"
-                                : "bg-gray-700"
-                            }`}
-                          ></span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Action button */}
-                    <div className="mt-5">
-                      {isBash ? (
-                        <Link
-                          to="/bash"
-                          className="w-full flex items-center justify-center gap-2 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded border border-cyan-500/30 font-medium hover:from-blue-500 hover:to-cyan-500 transition-colors"
-                        >
-                          Start Learning
-                          <svg
-                            className="w-4 h-4"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                          >
-                            <path
-                              d="M5 12h14M12 5l7 7-7 7"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </Link>
-                      ) : isPython ? (
-                        <Link
-                          to="/python"
-                          className="w-full flex items-center justify-center gap-2 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded border border-cyan-500/30 font-medium hover:from-blue-500 hover:to-cyan-500 transition-colors"
-                        >
-                          Start Learning
-                          <svg
-                            className="w-4 h-4"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                          >
-                            <path
-                              d="M5 12h14M12 5l7 7-7 7"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </Link>
-                      ) : (
-                        <button
-                          disabled
-                          className="w-full flex items-center justify-center gap-2 py-2.5 bg-gray-800 text-gray-400 rounded border border-gray-700 font-medium cursor-not-allowed"
-                        >
-                          Coming Soon
-                          <svg
-                            className="w-4 h-4"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                          >
-                            <path
-                              d="M12 15V3M12 15l-4-4M12 15l4-4"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Locked overlay for non-Bash languages */}
-                  {!(isBash || isPython) && (
-                    <div className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-gray-800 border border-gray-700 text-gray-400">
-                      <svg
-                        className="w-4 h-4"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                      >
-                        <path d="M12 2C9.24 2 7 4.24 7 7v4H6c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2h-1V7c0-2.76-2.24-5-5-5zm1 15.06c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM14 10h-4V7c0-1.1.9-2 2-2s2 .9 2 2v3z" />
-                      </svg>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            {/* Custom slider bar — a real, always-visible scroll affordance */}
+            <div
+              ref={trackRef}
+              onClick={handleTrackClick}
+              className="relative mx-4 h-1.5 rounded-full bg-slate-800 cursor-pointer"
+            >
+              <div
+                onPointerDown={handleThumbPointerDown}
+                className="absolute top-1/2 -translate-y-1/2 h-2.5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 cursor-grab active:cursor-grabbing shadow shadow-cyan-500/40"
+                style={{ width: `${thumbWidthPct}%`, left: `${thumbLeftPct}%` }}
+              />
+            </div>
           </div>
         </section>
 

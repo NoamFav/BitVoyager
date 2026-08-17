@@ -1,10 +1,10 @@
 import { useEffect, createContext, useState } from "react";
-import PropTypes from "prop-types";
 import Cookies from "js-cookie";
 
 // Create the BashHistoryContext
 const BashHistoryContext = createContext();
 
+// eslint-disable-next-line react/prop-types -- children: node, no prop-types dependency in this project
 const BashHistoryProvider = ({ children }) => {
   const [history, setHistory] = useState(() => {
     // Load history from cookies or default to an empty array
@@ -33,10 +33,6 @@ const BashHistoryProvider = ({ children }) => {
       {children}
     </BashHistoryContext.Provider>
   );
-};
-
-BashHistoryProvider.propTypes = {
-  children: PropTypes.node.isRequired,
 };
 
 export { BashHistoryProvider, BashHistoryContext };

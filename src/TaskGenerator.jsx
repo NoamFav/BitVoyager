@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types -- no prop-types dependency in this project */
 import { useState, useEffect } from "react";
 import { Check, Clock, SkipForward } from "lucide-react";
 import Cookies from "js-cookie";
@@ -21,7 +22,7 @@ const analyzeCommandUsage = (history, allCommands) => {
 // Get all unique commands from tasks
 const getAllCommands = (tasks) => {
   const commands = new Set();
-  Object.values(tasks).forEach((task) => {
+  tasks.forEach((task) => {
     task.expectedCommands.forEach((cmd) => {
       commands.add(cmd);
     });
@@ -36,7 +37,7 @@ const getCompletedTasksFromCookies = () => {
     return completedTasksCookie
       ? new Set(JSON.parse(completedTasksCookie))
       : new Set();
-  } catch (e) {
+  } catch {
     return new Set();
   }
 };
@@ -52,14 +53,9 @@ const getTaskHistoryFromStorage = () => {
   try {
     const storedHistory = localStorage.getItem("taskHistory");
     return storedHistory ? JSON.parse(storedHistory) : [];
-  } catch (e) {
+  } catch {
     return [];
   }
-};
-
-// New helper function to save task history to localStorage
-const saveTaskHistoryToStorage = (history) => {
-  localStorage.setItem("taskHistory", JSON.stringify(history));
 };
 
 // Generate practice task based on command usage and exclude completed tasks
@@ -69,13 +65,11 @@ const generatePracticeTasks = (
   tasks,
   completedTasks,
 ) => {
-  const availableTasks = Object.entries(tasks)
-    .filter(
-      ([cmd, task]) => task.level <= currentLevel && !completedTasks.has(cmd),
-    )
-    .map(([cmd, task]) => ({
-      id: cmd,
-      title: `Master ${cmd}`,
+  const availableTasks = tasks
+    .filter((task) => task.level <= currentLevel && !completedTasks.has(task.id))
+    .map((task) => ({
+      id: task.id,
+      title: task.title,
       description: task.description,
       expectedCommands: task.expectedCommands,
       level: task.level,
@@ -115,17 +109,17 @@ const TaskGenerator = ({
   const [completedTasks, setCompletedTasks] = useState(() =>
     getCompletedTasksFromCookies(),
   );
-  const [isLearning, setIsLearning] = useState(() => {
+  const [isLearning] = useState(() => {
     const storedValue = localStorage.getItem("isLearning");
     return storedValue !== null ? JSON.parse(storedValue) : true;
   });
   useEffect(() => {
     if (taskHistory.length === 0 && completedTasks.size > 0) {
       const initialHistory = Array.from(completedTasks).map((taskId) => {
-        const taskInfo = tasks[taskId];
+        const taskInfo = tasks.find((t) => t.id === taskId);
         return {
           id: taskId,
-          title: `Master ${taskId}`,
+          title: taskInfo?.title || taskId,
           description: taskInfo?.description || "",
           expectedCommands: taskInfo?.expectedCommands || [],
           level: taskInfo?.level || 1,

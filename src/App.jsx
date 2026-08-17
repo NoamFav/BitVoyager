@@ -1,8 +1,10 @@
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./Home";
+import CoursesPage from "./CoursesPage";
+import AboutPage from "./AboutPage";
 import Bash from "./Bash";
 import Python from "./Python";
-import BashTask from "./BashTask"; // The new task component
+import BashLesson from "./BashLesson";
 import BashPlayground from "./BashPlayground";
 import NotFoundPage from "./NotFoundPage";
 import { BashProvider } from "./BashProvider";
@@ -18,10 +20,12 @@ function App() {
             <main>
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/courses" element={<CoursesPage />} />
+                <Route path="/about" element={<AboutPage />} />
                 <Route path="/bash" element={<Bash />} />
-                <Route path="/bash/:level" element={<BashTask />} />
-                <Route path="/python" element={<Python />} />
                 <Route path="/bash/playground" element={<BashPlayground />} />
+                <Route path="/bash/:level" element={<BashLesson />} />
+                <Route path="/python" element={<Python />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </main>
