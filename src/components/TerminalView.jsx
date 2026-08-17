@@ -62,11 +62,20 @@ export default function TerminalView({ shell, prompt, onLine, height = 380, clas
     fitAddonRef.current = fitAddon;
 
     if (containerRef.current) term.open(containerRef.current);
-    fitAddon.fit();
-    term.focus();
 
-    term.writeln("\x1b[90mNEXUS-9 emergency terminal ready.\x1b[0m");
-    term.write(prompt(shell));
+    // xterm's renderer measures its own dimensions asynchronously after
+    // open() — fitting/writing before the first paint frame throws inside
+    // xterm's own Viewport code, not just FitAddon.
+    requestAnimationFrame(() => {
+      try {
+        fitAddon.fit();
+      } catch {
+        // container not yet laid out — the resize observer below catches up
+      }
+      term.focus();
+      term.writeln("\x1b[90mNEXUS-9 emergency terminal ready.\x1b[0m");
+      term.write(prompt(shell));
+    });
 
     const resizeObserver = new ResizeObserver(() => {
       try {

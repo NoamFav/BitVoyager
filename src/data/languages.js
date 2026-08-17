@@ -4,6 +4,7 @@ import javascript from "../assets/javascript.png";
 import java from "../assets/java.png";
 import cpp from "../assets/c++.png";
 import rust from "../assets/rust.png";
+import lua from "../assets/lua.svg";
 
 export const languages = [
   {
@@ -21,10 +22,11 @@ export const languages = [
     description: "A beginner-friendly, high-level language beloved for data science, web apps, and more. Every mission runs on real CPython in your browser.",
   },
   {
-    name: "JavaScript",
-    image: javascript,
-    available: false,
-    description: "The go-to language for creating interactive websites and dynamic web applications.",
+    name: "Lua",
+    image: lua,
+    href: "/lua",
+    available: true,
+    description: "Small, fast, and embedded everywhere from games to firmware. Every mission runs on a real Lua 5.3 VM, right in your browser.",
   },
   {
     name: "Java",
@@ -43,5 +45,11 @@ export const languages = [
     image: rust,
     available: false,
     description: "A modern, memory-safe language built for speed, reliability, and concurrent programming.",
+  },
+  {
+    name: "JavaScript",
+    image: javascript,
+    available: false,
+    description: "The go-to language for creating interactive websites and dynamic web applications.",
   },
 ];

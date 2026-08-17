@@ -1,0 +1,628 @@
+[
+  {
+    "id": 1,
+    "title": "First Light",
+    "briefing": [
+      "Beneath NEXUS-9's streets sits the Archive Vault — the city's old memory, abandoned the day everything moved to the bash-driven surface systems you know from up top.",
+      "Someone has to wake it back up. LEDGER, the Vault's archival intelligence, has been dark for years. Its simplest routines are the first to restore."
+    ],
+    "objective": "Complete the function to return the sum of all numbers in the input list.",
+    "hints": [
+      "A for loop over the list lets you add each number to a running total.",
+      "Python's built-in sum() would do this in one line, but write the loop yourself — LEDGER wants to see you understand the mechanism."
+    ],
+    "code": "def get_sum_of_list(lst):\n    total = 0\n    # Your code here\n    return total",
+    "functionName": "get_sum_of_list",
+    "testCases": [
+      { "input": [[1, 2, 3, 4, 5]], "output": 15 },
+      { "input": [[-1, -2, 5, 8]], "output": 10 },
+      { "input": [[]], "output": 0 }
+    ],
+    "tags": ["loops", "list manipulation", "basic arithmetic"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 2,
+    "title": "Peak Reading",
+    "briefing": [
+      "LEDGER's power telemetry is corrupted — it can list every reading it ever took, but it's forgotten how to tell you which one mattered most."
+    ],
+    "objective": "Complete the function to find the maximum value in the list without using the built-in max() function.",
+    "hints": [
+      "Track a running maximum, starting from the first element.",
+      "Compare each element against your running maximum and update it when you find something bigger."
+    ],
+    "code": "def find_max(lst):\n    if not lst:\n        return None\n    maximum = lst[0]\n    # Your code here\n    return maximum",
+    "functionName": "find_max",
+    "testCases": [
+      { "input": [[1, 5, 2, 8, 3]], "output": 8 },
+      { "input": [[-10, -5, -2, -1]], "output": -1 },
+      { "input": [[42]], "output": 42 }
+    ],
+    "tags": ["loops", "list manipulation", "comparison"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 3,
+    "title": "Mirror Logs",
+    "briefing": [
+      "Some of the oldest logs in the Vault were written to be read the same way forwards and backwards — a verification trick the original archivists used. LEDGER needs that check rebuilt."
+    ],
+    "objective": "Complete the function to check if the input string is a palindrome, ignoring spaces, punctuation, and case.",
+    "hints": [
+      "The string has already been cleaned to just lowercase letters and digits for you.",
+      "Compare the cleaned string to its own reverse — Python slicing with [::-1] reverses a string."
+    ],
+    "code": "def is_palindrome(s):\n    # Remove non-alphanumeric characters and convert to lowercase\n    cleaned = \"\".join(c.lower() for c in s if c.isalnum())\n    # Your code here\n    return True",
+    "functionName": "is_palindrome",
+    "testCases": [
+      { "input": ["A man, a plan, a canal: Panama"], "output": "True" },
+      { "input": ["race a car"], "output": "False" },
+      { "input": ["Was it a car or a cat I saw?"], "output": "True" }
+    ],
+    "tags": ["strings", "comparison"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 4,
+    "title": "Vowel Static",
+    "briefing": [
+      "A garbled radio transcript needs decoding — the first step is just counting how much of it is vowels, a sanity check LEDGER uses to detect corrupted transmissions."
+    ],
+    "objective": "Complete the function to count the number of vowels in the input string.",
+    "hints": [
+      "Loop over each character in the string.",
+      "Check membership with `if c in vowels` for each character."
+    ],
+    "code": "def count_vowels(text):\n    vowels = \"aeiouAEIOU\"\n    count = 0\n    # Your code here\n    return count",
+    "functionName": "count_vowels",
+    "testCases": [
+      { "input": ["Hello World"], "output": 3 },
+      { "input": ["Python Programming"], "output": 4 },
+      { "input": ["aEiOu"], "output": 5 }
+    ],
+    "tags": ["strings", "loops", "counting"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 5,
+    "title": "First Unique Signal",
+    "briefing": [
+      "Somewhere in a burst of repeated static, there's exactly one character that only appears once — LEDGER thinks it's a hidden marker left by whoever sealed the Vault."
+    ],
+    "objective": "Complete the function to find the index of the first non-repeating character in the string, or -1 if none exists.",
+    "hints": [
+      "Count how many times each character appears first, using a dictionary.",
+      "Then walk the string again in order and return the index of the first character whose count is 1."
+    ],
+    "code": "def find_first_unique(s):\n    char_count = {}\n    # Your code here\n    # Your code here\n    # Your code here\n    return -1",
+    "functionName": "find_first_unique",
+    "testCases": [
+      { "input": ["leetcode"], "output": 0 },
+      { "input": ["loveleetcode"], "output": 2 },
+      { "input": ["aabb"], "output": -1 }
+    ],
+    "tags": ["strings", "hash tables"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 6,
+    "title": "Broken Sequence",
+    "briefing": [
+      "A counter that should have run from 0 to n dropped exactly one value somewhere in the chaos. Find the gap."
+    ],
+    "objective": "Complete the function to find the missing number in a sequence from 0 to n.",
+    "hints": [
+      "The sum of 0..n has a closed-form formula: n * (n + 1) / 2.",
+      "The difference between that expected sum and the actual sum of the list is the missing number."
+    ],
+    "code": "def missing_number(nums):\n    n = len(nums)\n    expected_sum = (n * (n + 1)) // 2\n    # Your code here\n    return expected_sum - actual_sum",
+    "functionName": "missing_number",
+    "testCases": [
+      { "input": [[3, 0, 1]], "output": 2 },
+      { "input": [[9, 6, 4, 2, 3, 5, 7, 0, 1]], "output": 8 },
+      { "input": [[0]], "output": 1 }
+    ],
+    "tags": ["arrays", "mathematics"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 7,
+    "title": "Shelf Order",
+    "briefing": [
+      "The Vault's physical index cards were scanned out of order decades ago. LEDGER can move them around, but it's forgotten how to sort a shelf on its own."
+    ],
+    "objective": "Complete the function to implement the bubble sort algorithm.",
+    "hints": [
+      "Repeatedly step through the list, comparing each pair of adjacent elements.",
+      "Swap them if they're in the wrong order — after enough passes, the largest values 'bubble' to the end."
+    ],
+    "code": "def bubble_sort(arr):\n    n = len(arr)\n    # Your code here\n    # Your code here\n    # Your code here\n    return arr",
+    "functionName": "bubble_sort",
+    "testCases": [
+      { "input": [[64, 34, 25, 12, 22, 11, 90]], "output": [11, 12, 22, 25, 34, 64, 90] },
+      { "input": [[5, 2, 3, 1]], "output": [1, 2, 3, 5] },
+      { "input": [[1]], "output": [1] }
+    ],
+    "tags": ["sorting", "arrays"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 8,
+    "title": "Common Root",
+    "briefing": [
+      "A batch of filenames all trace back to the same archival project, but only the start of each name survived the corruption. LEDGER wants the shared prefix isolated."
+    ],
+    "objective": "Complete the function to find the longest common prefix string amongst an array of strings.",
+    "hints": [
+      "The shortest string is an upper bound on how long the common prefix can be.",
+      "Check position by position: if any string disagrees at index i, the prefix ends there."
+    ],
+    "code": "def longest_common_prefix(strs):\n    if not strs:\n        return \"\"\n    shortest = min(strs, key=len)\n    # Your code here\n    # Your code here\n    # Your code here\n    return shortest[:i]",
+    "functionName": "longest_common_prefix",
+    "testCases": [
+      { "input": [["flower", "flow", "flight"]], "output": "fl" },
+      { "input": [["dog", "racecar", "car"]], "output": "" },
+      { "input": [["", "b"]], "output": "" }
+    ],
+    "tags": ["strings"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 9,
+    "title": "Scrambled Identity",
+    "briefing": [
+      "Two archive tags look nothing alike at a glance, but LEDGER suspects they're built from exactly the same letters — a naming scheme the original archivists used to hide duplicate records."
+    ],
+    "objective": "Complete the function to determine if two strings are anagrams of each other.",
+    "hints": [
+      "Count how many times each character appears in the first string.",
+      "Walk the second string, decrementing those counts — if anything goes negative, they're not anagrams."
+    ],
+    "code": "def is_anagram(s1, s2):\n    if len(s1) != len(s2):\n        return False\n    char_count = {}\n    # Your code here\n    # Your code here\n    return True",
+    "functionName": "is_anagram",
+    "testCases": [
+      { "input": ["listen", "silent"], "output": "True" },
+      { "input": ["hello", "world"], "output": "False" },
+      { "input": ["", ""], "output": "True" }
+    ],
+    "tags": ["strings", "hash tables"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 10,
+    "title": "Selection Protocol",
+    "briefing": [
+      "One more shelf, one more sort — but this time LEDGER wants a different algorithm rebuilt, one that repeatedly picks out the smallest remaining item."
+    ],
+    "objective": "Complete the function to implement the selection sort algorithm.",
+    "hints": [
+      "For each position, find the index of the smallest remaining element.",
+      "Swap that smallest element into the current position, then move on."
+    ],
+    "code": "def selection_sort(arr):\n    n = len(arr)\n    # Your code here\n    # Your code here\n    # Your code here\n    return arr",
+    "functionName": "selection_sort",
+    "testCases": [
+      { "input": [[64, 25, 12, 22, 11]], "output": [11, 12, 22, 25, 64] },
+      { "input": [[5, 2, 3, 1]], "output": [1, 2, 3, 5] },
+      { "input": [[1]], "output": [1] }
+    ],
+    "tags": ["sorting", "arrays"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 11,
+    "title": "Insertion Point",
+    "briefing": [
+      "The last basic filing routine: inserting each new record into its correct place among the ones already sorted. LEDGER calls this the oldest trick in its library."
+    ],
+    "objective": "Complete the function to implement the insertion sort algorithm.",
+    "hints": [
+      "Starting from the second element, hold it aside as the 'key'.",
+      "Shift every larger element before it one position right, then drop the key into the gap."
+    ],
+    "code": "def insertion_sort(arr):\n    # Your code here\n    # Your code here\n    # Your code here\n    return arr",
+    "functionName": "insertion_sort",
+    "testCases": [
+      { "input": [[12, 11, 13, 5, 6]], "output": [5, 6, 11, 12, 13] },
+      { "input": [[4, 3, 2, 1]], "output": [1, 2, 3, 4] },
+      { "input": [[1]], "output": [1] }
+    ],
+    "tags": ["sorting", "arrays"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 12,
+    "title": "Growth Record",
+    "briefing": [
+      "The Outer Archive is stable. LEDGER unseals the door to the Deep Vault — older, colder, and built for research that outgrew the surface city entirely.",
+      "The first thing it shows you: a growth sequence from a biology experiment nobody ever finished."
+    ],
+    "objective": "Complete the function to generate a Fibonacci sequence of length n.",
+    "hints": [
+      "Start the sequence with [0, 1] and keep appending the sum of the last two values.",
+      "Stop once the sequence has n elements."
+    ],
+    "code": "def fibonacci(n):\n    if n <= 0:\n        return []\n    elif n == 1:\n        return [0]\n    sequence = [0, 1]\n    # Your code here\n    return sequence",
+    "functionName": "fibonacci",
+    "testCases": [
+      { "input": [5], "output": [0, 1, 1, 2, 3] },
+      { "input": [8], "output": [0, 1, 1, 2, 3, 5, 8, 13] },
+      { "input": [2], "output": [0, 1] }
+    ],
+    "tags": ["loops", "list manipulation", "mathematics"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 13,
+    "title": "Half-Step Search",
+    "briefing": [
+      "The Deep Vault's manifest is enormous but perfectly sorted. Scanning it one entry at a time would take days — LEDGER insists there's a faster way."
+    ],
+    "objective": "Complete the function to implement binary search. Return the index of the target if found, otherwise -1.",
+    "hints": [
+      "Keep a left and right boundary, and check the midpoint between them.",
+      "If the midpoint is too small, move left up; if too large, move right down; repeat until they cross."
+    ],
+    "code": "def binary_search(arr, target):\n    left, right = 0, len(arr) - 1\n    # Your code here\n    # Your code here\n    # Your code here\n    return -1",
+    "functionName": "binary_search",
+    "testCases": [
+      { "input": [[1, 2, 3, 4, 5], 3], "output": 2 },
+      { "input": [[1, 3, 5, 7, 9], 8], "output": -1 },
+      { "input": [[1], 1], "output": 0 }
+    ],
+    "tags": ["binary search", "arrays", "algorithms"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 14,
+    "title": "Merged Ledgers",
+    "briefing": [
+      "Two separate divisions of the Vault kept their own sorted transaction logs. LEDGER needs them woven into one, without losing the ordering either side worked to maintain."
+    ],
+    "objective": "Complete the function to merge two sorted arrays into a single sorted array.",
+    "hints": [
+      "Walk both arrays with two pointers, always taking the smaller of the two current elements.",
+      "Once one array runs out, append whatever's left of the other."
+    ],
+    "code": "def merge_sorted_arrays(arr1, arr2):\n    result = []\n    i = j = 0\n    # Your code here\n    # Your code here\n    # Your code here\n    return result",
+    "functionName": "merge_sorted_arrays",
+    "testCases": [
+      { "input": [[1, 3, 5], [2, 4, 6]], "output": [1, 2, 3, 4, 5, 6] },
+      { "input": [[1, 2, 3], []], "output": [1, 2, 3] },
+      { "input": [[], [1, 2, 3]], "output": [1, 2, 3] }
+    ],
+    "tags": ["arrays", "two pointers", "sorting"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 15,
+    "title": "Cycled Storage",
+    "briefing": [
+      "The Vault's rotating storage drums physically shift position every cycle. LEDGER can tell you the shift amount, but the drum-position math was never rebuilt."
+    ],
+    "objective": "Complete the function to rotate the array to the right by k steps.",
+    "hints": [
+      "Reduce k modulo the array length first — rotating by the full length does nothing.",
+      "The last k elements, followed by everything before them, gives you the rotated array."
+    ],
+    "code": "def rotate_array(nums, k):\n    n = len(nums)\n    k = k % n\n    # Your code here\n    # Your code here\n    return nums",
+    "functionName": "rotate_array",
+    "testCases": [
+      { "input": [[1, 2, 3, 4, 5, 6, 7], 3], "output": [5, 6, 7, 1, 2, 3, 4] },
+      { "input": [[-1, -100, 3, 99], 2], "output": [3, 99, -1, -100] },
+      { "input": [[1], 0], "output": [1] }
+    ],
+    "tags": ["arrays", "mathematics"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 16,
+    "title": "Balanced Brackets",
+    "briefing": [
+      "A structural integrity script keeps flagging one of the Vault's old config files as corrupted — every bracket needs to close in the right order for it to be trusted again."
+    ],
+    "objective": "Complete the function to determine if the input string has valid, properly nested parentheses.",
+    "hints": [
+      "Push every opening bracket onto a stack as you see it.",
+      "On a closing bracket, pop the stack and check it matches — if it doesn't, or the stack's empty, the string is invalid."
+    ],
+    "code": "def valid_parentheses(s):\n    stack = []\n    pairs = {\")\": \"(\", \"}\": \"{\", \"]\": \"[\"}\n    # Your code here\n    # Your code here\n    return len(stack) == 0",
+    "functionName": "valid_parentheses",
+    "testCases": [
+      { "input": ["()"], "output": "True" },
+      { "input": ["()[]{}"], "output": "True" },
+      { "input": ["(]"], "output": "False" }
+    ],
+    "tags": ["strings", "stack", "validation"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 17,
+    "title": "Triangular Ledger",
+    "briefing": [
+      "One of the Vault's oldest mathematical tables — rows that build on the row above. LEDGER remembers what it's for. It just can't generate it anymore."
+    ],
+    "objective": "Complete the function to generate Pascal's triangle up to n rows.",
+    "hints": [
+      "Each new row starts and ends with 1.",
+      "Every value in between is the sum of the two values above it in the previous row."
+    ],
+    "code": "def pascal_triangle(n):\n    if n <= 0:\n        return []\n    triangle = [[1]]\n    # Your code here\n    # Your code here\n    # Your code here\n    return triangle",
+    "functionName": "pascal_triangle",
+    "testCases": [
+      { "input": [3], "output": [[1], [1, 1], [1, 2, 1]] },
+      { "input": [1], "output": [[1]] },
+      { "input": [5], "output": [[1], [1, 1], [1, 2, 1], [1, 3, 3, 1], [1, 4, 6, 4, 1]] }
+    ],
+    "tags": ["arrays", "dynamic programming", "mathematics"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 18,
+    "title": "Chain Reversal",
+    "briefing": [
+      "A chain of linked storage records needs to be read back in reverse order for the audit — but nobody kept a 'read backwards' routine around."
+    ],
+    "objective": "Complete the function to reverse the list iteratively (a simplified stand-in for a linked list).",
+    "hints": [
+      "Pop elements off the front of the input, one at a time.",
+      "Insert each popped element at the front of your result list — that naturally reverses the order."
+    ],
+    "code": "def reverse_linked_list_array(items):\n    prev = []\n    current = list(items)\n    # Your code here\n    # Your code here\n    return prev",
+    "functionName": "reverse_linked_list_array",
+    "testCases": [
+      { "input": [[1, 2, 3, 4, 5]], "output": [5, 4, 3, 2, 1] },
+      { "input": [[1, 2]], "output": [2, 1] },
+      { "input": [[]], "output": [] }
+    ],
+    "tags": ["arrays", "pointers"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 19,
+    "title": "Stairwell Count",
+    "briefing": [
+      "The Vault's emergency stairwell has n steps, and the old access logs recorded every possible way someone could climb it — one or two steps at a time. LEDGER wants that count rebuilt."
+    ],
+    "objective": "Complete the function to count the number of ways to climb n stairs, taking either 1 or 2 steps at a time.",
+    "hints": [
+      "The number of ways to reach step i is the sum of the ways to reach step i-1 and step i-2.",
+      "Build the answer bottom-up in a table, starting from the base cases dp[1] and dp[2]."
+    ],
+    "code": "def climb_stairs(n):\n    if n <= 2:\n        return n\n    dp = [0] * (n + 1)\n    dp[1] = 1\n    dp[2] = 2\n    # Your code here\n    return dp[n]",
+    "functionName": "climb_stairs",
+    "testCases": [
+      { "input": [3], "output": 3 },
+      { "input": [4], "output": 5 },
+      { "input": [5], "output": 8 }
+    ],
+    "tags": ["dynamic programming"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 20,
+    "title": "Raised to the Task",
+    "briefing": [
+      "An old power-calculation module — exponents, computed the long way, without leaning on the language's own math shortcuts. LEDGER wants to see the recursion, not the shortcut."
+    ],
+    "objective": "Complete the function to implement power(x, n) — x raised to the power n — without using a built-in power function.",
+    "hints": [
+      "For a negative exponent, compute the positive-exponent result and take its reciprocal.",
+      "Otherwise, recurse: x^n = x * x^(n-1), with x^0 = 1 as the base case."
+    ],
+    "code": "def power(x, n):\n    if n == 0:\n        return 1\n    # Your code here\n    # Your code here\n    # Your code here\n    return result",
+    "functionName": "power",
+    "testCases": [
+      { "input": [2, 3], "output": 8 },
+      { "input": [2, -2], "output": 0.25 },
+      { "input": [5, 0], "output": 1 }
+    ],
+    "tags": ["mathematics", "recursion"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 21,
+    "title": "Quarter Turn",
+    "briefing": [
+      "A physical vault door — a rotating grid lock, ninety degrees at a time. The mechanism is still intact. The control script that used to turn it isn't."
+    ],
+    "objective": "Complete the function to rotate the matrix 90 degrees clockwise, in-place.",
+    "hints": [
+      "First transpose the matrix — swap matrix[i][j] with matrix[j][i] for every pair above the diagonal.",
+      "Then reverse each row of the transposed matrix — that combination is exactly a 90-degree clockwise rotation."
+    ],
+    "code": "def rotate_matrix(matrix):\n    n = len(matrix)\n    # First transpose the matrix\n    for i in range(n):\n        for j in range(i, n):\n            # Your code here\n            pass\n    # Then reverse each row\n    for i in range(n):\n        # Your code here\n        pass\n    return matrix",
+    "functionName": "rotate_matrix",
+    "testCases": [
+      { "input": [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]], "output": "[[7, 4, 1], [8, 5, 2], [9, 6, 3]]" },
+      { "input": [[[1]]], "output": "[[1]]" },
+      { "input": [[[1, 2], [3, 4]]], "output": "[[3, 1], [4, 2]]" }
+    ],
+    "tags": ["matrix", "arrays"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 22,
+    "title": "Ordered Roots",
+    "briefing": [
+      "Deeper still: a decision tree that once routed archive requests to the right shelf, provided every node obeyed a strict ordering. LEDGER needs that rule re-enforced.",
+      "The tree is handed to you pre-built from a flat list this time — your job is just the validation."
+    ],
+    "objective": "Complete the is_valid helper to check every node falls within the correct range for a binary search tree.",
+    "hints": [
+      "Each node must be strictly between the min_val and max_val bounds passed down to it.",
+      "Recurse left with an updated max_val (the current node's value), and right with an updated min_val."
+    ],
+    "code": "class TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val = val\n        self.left = left\n        self.right = right\n\ndef build_tree(values):\n    it = iter(values)\n    first = next(it, None)\n    if first is None:\n        return None\n    root = TreeNode(first)\n    queue = [root]\n    while queue:\n        node = queue.pop(0)\n        left_val = next(it, \"__end__\")\n        if left_val not in (None, \"__end__\"):\n            node.left = TreeNode(left_val)\n            queue.append(node.left)\n        right_val = next(it, \"__end__\")\n        if right_val not in (None, \"__end__\"):\n            node.right = TreeNode(right_val)\n            queue.append(node.right)\n    return root\n\ndef validate_bst(values):\n    root = build_tree(values)\n    def is_valid(node, min_val, max_val):\n        if not node:\n            return True\n        # Your code here\n        # Your code here\n        # Your code here\n    return is_valid(root, float(\"-inf\"), float(\"inf\"))",
+    "functionName": "validate_bst",
+    "testCases": [
+      { "input": [[2, 1, 3]], "output": "True" },
+      { "input": [[5, 1, 4, null, null, 3, 6]], "output": "False" },
+      { "input": [[1]], "output": "True" }
+    ],
+    "tags": ["binary trees", "recursion"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 23,
+    "title": "Best Stretch",
+    "briefing": [
+      "A resource-usage log from the Vault's reactor, full of surges and drops. LEDGER wants to know the single best contiguous stretch — the strongest run before the next crash."
+    ],
+    "objective": "Complete the function to find the maximum sum of a contiguous subarray (Kadane's algorithm).",
+    "hints": [
+      "At each element, decide: extend the current run, or start a new run from here.",
+      "Keep a running current_sum and a separate max_sum that only ever grows."
+    ],
+    "code": "def kadane_max_sum(arr):\n    if not arr:\n        return 0\n    current_sum = max_sum = arr[0]\n    # Your code here\n    # Your code here\n    return max_sum",
+    "functionName": "kadane_max_sum",
+    "testCases": [
+      { "input": [[-2, 1, -3, 4, -1, 2, 1, -5, 4]], "output": 6 },
+      { "input": [[1]], "output": 1 },
+      { "input": [[-1]], "output": -1 }
+    ],
+    "tags": ["arrays", "dynamic programming"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 24,
+    "title": "Alias Clusters",
+    "briefing": [
+      "The Vault's naming records are riddled with aliases — different spellings of the same underlying word, used to dodge the old indexing system. LEDGER wants them grouped."
+    ],
+    "objective": "Complete the function to group anagrams together from a list of words.",
+    "hints": [
+      "Two words are anagrams if their letters, sorted, are identical.",
+      "Use that sorted form as a dictionary key, and append each original word to the matching group."
+    ],
+    "code": "def group_anagrams(words):\n    anagram_groups = {}\n    # Your code here\n    # Your code here\n    # Your code here\n    return list(anagram_groups.values())",
+    "functionName": "group_anagrams",
+    "testCases": [
+      {
+        "input": [["eat", "tea", "tan", "ate", "nat", "bat"]],
+        "output": [["eat", "tea", "ate"], ["tan", "nat"], ["bat"]]
+      },
+      { "input": [[""]], "output": [[""]] },
+      { "input": [["a"]], "output": [["a"]] }
+    ],
+    "tags": ["strings", "hash tables", "sorting"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 25,
+    "title": "Reach Check",
+    "briefing": [
+      "A maintenance drone's old pathing log — at each position, a maximum jump distance. LEDGER needs to know whether the drone could ever have reached the far end of its track."
+    ],
+    "objective": "Complete the function to determine if you can reach the last index of the array, where each element is the max jump length from that position.",
+    "hints": [
+      "Track the furthest index reachable so far as you scan left to right.",
+      "If you ever reach a position beyond what's currently reachable, the drone was stuck — return False immediately."
+    ],
+    "code": "def jump_game(nums):\n    max_reach = 0\n    # Your code here\n    # Your code here\n    return max_reach >= len(nums) - 1",
+    "functionName": "jump_game",
+    "testCases": [
+      { "input": [[2, 3, 1, 1, 4]], "output": "True" },
+      { "input": [[3, 2, 1, 0, 4]], "output": "False" },
+      { "input": [[0]], "output": "True" }
+    ],
+    "tags": ["arrays", "greedy"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 26,
+    "title": "No Repeats",
+    "briefing": [
+      "A stream of sensor characters with an unknown amount of noise repetition. LEDGER wants the longest clean stretch — the longest run with no character repeated."
+    ],
+    "objective": "Complete the function to find the length of the longest substring without repeating characters.",
+    "hints": [
+      "Keep a sliding window [start, i] and a dictionary of the last-seen index of each character.",
+      "When you see a repeat inside the current window, jump start forward to just past its previous occurrence."
+    ],
+    "code": "def longest_substring_without_repeats(s):\n    char_index = {}\n    max_length = start = 0\n    # Your code here\n    # Your code here\n    # Your code here\n    return max_length",
+    "functionName": "longest_substring_without_repeats",
+    "testCases": [
+      { "input": ["abcabcbb"], "output": 3 },
+      { "input": ["bbbbb"], "output": 1 },
+      { "input": ["pwwkew"], "output": 3 }
+    ],
+    "tags": ["strings", "sliding window", "hash tables"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 27,
+    "title": "Spiral Extraction",
+    "briefing": [
+      "The deepest data grid in the Vault has to be read out in a spiral — an old anti-tamper measure so a partial read is always obviously incomplete."
+    ],
+    "objective": "Complete the function to return all elements of the matrix in spiral order.",
+    "hints": [
+      "Track four shrinking boundaries: top, bottom, left, right.",
+      "Walk across the top row, down the right column, across the bottom row, up the left column, then shrink the boundaries and repeat."
+    ],
+    "code": "def matrix_spiral_order(matrix):\n    if not matrix:\n        return []\n    result = []\n    top, bottom = 0, len(matrix) - 1\n    left, right = 0, len(matrix[0]) - 1\n    # Your code here\n    # Your code here\n    # Your code here\n    return result",
+    "functionName": "matrix_spiral_order",
+    "testCases": [
+      { "input": [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]], "output": [1, 2, 3, 6, 9, 8, 7, 4, 5] },
+      { "input": [[[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]]], "output": [1, 2, 3, 4, 8, 12, 11, 10, 9, 5, 6, 7] },
+      { "input": [[[1]]], "output": [1] }
+    ],
+    "tags": ["matrix", "arrays"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 28,
+    "title": "Nine by Nine",
+    "briefing": [
+      "The last thing standing between you and the Vault's core: a puzzle lock built like a sudoku board. LEDGER can't open it for you — it can only tell you whether your grid is valid.",
+      "You're not solving the puzzle. You're rebuilding LEDGER's ability to check one."
+    ],
+    "objective": "Complete the function to determine if a 9x9 Sudoku board is valid — no repeated digits in any row, column, or 3x3 box.",
+    "hints": [
+      "You've been given a set for each row, column, and 3x3 box to track what's already been seen.",
+      "For each filled cell, compute its box index as (row // 3) * 3 + col // 3, and check/add to all three relevant sets."
+    ],
+    "code": "def valid_sudoku(board):\n    rows = [set() for _ in range(9)]\n    cols = [set() for _ in range(9)]\n    boxes = [set() for _ in range(9)]\n    # Your code here\n    return True",
+    "functionName": "valid_sudoku",
+    "testCases": [
+      {
+        "input": [[["5", "3", ".", ".", "7", ".", ".", ".", "."], ["6", ".", ".", "1", "9", "5", ".", ".", "."], [".", "9", "8", ".", ".", ".", ".", "6", "."], ["8", ".", ".", ".", "6", ".", ".", ".", "3"], ["4", ".", ".", "8", ".", "3", ".", ".", "1"], ["7", ".", ".", ".", "2", ".", ".", ".", "6"], [".", "6", ".", ".", ".", ".", "2", "8", "."], [".", ".", ".", "4", "1", "9", ".", ".", "5"], [".", ".", ".", ".", "8", ".", ".", "7", "9"]]],
+        "output": true
+      },
+      {
+        "input": [[["8", "3", ".", ".", "7", ".", ".", ".", "."], ["6", ".", ".", "1", "9", "5", ".", ".", "."], [".", "9", "8", ".", ".", ".", ".", "6", "."], ["8", ".", ".", ".", "6", ".", ".", ".", "3"], ["4", ".", ".", "8", ".", "3", ".", ".", "1"], ["7", ".", ".", ".", "2", ".", ".", ".", "6"], [".", "6", ".", ".", ".", ".", "2", "8", "."], [".", ".", ".", "4", "1", "9", ".", ".", "5"], [".", ".", ".", ".", "8", ".", ".", "7", "9"]]],
+        "output": false
+      },
+      {
+        "input": [[[".", ".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", ".", ".", ".", ".", ".", "."]]],
+        "output": true
+      }
+    ],
+    "tags": ["matrix", "hash tables", "validation"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 29,
+    "title": "The Flooded Sub-Level",
+    "briefing": [
+      "The Vault's lowest level flooded decades ago. LEDGER's structural map still exists — a grid of dry land (1) and water (0) — but it never learned to count the separate islands of dry ground.",
+      "Somewhere on one of those islands is what you came here for. This is the last routine standing between you and the Archive Core."
+    ],
+    "objective": "Complete the function to count the number of islands in a binary grid, where an island is formed by land cells (1) connected horizontally or vertically.",
+    "hints": [
+      "When you find an unvisited land cell, that's a new island — increment the count and flood-fill from there.",
+      "flood_fill should mark the current cell as visited (e.g. set it to -1) and recurse into its four neighbors if they're still land."
+    ],
+    "code": "def count_islands(grid):\n    if not grid:\n        return 0\n    rows, cols = len(grid), len(grid[0])\n    count = 0\n    def flood_fill(i, j):\n        # Your code here\n        # Your code here\n        # Your code here\n        pass\n    # Your code here\n    return count",
+    "functionName": "count_islands",
+    "testCases": [
+      { "input": [[[1, 1, 0], [1, 0, 0], [0, 0, 1]]], "output": 2 },
+      { "input": [[[1, 1, 1], [1, 1, 1], [1, 1, 1]]], "output": 1 },
+      { "input": [[[0, 0, 0], [0, 0, 0], [0, 0, 0]]], "output": 0 }
+    ],
+    "tags": ["depth-first search", "matrix", "recursion"],
+    "difficulty": "hard"
+  }
+]

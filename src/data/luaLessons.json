@@ -1,0 +1,317 @@
+[
+  {
+    "id": 1,
+    "title": "Wake Signal",
+    "briefing": [
+      "NEXUS-9's drone swarm has run on the same embedded Lua firmware for a decade — small, fast, and nobody's touched it since. Ever since the escape from the surface city rattled the defense grid, half the fleet has been glitching.",
+      "You're the technician who draws the short straw. First job: get a single reading to add up correctly."
+    ],
+    "objective": "Complete the function to return the sum of all readings in the table.",
+    "hints": [
+      "Lua tables are 1-indexed. `for i, v in ipairs(t) do ... end` walks every value in order.",
+      "Add each value to a running total as you go."
+    ],
+    "code": "function sum_readings(t)\n  local total = 0\n  -- your code here\n  return total\nend",
+    "functionName": "sum_readings",
+    "testCases": [
+      { "input": [[1, 2, 3, 4, 5]], "output": 15 },
+      { "input": [[10, -2, 4]], "output": 12 },
+      { "input": [[]], "output": 0 }
+    ],
+    "tags": ["loops", "tables"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 2,
+    "title": "Peak Draw",
+    "briefing": [
+      "One drone's battery keeps spiking well past its rated draw right before it drops out of formation. Find the peak reading from its telemetry table."
+    ],
+    "objective": "Complete the function to find the maximum value in the table, without using table.sort or math.max on the whole table.",
+    "hints": [
+      "Start with the first element as your best guess.",
+      "Compare every element against it, replacing your guess whenever you find something bigger."
+    ],
+    "code": "function max_reading(t)\n  local maximum = t[1]\n  -- your code here\n  return maximum\nend",
+    "functionName": "max_reading",
+    "testCases": [
+      { "input": [[3, 7, 2, 9, 4]], "output": 9 },
+      { "input": [[-5, -1, -8]], "output": -1 },
+      { "input": [[42]], "output": 42 }
+    ],
+    "tags": ["loops", "comparison"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 3,
+    "title": "Callsign Check",
+    "briefing": [
+      "The swarm authenticates drones by callsign — and some of the oldest units use callsigns that read the same forwards and backwards, a quirk from whoever set the fleet up originally."
+    ],
+    "objective": "Complete the function to check whether the input string reads the same forwards and backwards.",
+    "hints": [
+      "Build a reversed copy of the string by walking it from the last character to the first.",
+      "`string.sub(s, i, i)` gets the single character at position i — Lua strings are 1-indexed too."
+    ],
+    "code": "function is_palindrome(s)\n  local reversed = \"\"\n  -- your code here\n  return reversed == s\nend",
+    "functionName": "is_palindrome",
+    "testCases": [
+      { "input": ["radar"], "output": true },
+      { "input": ["drone"], "output": false },
+      { "input": ["a"], "output": true }
+    ],
+    "tags": ["strings", "loops"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 4,
+    "title": "Vowel Sweep",
+    "briefing": [
+      "A corrupted voice-command buffer needs a sanity check before the swarm will trust it again — count how much of it is actually vowels."
+    ],
+    "objective": "Complete the function to count the number of vowels in the input string.",
+    "hints": [
+      "Loop from 1 to #s (the length of the string), pulling one character at a time with string.sub.",
+      "`string.find(vowels, c, 1, true)` returns a match if c is one of the vowel characters."
+    ],
+    "code": "function count_vowels(s)\n  local vowels = \"aeiouAEIOU\"\n  local count = 0\n  -- your code here\n  return count\nend",
+    "functionName": "count_vowels",
+    "testCases": [
+      { "input": ["Hello World"], "output": 3 },
+      { "input": ["DRONE"], "output": 2 },
+      { "input": ["xyz"], "output": 0 }
+    ],
+    "tags": ["strings", "loops"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 5,
+    "title": "Reverse Formation",
+    "briefing": [
+      "A patrol route got recorded back-to-front by a faulty sensor. The formation needs to fly it in reverse order to get home."
+    ],
+    "objective": "Complete the function to return a new table with the elements of the input table in reverse order.",
+    "hints": [
+      "Walk the input table backwards: `for i = #t, 1, -1 do ... end`.",
+      "`table.insert(result, value)` appends to the end of a table."
+    ],
+    "code": "function reverse_list(t)\n  local result = {}\n  -- your code here\n  return result\nend",
+    "functionName": "reverse_list",
+    "testCases": [
+      { "input": [[1, 2, 3, 4]], "output": [4, 3, 2, 1] },
+      { "input": [["a", "b", "c"]], "output": ["c", "b", "a"] },
+      { "input": [[]], "output": [] }
+    ],
+    "tags": ["tables", "loops"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 6,
+    "title": "Roll Call",
+    "briefing": [
+      "Before a patrol launches, the swarm controller checks whether a given drone ID is actually on the active roster."
+    ],
+    "objective": "Complete the function to return true if the target value is present in the table, false otherwise.",
+    "hints": [
+      "Walk the table with ipairs, and return true immediately the moment you find a match.",
+      "If the loop finishes without finding it, the function's final `return false` handles the rest."
+    ],
+    "code": "function contains(t, target)\n  -- your code here\n  return false\nend",
+    "functionName": "contains",
+    "testCases": [
+      { "input": [[1, 2, 3], 2], "output": true },
+      { "input": [["a", "b"], "c"], "output": false },
+      { "input": [[], 1], "output": false }
+    ],
+    "tags": ["loops", "search"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 7,
+    "title": "Repeat Offender",
+    "briefing": [
+      "One error code keeps showing up in the crash logs more than any other. The swarm controller wants an exact count before it commits resources to fixing it."
+    ],
+    "objective": "Complete the function to count how many times the target value appears in the table.",
+    "hints": [
+      "Walk the table, incrementing a counter every time an element equals the target."
+    ],
+    "code": "function count_occurrences(t, target)\n  local count = 0\n  -- your code here\n  return count\nend",
+    "functionName": "count_occurrences",
+    "testCases": [
+      { "input": [[1, 2, 2, 3, 2], 2], "output": 3 },
+      { "input": [["x", "y"], "z"], "output": 0 },
+      { "input": [[5, 5, 5], 5], "output": 3 }
+    ],
+    "tags": ["loops", "counting"],
+    "difficulty": "easy"
+  },
+  {
+    "id": 8,
+    "title": "Clean Manifest",
+    "briefing": [
+      "A cargo manifest got duplicated somewhere in transit. The controller needs the unique item list, in the order items first appeared."
+    ],
+    "objective": "Complete the function to return a new table containing only the first occurrence of each value, in original order.",
+    "hints": [
+      "Use a second table as a lookup: `seen[value] = true` once you've added something.",
+      "Only insert a value into the result if `seen[value]` is not already true."
+    ],
+    "code": "function dedupe(t)\n  local seen = {}\n  local result = {}\n  -- your code here\n  return result\nend",
+    "functionName": "dedupe",
+    "testCases": [
+      { "input": [[1, 2, 2, 3, 1, 4]], "output": [1, 2, 3, 4] },
+      { "input": [["a", "a", "a"]], "output": ["a"] },
+      { "input": [[]], "output": [] }
+    ],
+    "tags": ["tables", "hash tables"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 9,
+    "title": "Formation Order",
+    "briefing": [
+      "The patrol formation needs to line up by altitude, lowest to highest, before takeoff. The firmware's sort routine was one of the first things to corrupt."
+    ],
+    "objective": "Complete the function to sort the table in ascending order using bubble sort.",
+    "hints": [
+      "Compare each pair of neighbors: `if t[j] > t[j+1] then` swap them.",
+      "Lua supports multiple assignment for swaps: `t[j], t[j+1] = t[j+1], t[j]`."
+    ],
+    "code": "function bubble_sort(t)\n  local n = #t\n  -- your code here\n  return t\nend",
+    "functionName": "bubble_sort",
+    "testCases": [
+      { "input": [[5, 2, 4, 1, 3]], "output": [1, 2, 3, 4, 5] },
+      { "input": [[1]], "output": [1] },
+      { "input": [[9, 8, 7]], "output": [7, 8, 9] }
+    ],
+    "tags": ["sorting", "loops"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 10,
+    "title": "Status Line",
+    "briefing": [
+      "The swarm's status readout needs to display a list of active drone IDs joined into one clean line, separated by a chosen character."
+    ],
+    "objective": "Complete the function to join every element of the table into a single string, separated by the given separator.",
+    "hints": [
+      "Build the result string piece by piece: add the separator before every element except the first.",
+      "Lua's string concatenation operator is `..`, not `+`."
+    ],
+    "code": "function concat_with_separator(t, sep)\n  local result = \"\"\n  -- your code here\n  return result\nend",
+    "functionName": "concat_with_separator",
+    "testCases": [
+      { "input": [["a", "b", "c"], "-"], "output": "a-b-c" },
+      { "input": [["x"], ","], "output": "x" },
+      { "input": [[], ","], "output": "" }
+    ],
+    "tags": ["strings", "loops"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 11,
+    "title": "Growth Curve",
+    "briefing": [
+      "Buried in the firmware's power-management module: a growth curve nobody remembers the purpose of. It looks a lot like a sequence you've seen before."
+    ],
+    "objective": "Complete the function to generate a Fibonacci sequence of length n.",
+    "hints": [
+      "You're handed the first two terms, {0, 1}, already.",
+      "Keep appending the sum of the last two terms with table.insert until the table has n elements."
+    ],
+    "code": "function fibonacci(n)\n  if n <= 0 then return {} end\n  if n == 1 then return {0} end\n  local seq = {0, 1}\n  -- your code here\n  return seq\nend",
+    "functionName": "fibonacci",
+    "testCases": [
+      { "input": [5], "output": [0, 1, 1, 2, 3] },
+      { "input": [1], "output": [0] },
+      { "input": [2], "output": [0, 1] }
+    ],
+    "tags": ["loops", "tables", "mathematics"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 12,
+    "title": "Recursive Charge",
+    "briefing": [
+      "A charging-cycle calculation in the power module calls itself — nobody rebuilt this one iteratively, and you're not about to start now."
+    ],
+    "objective": "Complete the function to compute n! (factorial) recursively.",
+    "hints": [
+      "The base case (n <= 1) is already handled for you, returning 1.",
+      "Otherwise, return n multiplied by the factorial of n - 1 — the function calling itself is exactly what 'recursive' means."
+    ],
+    "code": "function factorial(n)\n  if n <= 1 then\n    return 1\n  end\n  -- your code here\nend",
+    "functionName": "factorial",
+    "testCases": [
+      { "input": [5], "output": 120 },
+      { "input": [1], "output": 1 },
+      { "input": [6], "output": 720 }
+    ],
+    "tags": ["recursion", "mathematics"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 13,
+    "title": "Locked Frequency",
+    "briefing": [
+      "The comms array has thousands of channels, sorted, and you need to find the one frequency the intercepted signal was broadcast on. Checking one at a time would take too long."
+    ],
+    "objective": "Complete the function to implement binary search over a sorted table. Return the 1-based index of the target, or -1 if not found.",
+    "hints": [
+      "Keep a left and right boundary and repeatedly check the midpoint: `math.floor((left + right) / 2)`.",
+      "Narrow the boundary based on whether the midpoint value is too small or too large, same idea as any binary search — just remember Lua indices start at 1."
+    ],
+    "code": "function binary_search(t, target)\n  local left, right = 1, #t\n  -- your code here\n  return -1\nend",
+    "functionName": "binary_search",
+    "testCases": [
+      { "input": [[1, 2, 3, 4, 5], 3], "output": 3 },
+      { "input": [[10, 20, 30, 40], 40], "output": 4 },
+      { "input": [[1, 2, 3], 9], "output": -1 }
+    ],
+    "tags": ["binary search", "algorithms"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 14,
+    "title": "Encryption Seed",
+    "briefing": [
+      "The swarm's handshake encryption needs a prime number seed, and the routine that used to generate one is exactly the kind of thing that rots first in unused firmware."
+    ],
+    "objective": "Complete the function to determine whether n is a prime number.",
+    "hints": [
+      "Numbers less than 2 are never prime — that case is already handled.",
+      "Check divisibility by every integer from 2 up to the square root of n: `math.floor(math.sqrt(n))`. If any of them divide evenly, it's not prime."
+    ],
+    "code": "function is_prime(n)\n  if n < 2 then return false end\n  -- your code here\n  return true\nend",
+    "functionName": "is_prime",
+    "testCases": [
+      { "input": [7], "output": true },
+      { "input": [8], "output": false },
+      { "input": [2], "output": true }
+    ],
+    "tags": ["mathematics", "loops"],
+    "difficulty": "medium"
+  },
+  {
+    "id": 15,
+    "title": "Convoy Merge",
+    "briefing": [
+      "Two patrol convoys, each already sorted by arrival time, are converging on the same dock. The final approach schedule has to merge them into one sorted line — the last routine standing between you and a fully operational fleet."
+    ],
+    "objective": "Complete the function to merge two sorted tables into a single sorted table.",
+    "hints": [
+      "Use two pointers, i and j, one for each table, both starting at 1.",
+      "At each step, take whichever of a[i] or b[j] is smaller and advance that pointer — once one table runs out, append whatever's left of the other."
+    ],
+    "code": "function merge_sorted(a, b)\n  local result = {}\n  local i, j = 1, 1\n  -- your code here\n  return result\nend",
+    "functionName": "merge_sorted",
+    "testCases": [
+      { "input": [[1, 3, 5], [2, 4, 6]], "output": [1, 2, 3, 4, 5, 6] },
+      { "input": [[1, 2], []], "output": [1, 2] },
+      { "input": [[], [1, 2, 3]], "output": [1, 2, 3] }
+    ],
+    "tags": ["tables", "two pointers", "sorting"],
+    "difficulty": "hard"
+  }
+]
