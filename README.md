@@ -5,7 +5,7 @@
 <img src="https://img.shields.io/badge/react-18+-61DAFB.svg?style=for-the-badge&logo=react" alt="React">
 <img src="https://img.shields.io/badge/typescript-4.x-3178C6.svg?style=for-the-badge&logo=typescript" alt="TypeScript">
 <img src="https://img.shields.io/badge/tailwind-3.x-38B2AC.svg?style=for-the-badge&logo=tailwind-css" alt="Tailwind">
-<img src="https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge" alt="License">
+<img src="https://img.shields.io/badge/license-Apache%202.0-green.svg?style=for-the-badge" alt="License">
 
 **Learn programming languages through interactive terminal adventures**
 
@@ -76,7 +76,7 @@ npm run build   # Production build
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+Apache 2.0 — see [LICENSE](LICENSE).
 
 ---
 
